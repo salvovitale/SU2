@@ -31,7 +31,8 @@
 
 #pragma once
 #include "../../Common/include/config_structure.hpp"
-
+#include "../../Common/include/geometry_structure.hpp"
+#include "../include/solver_structure.hpp"
 /*!
  * \class CTurboMachinery
  * \brief Main class for Turbomachinery capabilities of the tool.

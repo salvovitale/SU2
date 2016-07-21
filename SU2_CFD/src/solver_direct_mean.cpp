@@ -5391,379 +5391,368 @@ void CEulerSolver::TurboPerformanceSpanwise(CConfig *config, CGeometry *geometry
   unsigned short iZone             = config->GetiZone();
   unsigned short nZone             = config->GetnZone();
 
-
   for (iSpan= 0; iSpan < nSpanWiseSections  ; iSpan++){
 #ifdef HAVE_MPI
-          MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-          MPI_Comm_size(MPI_COMM_WORLD, &size);
-          su2double *TurbPerfIn= NULL,*TurbPerfOut= NULL;
-          su2double *TotTurbPerfIn = NULL,*TotTurbPerfOut = NULL;
-          int *TotMarkerTP;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    su2double *TurbPerfIn= NULL,*TurbPerfOut= NULL;
+    su2double *TotTurbPerfIn = NULL,*TotTurbPerfOut = NULL;
+    int *TotMarkerTP;
 
-          //if (rank == MASTER_NODE){
-            n1  = 18;
-            n2  = 18;
-            n1t = n1*size;
-            n2t = n2*size;
-            TurbPerfIn = new su2double[n1];
-            TurbPerfOut = new su2double[n2];
+    n1          = 18;
+    n2          = 18;
+    n1t         = n1*size;
+    n2t         = n2*size;
+    TurbPerfIn  = new su2double[n1];
+    TurbPerfOut = new su2double[n2];
 
-            for (i=0;i<n1;i++)
-              TurbPerfIn[i]= -1.0;
-            for (i=0;i<n2;i++)
-              TurbPerfOut[i]= -1.0;
-          //}
+    for (i=0;i<n1;i++)
+      TurbPerfIn[i]    = -1.0;
+    for (i=0;i<n2;i++)
+      TurbPerfOut[i]   = -1.0;
 #endif
 
-          avgTotalRothalpyIn     = -1.0;
-          avgTotalEnthalpyIn     = -1.0;
-          avgEntropyIn           = -1.0;
-          avgEntropyOut          = -1.0;
-          avgTotalRelPressureIn  = -1.0;
-          flowAngleIn            = -1.0;
-          massFlowIn             = -1.0;
-          tangMachIn             = -1.0;
-          normalMachIn           = -1.0;
-          avgTotTempIn           = -1.0;
-          avgTotPresIn           = -1.0;
-          alphaIn_BC             = -1.0;
-          gammaIn_BC             = -1.0;
-          entropyIn_BC           = -1.0;
-          totalEnthalpyIn_BC     = -1.0;
-          avgTotalRothalpyOut    = -1.0;
-          avgTotalEnthalpyOut    = -1.0;
-          avgTotalRelPressureOut = -1.0;
-          avgPressureOut         = -1.0;
-          avgEnthalpyOut         = -1.0;
-          avgGridVel2Out         = -1.0;
-          flowAngleOut           = -1.0;
-          massFlowOut            = -1.0;
-          tangMachOut            = -1.0;
-          normalMachOut          = -1.0;
-          densityIn_Mix          = -1.0;
-          pressureIn_Mix         = -1.0;
-          normalVelocityIn_Mix   = -1.0;
-          tangVelocityIn_Mix     = -1.0;
-          densityOut_Mix         = -1.0;
-          pressureOut_Mix        = -1.0;
-          normalVelocityOut_Mix  = -1.0;
-          tangVelocityOut_Mix    = -1.0;
-          absFlowAngleIn         = -1.0;
-          absFlowAngleOut        = -1.0;
-          pressureOut_BC         = -1.0;
-          avgVel2Out             = -1.0;
-          relVelocityIn_Mix      = -1.0;
-          relVelocityOut_Mix     = -1.0;
-          relMachIn_Mix          = -1.0;
-          relMachOut_Mix         = -1.0;
+    avgTotalRothalpyIn     = -1.0;
+    avgTotalEnthalpyIn     = -1.0;
+    avgEntropyIn           = -1.0;
+    avgEntropyOut          = -1.0;
+    avgTotalRelPressureIn  = -1.0;
+    flowAngleIn            = -1.0;
+    massFlowIn             = -1.0;
+    tangMachIn             = -1.0;
+    normalMachIn           = -1.0;
+    avgTotTempIn           = -1.0;
+    avgTotPresIn           = -1.0;
+    alphaIn_BC             = -1.0;
+    gammaIn_BC             = -1.0;
+    entropyIn_BC           = -1.0;
+    totalEnthalpyIn_BC     = -1.0;
+    avgTotalRothalpyOut    = -1.0;
+    avgTotalEnthalpyOut    = -1.0;
+    avgTotalRelPressureOut = -1.0;
+    avgPressureOut         = -1.0;
+    avgEnthalpyOut         = -1.0;
+    avgGridVel2Out         = -1.0;
+    flowAngleOut           = -1.0;
+    massFlowOut            = -1.0;
+    tangMachOut            = -1.0;
+    normalMachOut          = -1.0;
+    densityIn_Mix          = -1.0;
+    pressureIn_Mix         = -1.0;
+    normalVelocityIn_Mix   = -1.0;
+    tangVelocityIn_Mix     = -1.0;
+    densityOut_Mix         = -1.0;
+    pressureOut_Mix        = -1.0;
+    normalVelocityOut_Mix  = -1.0;
+    tangVelocityOut_Mix    = -1.0;
+    absFlowAngleIn         = -1.0;
+    absFlowAngleOut        = -1.0;
+    pressureOut_BC         = -1.0;
+    avgVel2Out             = -1.0;
+    relVelocityIn_Mix      = -1.0;
+    relVelocityOut_Mix     = -1.0;
+    relMachIn_Mix          = -1.0;
+    relMachOut_Mix         = -1.0;
+    markerTP               = -1;
+
+    for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
+      for (iMarkerTP = 1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
+        if (config->GetMarker_All_Turbomachinery(iMarker) == iMarkerTP){
+          Marker_Tag         = config->GetMarker_All_TagBound(iMarker);
+          nBlades            = config->GetnBlades(iZone);
+          if (config->GetMarker_All_TurbomachineryFlag(iMarker) == INFLOW){
+            markerTP = iMarkerTP;
+            avgVelRel2In     = 0.0;
+            avgGridVel2In    = 0.0;
+            avgVel2In        = 0.0;
+            for (iDim = 0; iDim < nDim; iDim++){
+              avgVelRel2In  += AverageTurboVelocity[iMarker][iSpan][iDim]*AverageTurboVelocity[iMarker][iSpan][iDim];
+              avgGridVel2In += geometry->GetAverageGridVel(iMarker, iSpan  )[iDim]*geometry->GetAverageGridVel(iMarker, iSpan  )[iDim];
+              avgVel2In     += (AverageVelocity[iMarker][iSpan][iDim])*(AverageVelocity[iMarker][iSpan][iDim]);
+            }
+            avgVelRel2In    -= AverageTurboVelocity[iMarker][iSpan][1]*AverageTurboVelocity[iMarker][iSpan][1];
+            avgVelRel2In    += (AverageTurboVelocity[iMarker][iSpan][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ))*(AverageTurboVelocity[iMarker][iSpan][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ));
+
+            avgTotalRothalpyIn      = AverageEnthalpy[iMarker][iSpan] + 0.5*avgVelRel2In - 0.5*avgGridVel2In;
+            avgTotalEnthalpyIn      = AverageEnthalpy[iMarker][iSpan] + 0.5*avgVel2In;
+            avgEntropyIn            = AverageEntropy[iMarker][iSpan];
+            FluidModel->SetTDState_hs(avgTotalRothalpyIn, avgEntropyIn);
+            avgTotalRelPressureIn   = FluidModel->GetPressure();
+            flowAngleIn             = SpanFlowAngle[iMarker][iSpan];
+            massFlowIn              = SpanMassFlow[iMarker][iSpan]*nBlades;
+            tangMachIn              = AverageTurboMach[iMarker][iSpan][1];
+            normalMachIn            = AverageTurboMach[iMarker][iSpan][0];
+            avgTotTempIn            = AverageTotTemperature[iMarker][iSpan];
+            avgTotPresIn            = AverageTotPressure[iMarker][iSpan];
+            densityIn_Mix           = AverageDensity[iMarker][iSpan];
+            pressureIn_Mix          = AveragePressure[iMarker][iSpan];
+            normalVelocityIn_Mix    = AverageTurboVelocity[iMarker][iSpan][0];
+            tangVelocityIn_Mix      = AverageTurboVelocity[iMarker][iSpan][1];
+            if (nDim>3){
+              relMachIn_Mix         = AverageTurboMach[iMarker][iSpan][2];
+              relVelocityIn_Mix     = AverageTurboVelocity[iMarker][iSpan][2];
+            }
+            absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
+
+            //TODO(turbo) better location has to be found for this computation, perhaps in the outputstructure file.
+            if(config->GetBoolNRBC() || config->GetBoolRiemann()){
+
+              if(config->GetBoolRiemann()){
+                P_Total      = config->GetRiemann_Var1(Marker_Tag);
+                T_Total      = config->GetRiemann_Var2(Marker_Tag);
+                FlowDir      = config->GetRiemann_FlowDir(Marker_Tag);
+                alphaIn_BC   = atan(FlowDir[1]/FlowDir[0]);
+                P_Total     /= config->GetPressure_Ref();
+                T_Total     /= config->GetTemperature_Ref();
+
+              }else{
+                if(config->GetKind_Data_NRBC(Marker_Tag) == TOTAL_CONDITIONS_PT){
+                  P_Total     = config->GetNRBC_Var1(Marker_Tag);
+                  T_Total     = config->GetNRBC_Var2(Marker_Tag);
+                  FlowDir     = config->GetNRBC_FlowDir(Marker_Tag);
+                  alphaIn_BC  = atan(FlowDir[1]/FlowDir[0]);
+                  P_Total    /= config->GetPressure_Ref();
+                  T_Total    /= config->GetTemperature_Ref();
+
+                }
+                else{
+                  P_Total     = ExtAverageTotPressure[iMarker][0];
+                  T_Total     = ExtAverageTotTemperature[iMarker][0];
+                  alphaIn_BC  = atan(ExtAverageTurboVelocity[iMarker][0][1]/ExtAverageTurboVelocity[iMarker][0][0]);
+                }
+              }
+
+              /* --- Computes the total state --- */
+              FluidModel->SetTDState_PT(P_Total, T_Total);
+              totalEnthalpyIn_BC  = FluidModel->GetStaticEnergy() + FluidModel->GetPressure()/FluidModel->GetDensity();
+              entropyIn_BC        = FluidModel->GetEntropy();
+            }else{
+              cout << " Inlet BC convergence can't be checked "<<endl;
+              entropyIn_BC        = 0.0;
+              totalEnthalpyIn_BC  = 0.0;
+              alphaIn_BC          = 0.0;
+            }
+
+
+#ifdef HAVE_MPI
+            TurbPerfIn[0]  = avgTotalRothalpyIn;
+            TurbPerfIn[1]  = avgTotalEnthalpyIn;
+            TurbPerfIn[2]  = avgEntropyIn;
+            TurbPerfIn[3]  = avgTotalRelPressureIn;
+            TurbPerfIn[4]  = flowAngleIn;
+            TurbPerfIn[5]  = massFlowIn;
+            TurbPerfIn[6]  = tangMachIn;
+            TurbPerfIn[7]  = normalMachIn;
+            TurbPerfIn[8]  = avgTotTempIn;
+            TurbPerfIn[9]  = avgTotPresIn;
+            TurbPerfIn[10] = alphaIn_BC;
+            TurbPerfIn[11] = entropyIn_BC;
+            TurbPerfIn[12] = totalEnthalpyIn_BC;
+            TurbPerfIn[13] = densityIn_Mix;
+            TurbPerfIn[14] = pressureIn_Mix;
+            TurbPerfIn[15] = normalVelocityIn_Mix;
+            TurbPerfIn[16] = tangVelocityIn_Mix;
+            TurbPerfIn[17] = absFlowAngleIn;
+#endif
+          }
+
+          /*--- compute or retrieve outlet information ---*/
+          if (config->GetMarker_All_TurbomachineryFlag(iMarker) == OUTFLOW){
+            avgVelRel2Out  = 0.0;
+            avgGridVel2Out = 0.0;
+            avgVel2Out     = 0.0;
+
+            for (iDim = 0; iDim < nDim; iDim++){
+              avgVelRel2Out  += AverageTurboVelocity[iMarker][iSpan][iDim]*AverageTurboVelocity[iMarker][iSpan][iDim];
+              avgGridVel2Out += geometry->GetAverageGridVel(iMarker, iSpan  )[iDim]*geometry->GetAverageGridVel(iMarker, iSpan  )[iDim];
+              avgVel2Out     += (AverageVelocity[iMarker][iSpan][iDim])*(AverageVelocity[iMarker][iSpan][iDim]);
+            }
+            avgVelRel2Out    -=AverageTurboVelocity[iMarker][iSpan][1]*AverageTurboVelocity[iMarker][iSpan][1];
+            avgVelRel2Out    +=(AverageTurboVelocity[iMarker][iSpan][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ))*(AverageTurboVelocity[iMarker][iSpan][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ));
+
+            avgTotalRothalpyOut       = AverageEnthalpy[iMarker][iSpan] + 0.5*avgVelRel2Out - 0.5*avgGridVel2Out;
+            avgTotalEnthalpyOut       = AverageEnthalpy[iMarker][iSpan] + 0.5*avgVel2Out;
+            avgEntropyOut             = AverageEntropy[iMarker][iSpan];
+            avgEnthalpyOut            = AverageEnthalpy[iMarker][iSpan];
+            FluidModel->SetTDState_hs(avgTotalRothalpyOut, avgEntropyOut);
+            avgTotalRelPressureOut    =  FluidModel->GetPressure();
+            avgPressureOut            = AveragePressure[iMarker][iSpan];
+            flowAngleOut              = SpanFlowAngle[iMarker][iSpan];
+            massFlowOut               = SpanMassFlow[iMarker][iSpan]*nBlades;
+            tangMachOut               = AverageTurboMach[iMarker][iSpan][1];
+            normalMachOut             = AverageTurboMach[iMarker][iSpan][0];
+            densityOut_Mix            = AverageDensity[iMarker][iSpan];
+            pressureOut_Mix           = AveragePressure[iMarker][iSpan];
+            normalVelocityOut_Mix     = AverageTurboVelocity[iMarker][iSpan][0];
+            tangVelocityOut_Mix       = AverageTurboVelocity[iMarker][iSpan][1];
+            if (nDim>3){
+              relMachOut_Mix          = AverageTurboMach[iMarker][iSpan][2];
+              relVelocityOut_Mix      = AverageTurboVelocity[iMarker][iSpan][2];
+            }
+            absFlowAngleOut           = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
+
+
+            if(config->GetBoolNRBC() || config->GetBoolRiemann()){
+
+              if(config->GetBoolRiemann()){
+                pressureOut_BC  = config->GetRiemann_Var1(Marker_Tag);
+                pressureOut_BC /= config->GetPressure_Ref();
+              }
+              else{
+                pressureOut_BC  = config->GetNRBC_Var1(Marker_Tag);
+                pressureOut_BC /= config->GetPressure_Ref();
+
+              }
+            }
+            else{
+              cout << " OUTLET BC convergence can't be checked "<<endl;
+              pressureOut_BC = 0.0;
+            }
+
+
+
+
+
+#ifdef HAVE_MPI
+            TurbPerfOut[0]  = avgTotalRothalpyOut;
+            TurbPerfOut[1]  = avgTotalEnthalpyOut;
+            TurbPerfOut[2]  = avgTotalRelPressureOut;
+            TurbPerfOut[3]  = avgPressureOut;
+            TurbPerfOut[4]  = avgEnthalpyOut;
+            TurbPerfOut[5]  = avgGridVel2Out;
+            TurbPerfOut[6]  = flowAngleOut;
+            TurbPerfOut[7]  = massFlowOut;
+            TurbPerfOut[8]  = tangMachOut;
+            TurbPerfOut[9]  = normalMachOut;
+            TurbPerfOut[10] = avgEntropyOut;
+            TurbPerfOut[11] = densityOut_Mix;
+            TurbPerfOut[12] = pressureOut_Mix;
+            TurbPerfOut[13] = normalVelocityOut_Mix;
+            TurbPerfOut[14] = tangVelocityOut_Mix;
+            TurbPerfOut[15] = absFlowAngleOut;
+            TurbPerfOut[16] = pressureOut_BC;
+            TurbPerfOut[17] = avgVel2Out;
+
+#endif
+
+          }
+        }
+      }
+    }
+
+#ifdef HAVE_MPI
+    if (rank == MASTER_NODE){
+      TotTurbPerfIn       = new su2double[n1t];
+      TotTurbPerfOut      = new su2double[n2t];
+      for (i=0;i<n1t;i++)
+        TotTurbPerfIn[i]  = -1.0;
+      for (i=0;i<n2t;i++)
+        TotTurbPerfOut[i] = -1.0;
+      TotMarkerTP = new int[size];
+      for(i=0; i<size; i++){
+        TotMarkerTP[i]    = -1;
+      }
+    }
+    SU2_MPI::Gather(TurbPerfIn, n1, MPI_DOUBLE, TotTurbPerfIn, n1, MPI_DOUBLE, MASTER_NODE, MPI_COMM_WORLD);
+    SU2_MPI::Gather(TurbPerfOut, n2, MPI_DOUBLE,TotTurbPerfOut, n2, MPI_DOUBLE, MASTER_NODE, MPI_COMM_WORLD);
+    SU2_MPI::Gather(&markerTP, 1, MPI_INT,TotMarkerTP, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
+    if (rank == MASTER_NODE){
+      delete [] TurbPerfIn, delete [] TurbPerfOut;
+    }
+
+    if (rank == MASTER_NODE){
+      //    for (i=0;i<size;i++){
+      //      cout << TotMarkerTP[i] << endl;
+      //    }
+      for (i=0;i<size;i++){
+        if(TotTurbPerfIn[n1*i] > 0.0){
+          avgTotalRothalpyIn     = 0.0;
+          avgTotalRothalpyIn     = TotTurbPerfIn[n1*i];
+          avgTotalEnthalpyIn     = 0.0;
+          avgTotalEnthalpyIn     = TotTurbPerfIn[n1*i+1];
+          avgEntropyIn           = 0.0;
+          avgEntropyIn           = TotTurbPerfIn[n1*i+2];
+          avgTotalRelPressureIn  = 0.0;
+          avgTotalRelPressureIn  = TotTurbPerfIn[n1*i+3];
+          flowAngleIn            = 0.0;
+          flowAngleIn            = TotTurbPerfIn[n1*i+4];
+          massFlowIn             = 0.0;
+          massFlowIn             = TotTurbPerfIn[n1*i+5];
+          tangMachIn             = 0.0;
+          tangMachIn             = TotTurbPerfIn[n1*i+6];
+          normalMachIn           = 0.0;
+          normalMachIn           = TotTurbPerfIn[n1*i+7];
+          avgTotTempIn           = 0.0;
+          avgTotTempIn           = TotTurbPerfIn[n1*i+8];
+          avgTotPresIn           = 0.0;
+          avgTotPresIn           = TotTurbPerfIn[n1*i+9];
+          alphaIn_BC             = 0.0;
+          alphaIn_BC             = TotTurbPerfIn[n1*i+10];
+          entropyIn_BC           = 0.0;
+          entropyIn_BC           = TotTurbPerfIn[n1*i+11];
+          totalEnthalpyIn_BC     = 0.0;
+          totalEnthalpyIn_BC     = TotTurbPerfIn[n1*i+12];
+          densityIn_Mix          = 0.0;
+          densityIn_Mix          = TotTurbPerfIn[n1*i+13];
+          pressureIn_Mix         = 0.0;
+          pressureIn_Mix         = TotTurbPerfIn[n1*i+14];
+          normalVelocityIn_Mix   = 0.0;
+          normalVelocityIn_Mix   = TotTurbPerfIn[n1*i+15];
+          tangVelocityIn_Mix     = 0.0;
+          tangVelocityIn_Mix     = TotTurbPerfIn[n1*i+16];
+          absFlowAngleIn         = 0.0;
+          absFlowAngleIn         = TotTurbPerfIn[n1*i+17];
           markerTP               = -1;
+          markerTP               = TotMarkerTP[i];
+          //        cout << " I am assigning this value "<< TotMarkerTP[i] << endl;
+        }
 
+        if(TotTurbPerfOut[n2*i] > 0.0){
+          avgTotalRothalpyOut    = 0.0;
+          avgTotalRothalpyOut    = TotTurbPerfOut[n2*i];
+          avgTotalEnthalpyOut    = 0.0;
+          avgTotalEnthalpyOut    = TotTurbPerfOut[n2*i+1];
+          avgTotalRelPressureOut = 0.0;
+          avgTotalRelPressureOut = TotTurbPerfOut[n2*i+2];
+          avgPressureOut         = 0.0;
+          avgPressureOut         = TotTurbPerfOut[n2*i+3];
+          avgEnthalpyOut         = 0.0;
+          avgEnthalpyOut         = TotTurbPerfOut[n2*i+4];
+          avgGridVel2Out         = 0.0;
+          avgGridVel2Out         = TotTurbPerfOut[n2*i+5];
+          flowAngleOut           = 0.0;
+          flowAngleOut           = TotTurbPerfOut[n2*i+6];
+          massFlowOut            = 0.0;
+          massFlowOut            = TotTurbPerfOut[n2*i+7];
+          tangMachOut            = 0.0;
+          tangMachOut            = TotTurbPerfOut[n2*i+8];
+          normalMachOut          = 0.0;
+          normalMachOut          = TotTurbPerfOut[n2*i+9];
+          avgEntropyOut          = 0.0;
+          avgEntropyOut          = TotTurbPerfOut[n2*i+10];
+          densityOut_Mix         = 0.0;
+          densityOut_Mix         = TotTurbPerfOut[n2*i+11];
+          pressureOut_Mix        = 0.0;
+          pressureOut_Mix        = TotTurbPerfOut[n2*i+12];
+          normalVelocityOut_Mix  = 0.0;
+          normalVelocityOut_Mix  = TotTurbPerfOut[n2*i+13];
+          tangVelocityOut_Mix    = 0.0;
+          tangVelocityOut_Mix    = TotTurbPerfOut[n2*i+14];
+          absFlowAngleOut        = 0.0;
+          absFlowAngleOut        = TotTurbPerfOut[n2*i+15];
+          pressureOut_BC         = 0.0;
+          pressureOut_BC         = TotTurbPerfOut[n2*i+16];
+          avgVel2Out             = 0.0;
+          avgVel2Out             = TotTurbPerfOut[n2*i+17];
+        }
+      }
 
-          for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
-            for (iMarkerTP=1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
-              if (config->GetMarker_All_Turbomachinery(iMarker) == iMarkerTP){
-                Marker_Tag         = config->GetMarker_All_TagBound(iMarker);
-                nBlades = config->GetnBlades(iZone);
-                if (config->GetMarker_All_TurbomachineryFlag(iMarker) == INFLOW){
-                  markerTP = iMarkerTP;
-                  //          cout << markerTP -1 << " "<< config->GetMarker_All_TagBound(iMarker)<<endl;
-                  avgVelRel2In= 0.0;
-                  avgGridVel2In= 0.0;
-                  avgVel2In= 0.0;
-                  for (iDim = 0; iDim < nDim; iDim++){
-                    avgVelRel2In += AverageTurboVelocity[iMarker][iSpan  ][iDim]*AverageTurboVelocity[iMarker][iSpan  ][iDim];
-                    avgGridVel2In += geometry->GetAverageGridVel(iMarker, iSpan  )[iDim]*geometry->GetAverageGridVel(iMarker, iSpan  )[iDim];
-                    avgVel2In += (AverageVelocity[iMarker][iSpan  ][iDim])*(AverageVelocity[iMarker][iSpan  ][iDim]);
-                  }
-                  avgVelRel2In -=AverageTurboVelocity[iMarker][iSpan  ][1]*AverageTurboVelocity[iMarker][iSpan  ][1];
-                  avgVelRel2In +=(AverageTurboVelocity[iMarker][iSpan  ][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ))*(AverageTurboVelocity[iMarker][iSpan  ][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ));
+      delete [] TotTurbPerfIn, delete [] TotTurbPerfOut; delete [] TotMarkerTP;
+    }
 
-                  avgTotalRothalpyIn      = AverageEnthalpy[iMarker][iSpan  ] + 0.5*avgVelRel2In - 0.5*avgGridVel2In;
-                  avgTotalEnthalpyIn      = AverageEnthalpy[iMarker][iSpan  ] + 0.5*avgVel2In;
-                  avgEntropyIn            = AverageEntropy[iMarker][iSpan  ];
-                  FluidModel->SetTDState_hs(avgTotalRothalpyIn, avgEntropyIn);
-                  avgTotalRelPressureIn   = FluidModel->GetPressure();
-                  flowAngleIn             = SpanFlowAngle[iMarker][iSpan  ];
-                  massFlowIn              = SpanMassFlow[iMarker][iSpan  ]*nBlades;
-                  tangMachIn              = AverageTurboMach[iMarker][iSpan  ][1];
-                  normalMachIn            = AverageTurboMach[iMarker][iSpan  ][0];
-                  avgTotTempIn            = AverageTotTemperature[iMarker][iSpan  ];
-                  avgTotPresIn            = AverageTotPressure[iMarker][iSpan  ];
-                  densityIn_Mix           = AverageDensity[iMarker][iSpan  ];
-                  pressureIn_Mix          = AveragePressure[iMarker][iSpan  ];
-                  normalVelocityIn_Mix    = AverageTurboVelocity[iMarker][iSpan  ][0];
-                  tangVelocityIn_Mix      = AverageTurboVelocity[iMarker][iSpan  ][1];
-                  if (nDim>3){
-                    relMachIn_Mix         = AverageTurboMach[iMarker][iSpan  ][2];
-                    relVelocityIn_Mix       = AverageTurboVelocity[iMarker][iSpan  ][2];
-                  }
-                  absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan  ][1]/AverageTurboVelocity[iMarker][iSpan  ][0]);
+#endif
 
-                  //TODO(turbo) better location has to be found for this computation, perhaps in the outputstructure file.
-                  if(config->GetBoolNRBC() || config->GetBoolRiemann()){
-
-                    if(config->GetBoolRiemann()){
-                      P_Total  = config->GetRiemann_Var1(Marker_Tag);
-                      T_Total  = config->GetRiemann_Var2(Marker_Tag);
-                      FlowDir = config->GetRiemann_FlowDir(Marker_Tag);
-                      alphaIn_BC = atan(FlowDir[1]/FlowDir[0]);
-                      P_Total /= config->GetPressure_Ref();
-                      T_Total /= config->GetTemperature_Ref();
-
-                    }else{
-                      if(config->GetKind_Data_NRBC(Marker_Tag) == TOTAL_CONDITIONS_PT){
-                        P_Total  = config->GetNRBC_Var1(Marker_Tag);
-                        T_Total  = config->GetNRBC_Var2(Marker_Tag);
-                        FlowDir = config->GetNRBC_FlowDir(Marker_Tag);
-                        alphaIn_BC = atan(FlowDir[1]/FlowDir[0]);
-                        P_Total /= config->GetPressure_Ref();
-                        T_Total /= config->GetTemperature_Ref();
-
-                      }
-                      else{
-                        P_Total  = ExtAverageTotPressure[iMarker][0];
-                        T_Total  = ExtAverageTotTemperature[iMarker][0];
-                        alphaIn_BC = atan(ExtAverageTurboVelocity[iMarker][0][1]/ExtAverageTurboVelocity[iMarker][0][0]);
-                      }
-                    }
-
-
-
-                    /* --- Computes the total state --- */
-                    FluidModel->SetTDState_PT(P_Total, T_Total);
-                    totalEnthalpyIn_BC= FluidModel->GetStaticEnergy()+ FluidModel->GetPressure()/FluidModel->GetDensity();
-                    entropyIn_BC= FluidModel->GetEntropy();
-                  }else{
-                    cout << " Inlet BC convergence can't be checked "<<endl;
-                    entropyIn_BC = 0.0;
-                    totalEnthalpyIn_BC= 0.0;
-                    alphaIn_BC =0.0;
-                  }
-
-
-        #ifdef HAVE_MPI
-                  TurbPerfIn[0]  = avgTotalRothalpyIn;
-                  TurbPerfIn[1]  = avgTotalEnthalpyIn;
-                  TurbPerfIn[2]  = avgEntropyIn;
-                  TurbPerfIn[3]  = avgTotalRelPressureIn;
-                  TurbPerfIn[4]  = flowAngleIn;
-                  TurbPerfIn[5]  = massFlowIn;
-                  TurbPerfIn[6]  = tangMachIn;
-                  TurbPerfIn[7]  = normalMachIn;
-                  TurbPerfIn[8]  = avgTotTempIn;
-                  TurbPerfIn[9]  = avgTotPresIn;
-                  TurbPerfIn[10] = alphaIn_BC;
-                  TurbPerfIn[11] = entropyIn_BC;
-                  TurbPerfIn[12] = totalEnthalpyIn_BC;
-                  TurbPerfIn[13] = densityIn_Mix;
-                  TurbPerfIn[14] = pressureIn_Mix;
-                  TurbPerfIn[15] = normalVelocityIn_Mix;
-                  TurbPerfIn[16] = tangVelocityIn_Mix;
-                  TurbPerfIn[17] = absFlowAngleIn;
-        #endif
-                }
-
-                /*--- compute or retrieve outlet information ---*/
-                if (config->GetMarker_All_TurbomachineryFlag(iMarker) == OUTFLOW){
-                  avgVelRel2Out = 0.0;
-                  avgGridVel2Out = 0.0;
-                  avgVel2Out = 0.0;
-
-                  for (iDim = 0; iDim < nDim; iDim++){
-                    avgVelRel2Out += AverageTurboVelocity[iMarker][iSpan  ][iDim]*AverageTurboVelocity[iMarker][iSpan  ][iDim];
-                    avgGridVel2Out += geometry->GetAverageGridVel(iMarker, iSpan  )[iDim]*geometry->GetAverageGridVel(iMarker, iSpan  )[iDim];
-                    avgVel2Out += (AverageVelocity[iMarker][iSpan  ][iDim])*(AverageVelocity[iMarker][iSpan  ][iDim]);
-                  }
-                  avgVelRel2Out -=AverageTurboVelocity[iMarker][iSpan  ][1]*AverageTurboVelocity[iMarker][iSpan  ][1];
-                  avgVelRel2Out +=(AverageTurboVelocity[iMarker][iSpan  ][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ))*(AverageTurboVelocity[iMarker][iSpan  ][1] - geometry->GetAverageTangGridVel(iMarker,iSpan  ));
-
-                  avgTotalRothalpyOut       = AverageEnthalpy[iMarker][iSpan  ] + 0.5*avgVelRel2Out - 0.5*avgGridVel2Out;
-                  avgTotalEnthalpyOut       = AverageEnthalpy[iMarker][iSpan  ] + 0.5*avgVel2Out;
-                  avgEntropyOut             = AverageEntropy[iMarker][iSpan  ];
-                  avgEnthalpyOut            = AverageEnthalpy[iMarker][iSpan  ];
-                  FluidModel->SetTDState_hs(avgTotalRothalpyOut, avgEntropyOut);
-                  avgTotalRelPressureOut    =  FluidModel->GetPressure();
-                  avgPressureOut            = AveragePressure[iMarker][iSpan  ];
-                  flowAngleOut              = SpanFlowAngle[iMarker][iSpan  ];
-                  massFlowOut               = SpanMassFlow[iMarker][iSpan  ]*nBlades;
-                  tangMachOut               = AverageTurboMach[iMarker][iSpan  ][1];
-                  normalMachOut             = AverageTurboMach[iMarker][iSpan  ][0];
-                  densityOut_Mix            = AverageDensity[iMarker][iSpan  ];
-                  pressureOut_Mix         = AveragePressure[iMarker][iSpan  ];
-                  normalVelocityOut_Mix   = AverageTurboVelocity[iMarker][iSpan  ][0];
-                  tangVelocityOut_Mix     = AverageTurboVelocity[iMarker][iSpan  ][1];
-                  if (nDim>3){
-                    relMachOut_Mix           = AverageTurboMach[iMarker][iSpan  ][2];
-                    relVelocityOut_Mix       = AverageTurboVelocity[iMarker][iSpan  ][2];
-                  }
-                  absFlowAngleOut          = atan(AverageTurboVelocity[iMarker][iSpan  ][1]/AverageTurboVelocity[iMarker][iSpan  ][0]);
-
-
-                  if(config->GetBoolNRBC() || config->GetBoolRiemann()){
-
-                    if(config->GetBoolRiemann()){
-                      pressureOut_BC  = config->GetRiemann_Var1(Marker_Tag);
-                      pressureOut_BC /= config->GetPressure_Ref();
-                    }
-                    else{
-                      pressureOut_BC  = config->GetNRBC_Var1(Marker_Tag);
-                      pressureOut_BC /= config->GetPressure_Ref();
-
-                    }
-                  }
-                  else{
-                    cout << " OUTLET BC convergence can't be checked "<<endl;
-                    pressureOut_BC = 0.0;
-                  }
-
-
-
-
-
-        #ifdef HAVE_MPI
-                  TurbPerfOut[0]  = avgTotalRothalpyOut;
-                  TurbPerfOut[1]  = avgTotalEnthalpyOut;
-                  TurbPerfOut[2]  = avgTotalRelPressureOut;
-                  TurbPerfOut[3]  = avgPressureOut;
-                  TurbPerfOut[4]  = avgEnthalpyOut;
-                  TurbPerfOut[5]  = avgGridVel2Out;
-                  TurbPerfOut[6]  = flowAngleOut;
-                  TurbPerfOut[7]  = massFlowOut;
-                  TurbPerfOut[8]  = tangMachOut;
-                  TurbPerfOut[9]  = normalMachOut;
-                  TurbPerfOut[10] = avgEntropyOut;
-                  TurbPerfOut[11] = densityOut_Mix;
-                  TurbPerfOut[12] = pressureOut_Mix;
-                  TurbPerfOut[13] = normalVelocityOut_Mix;
-                  TurbPerfOut[14] = tangVelocityOut_Mix;
-                  TurbPerfOut[15] = absFlowAngleOut;
-                  TurbPerfOut[16] = pressureOut_BC;
-                  TurbPerfOut[17] = avgVel2Out;
-
-        #endif
-
-                }
-              }
-            }
-          }
-
-        #ifdef HAVE_MPI
-          if (rank == MASTER_NODE){
-            TotTurbPerfIn = new su2double[n1t];
-            TotTurbPerfOut = new su2double[n2t];
-            for (i=0;i<n1t;i++)
-              TotTurbPerfIn[i]= -1.0;
-            for (i=0;i<n2t;i++)
-              TotTurbPerfOut[i]= -1.0;
-            TotMarkerTP = new int[size];
-            for(i=0; i<size; i++){
-              TotMarkerTP[i] = -1;
-            }
-          }
-          SU2_MPI::Gather(TurbPerfIn, n1, MPI_DOUBLE, TotTurbPerfIn, n1, MPI_DOUBLE, MASTER_NODE, MPI_COMM_WORLD);
-          SU2_MPI::Gather(TurbPerfOut, n2, MPI_DOUBLE,TotTurbPerfOut, n2, MPI_DOUBLE, MASTER_NODE, MPI_COMM_WORLD);
-          SU2_MPI::Gather(&markerTP, 1, MPI_INT,TotMarkerTP, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
-          if (rank == MASTER_NODE){
-            delete [] TurbPerfIn, delete [] TurbPerfOut;
-          }
-
-          if (rank == MASTER_NODE){
-            //    for (i=0;i<size;i++){
-            //      cout << TotMarkerTP[i] << endl;
-            //    }
-            for (i=0;i<size;i++){
-              if(TotTurbPerfIn[n1*i] > 0.0){
-                avgTotalRothalpyIn     = 0.0;
-                avgTotalRothalpyIn     = TotTurbPerfIn[n1*i];
-                avgTotalEnthalpyIn     = 0.0;
-                avgTotalEnthalpyIn     = TotTurbPerfIn[n1*i+1];
-                avgEntropyIn           = 0.0;
-                avgEntropyIn           = TotTurbPerfIn[n1*i+2];
-                avgTotalRelPressureIn  = 0.0;
-                avgTotalRelPressureIn  = TotTurbPerfIn[n1*i+3];
-                flowAngleIn            = 0.0;
-                flowAngleIn            = TotTurbPerfIn[n1*i+4];
-                massFlowIn             = 0.0;
-                massFlowIn             = TotTurbPerfIn[n1*i+5];
-                tangMachIn             = 0.0;
-                tangMachIn             = TotTurbPerfIn[n1*i+6];
-                normalMachIn           = 0.0;
-                normalMachIn           = TotTurbPerfIn[n1*i+7];
-                avgTotTempIn           = 0.0;
-                avgTotTempIn           = TotTurbPerfIn[n1*i+8];
-                avgTotPresIn           = 0.0;
-                avgTotPresIn           = TotTurbPerfIn[n1*i+9];
-                alphaIn_BC             = 0.0;
-                alphaIn_BC             = TotTurbPerfIn[n1*i+10];
-                entropyIn_BC           = 0.0;
-                entropyIn_BC           = TotTurbPerfIn[n1*i+11];
-                totalEnthalpyIn_BC     = 0.0;
-                totalEnthalpyIn_BC     = TotTurbPerfIn[n1*i+12];
-                densityIn_Mix          = 0.0;
-                densityIn_Mix          = TotTurbPerfIn[n1*i+13];
-                pressureIn_Mix         = 0.0;
-                pressureIn_Mix         = TotTurbPerfIn[n1*i+14];
-                normalVelocityIn_Mix   = 0.0;
-                normalVelocityIn_Mix   = TotTurbPerfIn[n1*i+15];
-                tangVelocityIn_Mix     = 0.0;
-                tangVelocityIn_Mix     = TotTurbPerfIn[n1*i+16];
-                absFlowAngleIn         = 0.0;
-                absFlowAngleIn         = TotTurbPerfIn[n1*i+17];
-                markerTP               = -1;
-                markerTP               = TotMarkerTP[i];
-                //        cout << " I am assigning this value "<< TotMarkerTP[i] << endl;
-              }
-
-              if(TotTurbPerfOut[n2*i] > 0.0){
-                avgTotalRothalpyOut    = 0.0;
-                avgTotalRothalpyOut    = TotTurbPerfOut[n2*i];
-                avgTotalEnthalpyOut    = 0.0;
-                avgTotalEnthalpyOut    = TotTurbPerfOut[n2*i+1];
-                avgTotalRelPressureOut = 0.0;
-                avgTotalRelPressureOut = TotTurbPerfOut[n2*i+2];
-                avgPressureOut         = 0.0;
-                avgPressureOut         = TotTurbPerfOut[n2*i+3];
-                avgEnthalpyOut         = 0.0;
-                avgEnthalpyOut         = TotTurbPerfOut[n2*i+4];
-                avgGridVel2Out         = 0.0;
-                avgGridVel2Out         = TotTurbPerfOut[n2*i+5];
-                flowAngleOut           = 0.0;
-                flowAngleOut           = TotTurbPerfOut[n2*i+6];
-                massFlowOut            = 0.0;
-                massFlowOut            = TotTurbPerfOut[n2*i+7];
-                tangMachOut            = 0.0;
-                tangMachOut            = TotTurbPerfOut[n2*i+8];
-                normalMachOut          = 0.0;
-                normalMachOut          = TotTurbPerfOut[n2*i+9];
-                avgEntropyOut          = 0.0;
-                avgEntropyOut          = TotTurbPerfOut[n2*i+10];
-                densityOut_Mix         = 0.0;
-                densityOut_Mix         = TotTurbPerfOut[n2*i+11];
-                pressureOut_Mix        = 0.0;
-                pressureOut_Mix        = TotTurbPerfOut[n2*i+12];
-                normalVelocityOut_Mix  = 0.0;
-                normalVelocityOut_Mix  = TotTurbPerfOut[n2*i+13];
-                tangVelocityOut_Mix    = 0.0;
-                tangVelocityOut_Mix    = TotTurbPerfOut[n2*i+14];
-                absFlowAngleOut        = 0.0;
-                absFlowAngleOut        = TotTurbPerfOut[n2*i+15];
-                pressureOut_BC         = 0.0;
-                pressureOut_BC         = TotTurbPerfOut[n2*i+16];
-                avgVel2Out             = 0.0;
-                avgVel2Out             = TotTurbPerfOut[n2*i+17];
-              }
-            }
-
-            delete [] TotTurbPerfIn, delete [] TotTurbPerfOut; delete [] TotMarkerTP;
-          }
-
-        #endif
-
-          if (rank == MASTER_NODE){
-
-
-
-
+    if (rank == MASTER_NODE){
 
       //IMPORTANT this approach of multi-zone performances rely upon the fact that turbomachinery markers follow the natural (stator-rotor) development of the real machine.
 
@@ -5776,54 +5765,48 @@ void CEulerSolver::TurboPerformanceSpanwise(CConfig *config, CGeometry *geometry
       //    PressureRatio[markerTP -1] = avgTotalRelPressureIn/avgPressureOut;
 
       /*----Quantities needed for computing the turbomachinery performance -----*/
-            TotalPressureLossSpw [markerTP -1][iSpan]      = (avgTotalRelPressureIn - avgTotalRelPressureOut)/(avgTotalRelPressureOut - avgPressureOut);
-            KineticEnergyLossSpw [markerTP -1][iSpan]      = (avgEnthalpyOut - avgEnthalpyOutIs)/(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out);
-            EulerianWorkSpw      [markerTP -1][iSpan]      = avgTotalEnthalpyIn - avgTotalEnthalpyOut;
-            TotalEnthalpyInSpw   [markerTP -1][iSpan]      = avgTotalEnthalpyIn;
-            TotalEnthalpyOutSpw  [markerTP -1][iSpan]      = avgTotalEnthalpyOut;
-            TotalRothalpyInSpw   [markerTP -1][iSpan]      = avgTotalRothalpyIn;
-            TotalRothalpyOutSpw  [markerTP -1][iSpan]      = avgTotalRothalpyOut;
-            TotalEnthalpyOutIsSpw[markerTP -1][iSpan]      =  avgTotalEnthalpyOutIs;
-            EntropyInSpw         [markerTP -1][iSpan]      = avgEntropyIn;
-            EntropyGenSpw        [markerTP -1][iSpan]      = (avgEntropyOut - avgEntropyIn)/abs(avgEntropyIn);
-            AbsFlowAngleInSpw    [markerTP -1][iSpan]      = absFlowAngleIn  ;
-            AbsFlowAngleOutSpw   [markerTP -1][iSpan]      = absFlowAngleOut ;
-            FlowAngleInSpw       [markerTP -1][iSpan]      = flowAngleIn     ;
-            FlowAngleOutSpw      [markerTP -1][iSpan]      = flowAngleOut    ;
-            MassFlowInSpw        [markerTP -1][iSpan]      = massFlowIn      ;
-            MassFlowOutSpw       [markerTP -1][iSpan]      = massFlowOut     ;
-            EnthalpyOutSpw       [markerTP -1][iSpan]      = avgEnthalpyOut  ;
-            EnthalpyOutIsSpw     [markerTP -1][iSpan]      = avgEnthalpyOutIs;
-            VelocityOutIsSpw     [markerTP -1][iSpan]      = sqrt(2.0*(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out));
-            MachInSpw            [markerTP -1][iSpan][0]   = normalMachIn    ;
-            MachOutSpw           [markerTP -1][iSpan][0]   = normalMachOut   ;
-            MachInSpw            [markerTP -1][iSpan][1]   = tangMachIn      ;
-            MachOutSpw           [markerTP -1][iSpan][1]   = tangMachOut     ;
+      TotalPressureLossSpw [markerTP -1][iSpan]      = (avgTotalRelPressureIn - avgTotalRelPressureOut)/(avgTotalRelPressureOut - avgPressureOut);
+      KineticEnergyLossSpw [markerTP -1][iSpan]      = (avgEnthalpyOut - avgEnthalpyOutIs)/(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out);
+      EulerianWorkSpw      [markerTP -1][iSpan]      = avgTotalEnthalpyIn - avgTotalEnthalpyOut;
+      TotalEnthalpyInSpw   [markerTP -1][iSpan]      = avgTotalEnthalpyIn;
+      TotalEnthalpyOutSpw  [markerTP -1][iSpan]      = avgTotalEnthalpyOut;
+      TotalRothalpyInSpw   [markerTP -1][iSpan]      = avgTotalRothalpyIn;
+      TotalRothalpyOutSpw  [markerTP -1][iSpan]      = avgTotalRothalpyOut;
+      TotalEnthalpyOutIsSpw[markerTP -1][iSpan]      =  avgTotalEnthalpyOutIs;
+      EntropyInSpw         [markerTP -1][iSpan]      = avgEntropyIn;
+      EntropyGenSpw        [markerTP -1][iSpan]      = (avgEntropyOut - avgEntropyIn)/abs(avgEntropyIn);
+      AbsFlowAngleInSpw    [markerTP -1][iSpan]      = absFlowAngleIn  ;
+      AbsFlowAngleOutSpw   [markerTP -1][iSpan]      = absFlowAngleOut ;
+      FlowAngleInSpw       [markerTP -1][iSpan]      = flowAngleIn     ;
+      FlowAngleOutSpw      [markerTP -1][iSpan]      = flowAngleOut    ;
+      MassFlowInSpw        [markerTP -1][iSpan]      = massFlowIn      ;
+      MassFlowOutSpw       [markerTP -1][iSpan]      = massFlowOut     ;
+      EnthalpyOutSpw       [markerTP -1][iSpan]      = avgEnthalpyOut  ;
+      EnthalpyOutIsSpw     [markerTP -1][iSpan]      = avgEnthalpyOutIs;
+      VelocityOutIsSpw     [markerTP -1][iSpan]      = sqrt(2.0*(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out));
+      MachInSpw            [markerTP -1][iSpan][0]   = normalMachIn    ;
+      MachOutSpw           [markerTP -1][iSpan][0]   = normalMachOut   ;
+      MachInSpw            [markerTP -1][iSpan][1]   = tangMachIn      ;
+      MachOutSpw           [markerTP -1][iSpan][1]   = tangMachOut     ;
 
-            /*----Quantities needed for BC convergence test -----*/
+      /*----Quantities needed for BC convergence test -----*/
 
-            TotalPresureInSpw    [markerTP -1][iSpan]      = avgTotPresIn         ;
-            TotalTemperatureInSpw[markerTP -1][iSpan]      = avgTotTempIn         ;
-            FlowAngleIn_BCSpw    [markerTP -1][iSpan]      = alphaIn_BC           ;
-            EntropyIn_BCSpw      [markerTP -1][iSpan]      = entropyIn_BC         ;
-            TotalEnthalpyIn_BCSpw[markerTP -1][iSpan]      = totalEnthalpyIn_BC   ;
-            DensityInSpw         [markerTP -1][iSpan]      = densityIn_Mix        ;
-            PressureInSpw        [markerTP -1][iSpan]      = pressureIn_Mix       ;
-            DensityOutSpw        [markerTP -1][iSpan]      = densityOut_Mix       ;
-            PressureOutSpw       [markerTP -1][iSpan]      = pressureOut_Mix      ;
-            PressureOut_BCSpw    [markerTP -1][iSpan]      = pressureOut_BC       ;
-            TurboVelocityInSpw   [markerTP -1][iSpan][0]   = normalVelocityIn_Mix ;
-            TurboVelocityInSpw   [markerTP -1][iSpan][1]   = tangVelocityIn_Mix   ;
-            TurboVelocityOutSpw  [markerTP -1][iSpan][0]   = normalVelocityOut_Mix;
-            TurboVelocityOutSpw  [markerTP -1][iSpan][1]   = tangVelocityOut_Mix  ;
-
-
-
-
-
-          }
+      TotalPresureInSpw    [markerTP -1][iSpan]      = avgTotPresIn         ;
+      TotalTemperatureInSpw[markerTP -1][iSpan]      = avgTotTempIn         ;
+      FlowAngleIn_BCSpw    [markerTP -1][iSpan]      = alphaIn_BC           ;
+      EntropyIn_BCSpw      [markerTP -1][iSpan]      = entropyIn_BC         ;
+      TotalEnthalpyIn_BCSpw[markerTP -1][iSpan]      = totalEnthalpyIn_BC   ;
+      DensityInSpw         [markerTP -1][iSpan]      = densityIn_Mix        ;
+      PressureInSpw        [markerTP -1][iSpan]      = pressureIn_Mix       ;
+      DensityOutSpw        [markerTP -1][iSpan]      = densityOut_Mix       ;
+      PressureOutSpw       [markerTP -1][iSpan]      = pressureOut_Mix      ;
+      PressureOut_BCSpw    [markerTP -1][iSpan]      = pressureOut_BC       ;
+      TurboVelocityInSpw   [markerTP -1][iSpan][0]   = normalVelocityIn_Mix ;
+      TurboVelocityInSpw   [markerTP -1][iSpan][1]   = tangVelocityIn_Mix   ;
+      TurboVelocityOutSpw  [markerTP -1][iSpan][0]   = normalVelocityOut_Mix;
+      TurboVelocityOutSpw  [markerTP -1][iSpan][1]   = tangVelocityOut_Mix  ;
+    }
   }
-
 
 
   if (rank == MASTER_NODE){
@@ -5837,7 +5820,7 @@ void CEulerSolver::TurboPerformanceSpanwise(CConfig *config, CGeometry *geometry
     char buffer[50];
 
     if (nZone > 1){
-      unsigned short lastindex =  spanwise_performance_filename.find_last_of(".");
+      unsigned short lastindex      =  spanwise_performance_filename.find_last_of(".");
       spanwise_performance_filename =  spanwise_performance_filename.substr(0, lastindex);
       SPRINTF (buffer, "_%d.dat", SU2_TYPE::Int(iZone));
       spanwise_performance_filename.append(string(buffer));
@@ -5853,47 +5836,47 @@ void CEulerSolver::TurboPerformanceSpanwise(CConfig *config, CGeometry *geometry
 
     myfile.width(15); myfile << "\"iMarkerTP\"";
     myfile.width(15); myfile << "\"iSpan\"";
-    myfile.width(22); myfile <<"\"TotalPressureLoss\"";
-    myfile.width(22); myfile <<"\"KineticEnergyLoss\"";
-    myfile.width(22); myfile <<"\"EulerianWork\"";
-    myfile.width(22); myfile <<"\"TotalEnthalpyIn\"";
-    myfile.width(22); myfile <<"\"TotalEnthalpyOut\"";
-    myfile.width(22); myfile <<"\"TotalRothalpyIn\"";
-    myfile.width(22); myfile <<"\"TotalRothalpyOut\"";
-    myfile.width(22); myfile <<"\"TotalEnthalpyOutIs\"";
-    myfile.width(22); myfile <<"\"EntropyIn\"";
-    myfile.width(22); myfile <<"\"EntropyGen\"";
-    myfile.width(22); myfile <<"\"AbsFlowAngleIn\"";
-    myfile.width(22); myfile <<"\"AbsFlowAngleOut\"";
-    myfile.width(22); myfile <<"\"FlowAngleIn\"";
-    myfile.width(22); myfile <<"\"FlowAngleOut\"";
-    myfile.width(22); myfile <<"\"MassFlowIn\"";
-    myfile.width(22); myfile <<"\"MassFlowOut\"";
-    myfile.width(22); myfile <<"\"EnthalpyOut\"";
-    myfile.width(22); myfile <<"\"EnthalpyOutIs\"";
-    myfile.width(22); myfile <<"\"VelocityOutIs\"";
-    myfile.width(22); myfile <<"\"TotalPresureIn\"";
-    myfile.width(22); myfile <<"\"TotalTemperatureIn\"";
-    myfile.width(22); myfile <<"\"FlowAngleIn_BC\"";
-    myfile.width(22); myfile <<"\"EntropyIn_BC\"";
-    myfile.width(22); myfile <<"\"TotalEnthalpyIn_BC\"";
-    myfile.width(22); myfile <<"\"DensityIn\"";
-    myfile.width(22); myfile <<"\"PressureIn\"";
-    myfile.width(22); myfile <<"\"DensityOut\"";
-    myfile.width(22); myfile <<"\"PressureOut\"";
-    myfile.width(22); myfile <<"\"PressureOut_BC\"";
+    myfile.width(22); myfile << "\"TotalPressureLoss\"";
+    myfile.width(22); myfile << "\"KineticEnergyLoss\"";
+    myfile.width(22); myfile << "\"EulerianWork\"";
+    myfile.width(22); myfile << "\"TotalEnthalpyIn\"";
+    myfile.width(22); myfile << "\"TotalEnthalpyOut\"";
+    myfile.width(22); myfile << "\"TotalRothalpyIn\"";
+    myfile.width(22); myfile << "\"TotalRothalpyOut\"";
+    myfile.width(22); myfile << "\"TotalEnthalpyOutIs\"";
+    myfile.width(22); myfile << "\"EntropyIn\"";
+    myfile.width(22); myfile << "\"EntropyGen\"";
+    myfile.width(22); myfile << "\"AbsFlowAngleIn\"";
+    myfile.width(22); myfile << "\"AbsFlowAngleOut\"";
+    myfile.width(22); myfile << "\"FlowAngleIn\"";
+    myfile.width(22); myfile << "\"FlowAngleOut\"";
+    myfile.width(22); myfile << "\"MassFlowIn\"";
+    myfile.width(22); myfile << "\"MassFlowOut\"";
+    myfile.width(22); myfile << "\"EnthalpyOut\"";
+    myfile.width(22); myfile << "\"EnthalpyOutIs\"";
+    myfile.width(22); myfile << "\"VelocityOutIs\"";
+    myfile.width(22); myfile << "\"TotalPresureIn\"";
+    myfile.width(22); myfile << "\"TotalTemperatureIn\"";
+    myfile.width(22); myfile << "\"FlowAngleIn_BC\"";
+    myfile.width(22); myfile << "\"EntropyIn_BC\"";
+    myfile.width(22); myfile << "\"TotalEnthalpyIn_BC\"";
+    myfile.width(22); myfile << "\"DensityIn\"";
+    myfile.width(22); myfile << "\"PressureIn\"";
+    myfile.width(22); myfile << "\"DensityOut\"";
+    myfile.width(22); myfile << "\"PressureOut\"";
+    myfile.width(22); myfile << "\"PressureOut_BC\"";
     for (iDim = 0; iDim < nDim; iDim++){
-      myfile.width(22-2); myfile <<"\"MachIn"  << iDim << "\"";
-      myfile.width(22-2); myfile <<"\"MachOut" << iDim << "\"";
-      myfile.width(22-2); myfile <<"\"TurboVelIn"  << iDim << "\"";
-      myfile.width(22-2); myfile <<"\"TurboVelOut" << iDim << "\"";
+      myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\"";
+      myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\"";
+      myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\"";
+      myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\"";
     }
     myfile << endl;
     //     myfile.width(20); myfile << "\"Mach2\"" ;
     //     myfile.width(20); myfile << "\"Mach3\"" <<endl;
     for (iMarkerTP=1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
 
-      for(iSpan = 0; iSpan < nSpanWiseSections; iSpan++){
+      for(iSpan = 0; iSpan < nSpanWiseSections+1; iSpan++){
         //for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
         myfile.width(15); myfile << iMarkerTP;
         myfile.width(15); myfile << iSpan;

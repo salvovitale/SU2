@@ -1540,7 +1540,7 @@ void CTransfer::StoreTurboPerformance(CSolver *donor_solution, CSolver *target_s
 	/*--- here we made the strong assumption that the mesh zone order follow the same order of the turbomachinery markers ---*/
 
 	if(rank == MASTER_NODE){
-		GetSetTurboPerformance(donor_solution, target_solution, donorZone);
+		GetSetTurboPerformance(donor_solution, target_solution, donor_config, donorZone);
 	}
 }
 

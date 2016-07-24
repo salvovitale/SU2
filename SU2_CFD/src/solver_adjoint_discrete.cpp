@@ -337,35 +337,35 @@ void CDiscAdjSolver::RegisterObj_Func(CConfig *config){
     break;
   // only valid for stator-rotor single stage
   case TOTAL_EFFICIENCY:
-		ObjFunc_Value = direct_solver->GetTotalTotalEfficiency(config->GetnMarker_TurboPerformance() - 1);
+		ObjFunc_Value = direct_solver->GetTotalTotalEfficiency(config->GetnMarker_TurboPerformance() - 1,config->Get_nSpanWiseSections());
 		break;
 	case TOTAL_PRESSURE_LOSS:
-		ObjFunc_Value = direct_solver->GetTotalPressureLoss(0);
+		ObjFunc_Value = direct_solver->GetTotalPressureLoss(0,config->Get_nSpanWiseSections());
 		break;
 	case KINETIC_ENERGY_LOSS:
-		ObjFunc_Value = direct_solver->GetKineticEnergyLoss(0);
+		ObjFunc_Value = direct_solver->GetKineticEnergyLoss(0,config->Get_nSpanWiseSections());
 		break;
 	// only valid for stator-rotor single stage
 	case TOTAL_STATIC_EFFICIENCY:
-		ObjFunc_Value = direct_solver->GetTotalStaticEfficiency(config->GetnMarker_TurboPerformance() - 1);
+		ObjFunc_Value = direct_solver->GetTotalStaticEfficiency(config->GetnMarker_TurboPerformance() - 1,config->Get_nSpanWiseSections());
 		break;
 	case ENTROPY_GENERATION:
-		ObjFunc_Value = direct_solver->GetEntropyGen(config->GetnMarker_TurboPerformance() -1);
+		ObjFunc_Value = direct_solver->GetEntropyGen(config->GetnMarker_TurboPerformance() -1,config->Get_nSpanWiseSections());
 		break;
 	case EULERIAN_WORK:
-		ObjFunc_Value = direct_solver->GetEulerianWork(0);
+		ObjFunc_Value = direct_solver->GetEulerianWork(0,config->Get_nSpanWiseSections());
 		break;
 	case FLOW_ANGLE_IN:
-		ObjFunc_Value = 180.0/PI_NUMBER*direct_solver->GetFlowAngleIn(1);
+		ObjFunc_Value = 180.0/PI_NUMBER*direct_solver->GetFlowAngleIn(1,config->Get_nSpanWiseSections());
 		break;
 	case FLOW_ANGLE_OUT:
-		ObjFunc_Value = 180.0/PI_NUMBER*direct_solver->GetFlowAngleOut(1);
+		ObjFunc_Value = 180.0/PI_NUMBER*direct_solver->GetFlowAngleOut(1,config->Get_nSpanWiseSections());
 		break;
 	case MASS_FLOW_IN:
-		ObjFunc_Value = direct_solver->GetMassFlowIn(0);
+		ObjFunc_Value = direct_solver->GetMassFlowIn(0,config->Get_nSpanWiseSections());
 		break;
 	case MASS_FLOW_OUT:
-		ObjFunc_Value = direct_solver->GetMassFlowOut(0);
+		ObjFunc_Value = direct_solver->GetMassFlowOut(0,config->Get_nSpanWiseSections());
 		break;
  /*--- Template for new objective functions where TemplateObjFunction()
   *  is the routine that returns the obj. function value. The computation

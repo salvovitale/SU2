@@ -2293,7 +2293,7 @@ void CDiscAdjMultiZoneDriver::SetRecording(CIteration **iteration_container,
           cout << "  log10[RMS omega]:   " << log10(solver_container[iZone][MESH_0][TURB_SOL]->GetRes_RMS(1)) << endl;
         }
       }
-      cout << "Entropy Gen: " << solver_container[iZone][MESH_0][FLOW_SOL]->GetEntropyGen(config_container[iZone]->GetnMarker_TurboPerformance() - 1) << endl;
+      cout << "Entropy Gen: " << solver_container[iZone][MESH_0][FLOW_SOL]->GetEntropyGen(config_container[iZone]->GetnMarker_TurboPerformance() - 1, config_container[iZone]->Get_nSpanWiseSections()) << endl;
     }
   }
 

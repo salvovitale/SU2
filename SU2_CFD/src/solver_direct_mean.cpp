@@ -5237,13 +5237,13 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
 
       //IMPORTANT this approach of multi-zone performances rely upon the fact that turbomachinery markers follow the natural (stator-rotor) development of the real machine.
 
-      //    /*--- compute outlet isoentropic conditions ---*/
-      //    FluidModel->SetTDState_Ps(avgPressureOut, avgEntropyIn);
-      //    avgEnthalpyOutIs = FluidModel->GetStaticEnergy() + avgPressureOut/FluidModel->GetDensity();
-      //    avgTotalEnthalpyOutIs = avgEnthalpyOutIs + 0.5*avgVel2Out;
-      //
-      //    /*--- store turboperformance informations ---*/
-      //    PressureRatio[markerTP -1] = avgTotalRelPressureIn/avgPressureOut;
+      /*--- compute outlet isoentropic conditions ---*/
+      FluidModel->SetTDState_Ps(avgPressureOut, avgEntropyIn);
+      avgEnthalpyOutIs = FluidModel->GetStaticEnergy() + avgPressureOut/FluidModel->GetDensity();
+      avgTotalEnthalpyOutIs = avgEnthalpyOutIs + 0.5*avgVel2Out;
+
+      /*--- store turboperformance informations ---*/
+      PressureRatio[markerTP -1][iSpan] = avgTotalRelPressureIn/avgPressureOut;
 
       /*----Quantities needed for computing the turbomachinery performance -----*/
       TotalPressureLoss [markerTP -1][iSpan]      = (avgTotalRelPressureIn - avgTotalRelPressureOut)/(avgTotalRelPressureOut - avgPressureOut);
@@ -5253,7 +5253,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       TotalEnthalpyOut  [markerTP -1][iSpan]      = avgTotalEnthalpyOut;
       TotalRothalpyIn   [markerTP -1][iSpan]      = avgTotalRothalpyIn;
       TotalRothalpyOut  [markerTP -1][iSpan]      = avgTotalRothalpyOut;
-      TotalEnthalpyOutIs[markerTP -1][iSpan]      =  avgTotalEnthalpyOutIs;
+      TotalEnthalpyOutIs[markerTP -1][iSpan]      = avgTotalEnthalpyOutIs;
       EntropyIn         [markerTP -1][iSpan]      = avgEntropyIn;
       EntropyGen        [markerTP -1][iSpan]      = (avgEntropyOut - avgEntropyIn)/abs(avgEntropyIn);
       AbsFlowAngleIn    [markerTP -1][iSpan]      = absFlowAngleIn  ;
@@ -5405,15 +5405,15 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
 
 
 void CEulerSolver::TurboPerformance2nd(CConfig *config){
-// Add here [iSpan]
+  // Add here [iSpan]
   unsigned short iSpan;
   unsigned short nBladesRow, nStages;
   unsigned short iStage, iDim, iBlade;
-  
+
   unsigned short nSpanWiseSections = config->Get_nSpanWiseSections();
   unsigned short iZone             = config->GetiZone();
   unsigned short nZone             = config->GetnZone();
-  
+
   int rank = MASTER_NODE;
   int size = SINGLE_NODE;
 #ifdef HAVE_MPI
@@ -5429,44 +5429,44 @@ void CEulerSolver::TurboPerformance2nd(CConfig *config){
   su2double  vel2out;
   for (iSpan= 0; iSpan < nSpanWiseSections + 1 ; iSpan++){
     if (rank == MASTER_NODE){
-        EulerianWork[nBladesRow + nStages][iSpan]           = 0.0;
+      EulerianWork[nBladesRow + nStages][iSpan]           = 0.0;
       /*---Comnpute performance for each stage---*/
       for(iStage = 0; iStage < nStages; iStage++ ){
-          FluidModel->SetTDState_Ps(PressureOut[iStage*2 +1][iSpan], EntropyIn[iStage*2][iSpan]);
-          EnthalpyOutIs[nBladesRow + iStage][iSpan]         = FluidModel->GetStaticEnergy() + PressureOut[iStage*2 +1][iSpan]/FluidModel->GetDensity();
-          FluidModel->SetTDState_Prho(PressureOut[iStage*2 +1][iSpan], DensityOut[iStage*2 +1][iSpan]);
+        FluidModel->SetTDState_Ps(PressureOut[iStage*2 +1][iSpan], EntropyIn[iStage*2][iSpan]);
+        EnthalpyOutIs[nBladesRow + iStage][iSpan]         = FluidModel->GetStaticEnergy() + PressureOut[iStage*2 +1][iSpan]/FluidModel->GetDensity();
+        FluidModel->SetTDState_Prho(PressureOut[iStage*2 +1][iSpan], DensityOut[iStage*2 +1][iSpan]);
         vel2out = 0.0;
-          for (iDim = 0; iDim<nDim; iDim++) vel2out += MachOut[iStage*2 +1][iSpan][iDim]*MachOut[iStage*2 +1][iSpan][iDim];
-          vel2out = FluidModel->GetSoundSpeed2();
-          TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]    = EnthalpyOutIs[nBladesRow + iStage][iSpan] + 0.5*vel2out;
+        for (iDim = 0; iDim<nDim; iDim++)
+          vel2out += MachOut[iStage*2 +1][iSpan][iDim]*MachOut[iStage*2 +1][iSpan][iDim];
+        vel2out = FluidModel->GetSoundSpeed2();
+        TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]    = EnthalpyOutIs[nBladesRow + iStage][iSpan] + 0.5*vel2out;
 
-          TotalTotalEfficiency[nBladesRow + iStage][iSpan]  = (TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOut[iStage*2 + 1][iSpan])/(TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]);
-          TotalStaticEfficiency[nBladesRow + iStage][iSpan] = (TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOut[iStage*2 + 1][iSpan])/(TotalEnthalpyIn[iStage*2][iSpan] - EnthalpyOutIs[nBladesRow + iStage][iSpan]);
-          PressureRatio[nBladesRow + iStage][iSpan]         = (PressureRatio[iStage*2][iSpan]*PressureOut[iStage*2][iSpan]/PressureOut[iStage*2 + 1][iSpan]);
-          MassFlowIn[nBladesRow + iStage][iSpan]            = MassFlowIn[iStage*2][iSpan];
-          MassFlowOut[nBladesRow + iStage][iSpan]           = MassFlowOut[iStage*2 + 1][iSpan];
-          EntropyGen[nBladesRow + iStage][iSpan]            = EntropyGen[iStage*2 + 1][iSpan] + EntropyGen[iStage*2][iSpan];
+        TotalTotalEfficiency[nBladesRow + iStage][iSpan]  = (TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOut[iStage*2 + 1][iSpan])/(TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]);
+        TotalStaticEfficiency[nBladesRow + iStage][iSpan] = (TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOut[iStage*2 + 1][iSpan])/(TotalEnthalpyIn[iStage*2][iSpan] - EnthalpyOutIs[nBladesRow + iStage][iSpan]);
+        PressureRatio[nBladesRow + iStage][iSpan]         = (PressureRatio[iStage*2][iSpan]*PressureOut[iStage*2][iSpan]/PressureOut[iStage*2 + 1][iSpan]);
+        MassFlowIn[nBladesRow + iStage][iSpan]            = MassFlowIn[iStage*2][iSpan];
+        MassFlowOut[nBladesRow + iStage][iSpan]           = MassFlowOut[iStage*2 + 1][iSpan];
+        EntropyGen[nBladesRow + iStage][iSpan]            = EntropyGen[iStage*2 + 1][iSpan] + EntropyGen[iStage*2][iSpan];
       }
 
       /*---Comnpute performance for full machine---*/
-        FluidModel->SetTDState_Ps(PressureOut[nBladesRow-1][iSpan], EntropyIn[0][iSpan]);
-        EnthalpyOutIs[nBladesRow + nStages][iSpan]          = FluidModel->GetStaticEnergy() + PressureOut[nBladesRow-1][iSpan]/FluidModel->GetDensity();
-        FluidModel->SetTDState_Prho(PressureOut[nBladesRow-1][iSpan], DensityOut[nBladesRow-1][iSpan]);
+      FluidModel->SetTDState_Ps(PressureOut[nBladesRow-1][iSpan], EntropyIn[0][iSpan]);
+      EnthalpyOutIs[nBladesRow + nStages][iSpan]          = FluidModel->GetStaticEnergy() + PressureOut[nBladesRow-1][iSpan]/FluidModel->GetDensity();
+      FluidModel->SetTDState_Prho(PressureOut[nBladesRow-1][iSpan], DensityOut[nBladesRow-1][iSpan]);
       vel2out = 0.0;
       for (iDim = 0; iDim<nDim;iDim++) vel2out += MachOut[nBladesRow-1][iSpan][iDim]*MachOut[nBladesRow-1][iSpan][iDim];
       vel2out *= FluidModel->GetSoundSpeed2();
-        TotalEnthalpyOutIs[nBladesRow + nStages][iSpan]     = EnthalpyOutIs[nBladesRow + nStages][iSpan] + 0.5*vel2out;
+      TotalEnthalpyOutIs[nBladesRow + nStages][iSpan]     = EnthalpyOutIs[nBladesRow + nStages][iSpan] + 0.5*vel2out;
 
-        TotalTotalEfficiency[nBladesRow + nStages][iSpan]   = (TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOut[nBladesRow-1][iSpan])/(TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOutIs[nBladesRow + nStages][iSpan]);
-        TotalStaticEfficiency[nBladesRow +nStages][iSpan]   = (TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOut[nBladesRow-1][iSpan])/(TotalEnthalpyIn[0][iSpan] - EnthalpyOutIs[nBladesRow + nStages][iSpan]);
-        PressureRatio[nBladesRow + nStages][iSpan]          = PressureRatio[0][iSpan]*PressureOut[0][iSpan]/PressureOut[nBladesRow-1][iSpan];
-        MassFlowIn[nBladesRow + nStages][iSpan]             = MassFlowIn[0][iSpan];
-        MassFlowOut[nBladesRow + nStages][iSpan]            = MassFlowOut[nBladesRow-1][iSpan];
+      TotalTotalEfficiency[nBladesRow + nStages][iSpan]   = (TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOut[nBladesRow-1][iSpan])/(TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOutIs[nBladesRow + nStages][iSpan]);
+      TotalStaticEfficiency[nBladesRow +nStages][iSpan]   = (TotalEnthalpyIn[0][iSpan] - TotalEnthalpyOut[nBladesRow-1][iSpan])/(TotalEnthalpyIn[0][iSpan] - EnthalpyOutIs[nBladesRow + nStages][iSpan]);
+      PressureRatio[nBladesRow + nStages][iSpan]          = PressureRatio[0][iSpan]*PressureOut[0][iSpan]/PressureOut[nBladesRow-1][iSpan];
+      MassFlowIn[nBladesRow + nStages][iSpan]             = MassFlowIn[0][iSpan];
+      MassFlowOut[nBladesRow + nStages][iSpan]            = MassFlowOut[nBladesRow-1][iSpan];
     }
-
-      EntropyGen[nBladesRow + nStages][iSpan]               = 0.0;
+    EntropyGen[nBladesRow + nStages][iSpan]               = 0.0;
     for(iBlade = 0; iBlade < nBladesRow; iBlade++ ){
-        EntropyGen[nBladesRow + nStages][iSpan] += EntropyGen[iBlade][iSpan];
+      EntropyGen[nBladesRow + nStages][iSpan] += EntropyGen[iBlade][iSpan];
     }
   }
 }

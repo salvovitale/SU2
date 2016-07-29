@@ -4262,6 +4262,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     **FlowAngleOut         = NULL,
     **EulerianWork         = NULL,
     **TotalEnthalpyIn      = NULL,
+    **TotalEnthalpyOut     = NULL,
+    **TotalEnthalpyOutIs   = NULL,
     **PressureRatio        = NULL,
     **EnthalpyOut          = NULL,
     ***MachIn              = NULL,
@@ -4397,6 +4399,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     FlowAngleOut          = new su2double*[nTurboPerf];
     EulerianWork          = new su2double*[nTurboPerf];
     TotalEnthalpyIn       = new su2double*[nTurboPerf];
+    TotalEnthalpyOut      = new su2double*[nTurboPerf];
+    TotalEnthalpyOutIs    = new su2double*[nTurboPerf];
     PressureRatio         = new su2double*[nTurboPerf];
     PressureOut           = new su2double*[nTurboPerf];
     EnthalpyOut           = new su2double*[nTurboPerf];
@@ -4436,6 +4440,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
       FlowAngleOut          [iMarker] = new su2double [nSpanWiseSections+1];
       EulerianWork          [iMarker] = new su2double [nSpanWiseSections+1];
       TotalEnthalpyIn       [iMarker] = new su2double [nSpanWiseSections+1];
+      TotalEnthalpyOut      [iMarker] = new su2double [nSpanWiseSections+1];
+      TotalEnthalpyOutIs    [iMarker] = new su2double [nSpanWiseSections+1];
       PressureRatio         [iMarker] = new su2double [nSpanWiseSections+1];
       PressureOut           [iMarker] = new su2double [nSpanWiseSections+1];
       EnthalpyOut           [iMarker] = new su2double [nSpanWiseSections+1];
@@ -4574,6 +4580,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 FlowAngleOut         [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetFlowAngleOut         (iMarker_Monitoring,iSpan);
                 EulerianWork         [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEulerianWork         (iMarker_Monitoring,iSpan);
                 TotalEnthalpyIn      [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalEnthalpyIn      (iMarker_Monitoring,iSpan);
+                TotalEnthalpyOut     [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalEnthalpyOut     (iMarker_Monitoring,iSpan);
+                TotalEnthalpyOutIs   [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalEnthalpyOutIs   (iMarker_Monitoring,iSpan);
                 PressureRatio        [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetPressureRatio        (iMarker_Monitoring,iSpan);
                 EnthalpyOut          [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEnthalpyOut          (iMarker_Monitoring,iSpan);
                 VelocityOutIs        [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetVelocityOutIs        (iMarker_Monitoring,iSpan);
@@ -5319,6 +5327,118 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 										cout << endl;
 									}
 
+								  /*--- Start of write file turboperformance spanwise ---*/
+								  if (rank == MASTER_NODE){
+								    string spanwise_performance_filename;
+								    spanwise_performance_filename = "spanwise_performance_test.dat";
+								    char buffer[50];
+								    if (nZone > 1){
+								      unsigned short lastindex      =  spanwise_performance_filename.find_last_of(".");
+								      spanwise_performance_filename =  spanwise_performance_filename.substr(0, lastindex);
+								      SPRINTF (buffer, "_%d.dat", SU2_TYPE::Int(val_iZone));
+								      spanwise_performance_filename.append(string(buffer));
+								    }
+
+								    ofstream myfile;
+
+								    myfile.open (spanwise_performance_filename.data(), ios::out | ios::trunc);
+								    myfile.setf(ios::scientific);
+								    myfile.precision(8);
+
+								    myfile << "TITLE = \"Spanwise values visualization file\"" << endl;
+								    myfile << "VARIABLES =" << endl;
+
+								    myfile.width(15); myfile << "\"iMarkerTP\"";
+								    myfile.width(15); myfile << "\"iSpan\"";
+								    myfile.width(22); myfile << "\"TurboRadius\"";
+								    myfile.width(22); myfile << "\"TotalPressureLoss\"";
+								    myfile.width(22); myfile << "\"KineticEnergyLoss\"";
+								    myfile.width(22); myfile << "\"EulerianWork\"";
+								    myfile.width(22); myfile << "\"TotalEnthalpyIn\"";
+								    myfile.width(22); myfile << "\"TotalEnthalpyOut\"";
+								    myfile.width(22); myfile << "\"TotalRothalpyIn\"";
+								    myfile.width(22); myfile << "\"TotalRothalpyOut\"";
+								    myfile.width(22); myfile << "\"TotalEnthalpyOutIs\"";
+								    myfile.width(22); myfile << "\"EntropyIn\"";
+								    myfile.width(22); myfile << "\"EntropyOut\"";
+								    myfile.width(22); myfile << "\"EntropyGen\"";
+								    myfile.width(22); myfile << "\"AbsFlowAngleIn\"";
+								    myfile.width(22); myfile << "\"AbsFlowAngleOut\"";
+								    myfile.width(22); myfile << "\"FlowAngleIn\"";
+								    myfile.width(22); myfile << "\"FlowAngleOut\"";
+								    myfile.width(22); myfile << "\"MassFlowIn\"";
+								    myfile.width(22); myfile << "\"MassFlowOut\"";
+								    myfile.width(22); myfile << "\"EnthalpyOut\"";
+								    myfile.width(22); myfile << "\"EnthalpyOutIs\"";
+								    myfile.width(22); myfile << "\"VelocityOutIs\"";
+								    myfile.width(22); myfile << "\"TotalPresureIn\"";
+								    myfile.width(22); myfile << "\"TotalTemperatureIn\"";
+								    myfile.width(22); myfile << "\"FlowAngleIn_BC\"";
+								    myfile.width(22); myfile << "\"EntropyIn_BC\"";
+								    myfile.width(22); myfile << "\"TotalEnthalpyIn_BC\"";
+								    myfile.width(22); myfile << "\"DensityIn\"";
+								    myfile.width(22); myfile << "\"PressureIn\"";
+								    myfile.width(22); myfile << "\"DensityOut\"";
+								    myfile.width(22); myfile << "\"PressureOut\"";
+								    myfile.width(22); myfile << "\"PressureOut_BC\"";
+
+								    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\""; }
+								    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\""; }
+								    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\""; }
+								    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\""; }
+
+								    myfile << endl;
+
+								    for (iMarker_Monitoring=1; iMarker_Monitoring < config[val_iZone]->GetnMarker_Turbomachinery()+1; iMarker_Monitoring++){
+								      if (PressureIn[iMarker_Monitoring-1][0]!=0.0){
+								        for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
+								          su2double TurboRadius = geometry[val_iZone][FinestMesh]->GetTurboRadius(iMarker_Monitoring-1,iSpan);
+								          myfile.width(15); myfile << iMarker_Monitoring;
+								          myfile.width(15); myfile << iSpan;
+								          myfile.width(15); myfile << TurboRadius;
+								          myfile.width(22); myfile << TotalPressureLoss   [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << KineticEnergyLoss   [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EulerianWork        [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalEnthalpyIn     [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalEnthalpyOut    [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalRothalpyIn     [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalRothalpyOut    [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalEnthalpyOutIs  [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EntropyIn           [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EntropyOut          [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EntropyGen          [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << AbsFlowAngleIn      [iMarker_Monitoring-1][iSpan]*PI_NUMBER/180.0;
+								          myfile.width(22); myfile << AbsFlowAngleOut     [iMarker_Monitoring-1][iSpan]*PI_NUMBER/180.0;
+								          myfile.width(22); myfile << FlowAngleIn         [iMarker_Monitoring-1][iSpan]*PI_NUMBER/180.0;
+								          myfile.width(22); myfile << FlowAngleOut        [iMarker_Monitoring-1][iSpan]*PI_NUMBER/180.0;
+								          myfile.width(22); myfile << MassFlowIn          [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << MassFlowOut         [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EnthalpyOut         [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << EnthalpyOutIs       [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << VelocityOutIs       [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalPresureIn      [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalTemperatureIn  [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << FlowAngleIn_BC      [iMarker_Monitoring-1][iSpan]*PI_NUMBER/180.0;
+								          myfile.width(22); myfile << EntropyIn_BC        [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << TotalEnthalpyIn_BC  [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << DensityIn           [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << PressureIn          [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << DensityOut          [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << PressureOut         [iMarker_Monitoring-1][iSpan];
+								          myfile.width(22); myfile << PressureOut_BC      [iMarker_Monitoring-1][iSpan];
+
+								          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << MachIn              [iMarker_Monitoring-1][iSpan][iDim]; }
+								          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << MachOut             [iMarker_Monitoring-1][iSpan][iDim]; }
+								          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << TurboVelocityIn     [iMarker_Monitoring-1][iSpan][iDim]; }
+								          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << TurboVelocityOut    [iMarker_Monitoring-1][iSpan][iDim]; }
+
+								          myfile << endl;
+								        }
+								      }
+								    }
+								  }
+								  /*--- End of write file turboperformance spanwise ---*/
+
 								}
 								break;
 
@@ -5987,6 +6107,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
         delete [] FlowAngleOut         [iMarker];
         delete [] EulerianWork         [iMarker];
         delete [] TotalEnthalpyIn      [iMarker];
+        delete [] TotalEnthalpyOut     [iMarker];
+        delete [] TotalEnthalpyOutIs   [iMarker];
         delete [] PressureRatio        [iMarker];
         delete [] EnthalpyOut          [iMarker];
         delete [] VelocityOutIs        [iMarker];
@@ -6022,6 +6144,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 		delete [] FlowAngleOut;
 		delete [] EulerianWork;
 		delete []	TotalEnthalpyIn;
+    delete [] TotalEnthalpyOut;
+    delete [] TotalEnthalpyOutIs;
 		delete [] PressureRatio;
 		delete [] EnthalpyOut;
 		delete [] VelocityOutIs;

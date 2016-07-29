@@ -4971,7 +4971,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             normalVelocityIn_Mix    = AverageTurboVelocity[iMarker][iSpan][0];
             tangVelocityIn_Mix      = AverageTurboVelocity[iMarker][iSpan][1];
             if (nDim>3){
-              relMachIn         = AverageTurboMach[iMarker][iSpan][2];
+              relMachIn             = AverageTurboMach[iMarker][iSpan][2];
               relVelocityIn_Mix     = AverageTurboVelocity[iMarker][iSpan][2];
             }
             absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
@@ -5008,13 +5008,17 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
               FluidModel->SetTDState_PT(P_Total, T_Total);
               totalEnthalpyIn_BC  = FluidModel->GetStaticEnergy() + FluidModel->GetPressure()/FluidModel->GetDensity();
               entropyIn_BC        = FluidModel->GetEntropy();
+
+              if (entropyIn_BC       != entropyIn_BC       )   entropyIn_BC       = 0.0;
+              if (totalEnthalpyIn_BC != totalEnthalpyIn_BC )   totalEnthalpyIn_BC = 0.0;
+              if (alphaIn_BC         != alphaIn_BC         )   alphaIn_BC         = 0.0;
+
             }else{
               cout << " Inlet BC convergence can't be checked "<<endl;
               entropyIn_BC        = 0.0;
               totalEnthalpyIn_BC  = 0.0;
               alphaIn_BC          = 0.0;
             }
-
 
 #ifdef HAVE_MPI
             TurbPerfIn[0]  = avgTotalRothalpyIn;
@@ -5059,7 +5063,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             avgEntropyOut             = AverageEntropy[iMarker][iSpan];
             avgEnthalpyOut            = AverageEnthalpy[iMarker][iSpan];
             FluidModel->SetTDState_hs(avgTotalRothalpyOut, avgEntropyOut);
-            avgTotalRelPressureOut    =  FluidModel->GetPressure();
+            avgTotalRelPressureOut    = FluidModel->GetPressure();
             avgPressureOut            = AveragePressure[iMarker][iSpan];
             flowAngleOut              = SpanFlowAngle[iMarker][iSpan];
             massFlowOut               = SpanMassFlow[iMarker][iSpan]*nBlades;
@@ -5075,7 +5079,6 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             }
             absFlowAngleOut           = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
 
-
             if(config->GetBoolNRBC() || config->GetBoolRiemann()){
 
               if(config->GetBoolRiemann()){
@@ -5085,17 +5088,12 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
               else{
                 pressureOut_BC  = config->GetNRBC_Var1(Marker_Tag);
                 pressureOut_BC /= config->GetPressure_Ref();
-
               }
             }
             else{
               cout << " OUTLET BC convergence can't be checked "<<endl;
               pressureOut_BC = 0.0;
             }
-
-
-
-
 
 #ifdef HAVE_MPI
             TurbPerfOut[0]  = avgTotalRothalpyOut;
@@ -5119,7 +5117,6 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfOut[18] = relMachOut;
             TurbPerfOut[19] = relVelocityOut_Mix;
 #endif
-
           }
         }
       }
@@ -5306,17 +5303,12 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     }
   }
 
-
+  /*--- Start of write file turboperformance spanwise ---*/
   if (rank == MASTER_NODE){
 
-    /*--- Allocate for spanwise performance parameters ---*/
     string spanwise_performance_filename;
-
-    /*--- Write a file with spanwise values ---*/
     spanwise_performance_filename = "spanwise_performance_test.dat";
-
     char buffer[50];
-
     if (nZone > 1){
       unsigned short lastindex      =  spanwise_performance_filename.find_last_of(".");
       spanwise_performance_filename =  spanwise_performance_filename.substr(0, lastindex);
@@ -5324,9 +5316,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       spanwise_performance_filename.append(string(buffer));
     }
 
-    /*--- Start of write file turboperformance spanwise ---*/
-
     ofstream myfile;
+
     myfile.open (spanwise_performance_filename.data(), ios::out | ios::trunc);
     myfile.setf(ios::scientific);
     myfile.precision(8);
@@ -5368,23 +5359,20 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     myfile.width(22); myfile << "\"PressureOut\"";
     myfile.width(22); myfile << "\"PressureOut_BC\"";
 
-    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\"";   }
-    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\"";   }
-    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\"";   }
-    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\"";   }
+    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\""; }
+    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\""; }
+    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\""; }
+    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\""; }
 
     myfile << endl;
-    //     myfile.width(20); myfile << "\"Mach2\"" ;
-    //     myfile.width(20); myfile << "\"Mach3\"" <<endl;
+
     for (iMarkerTP=1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
       if (PressureIn[iMarkerTP-1][0]!=0.0){
         for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
-          //for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
           TurboRadius = geometry->GetTurboRadius(iMarkerTP-1,iSpan);
           myfile.width(15); myfile << iMarkerTP;
           myfile.width(15); myfile << iSpan;
           myfile.width(15); myfile << TurboRadius;
-          //myfile.width(15); myfile << iMarker;
           myfile.width(22); myfile << TotalPressureLoss   [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << KineticEnergyLoss   [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << EulerianWork        [iMarkerTP-1][iSpan]        ;
@@ -5416,17 +5404,17 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           myfile.width(22); myfile << PressureOut         [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << PressureOut_BC      [iMarkerTP-1][iSpan]        ;
 
-          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]  ;  }
-          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]  ;  }
-          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]  ;  }
-          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]  ;  }
+          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]; }
+          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]; }
+          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]; }
+          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]; }
 
           myfile << endl;
         }
       }
     }
-    /*--- End of write file turboperformance spanwise ---*/
   }
+  /*--- End of write file turboperformance spanwise ---*/
 }
 
 void CEulerSolver::TurboPerformance2nd(CConfig *config){
@@ -5490,9 +5478,9 @@ void CEulerSolver::TurboPerformance2nd(CConfig *config){
       MassFlowOut[nBladesRow + nStages][iSpan]            = MassFlowOut[nBladesRow-1][iSpan];
     }
   }
-  EntropyGen[nBladesRow + nStages][nSpanWiseSections]            = 0.0;
+  EntropyGen[nBladesRow + nStages][nSpanWiseSections]     = 0.0;
   for(iBlade = 0; iBlade < nBladesRow; iBlade++ ){
-    EntropyGen[nBladesRow + nStages][nSpanWiseSections] += EntropyGen[iBlade][nSpanWiseSections];
+    EntropyGen[nBladesRow + nStages][nSpanWiseSections]  += EntropyGen[iBlade][nSpanWiseSections];
   }
 }
 

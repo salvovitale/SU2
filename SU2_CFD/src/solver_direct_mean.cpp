@@ -4859,8 +4859,9 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       avgPressureOut, avgTotalRelPressureIn, avgTotalRelPressureOut, avgEntropyIn, avgEntropyOut, flowAngleIn, massFlowIn, tangMachIn, normalMachIn, 	flowAngleOut,
       massFlowOut, tangMachOut, normalMachOut, avgTotTempIn, avgTotPresIn, P_Total, T_Total, *FlowDir, alphaIn_BC, gammaIn_BC, entropyIn_BC, totalEnthalpyIn_BC, densityIn_Mix,
       pressureIn_Mix, normalVelocityIn_Mix, tangVelocityIn_Mix, densityOut_Mix, pressureOut_Mix, normalVelocityOut_Mix, tangVelocityOut_Mix, absFlowAngleIn,
-      absFlowAngleOut, pressureOut_BC, relVelocityIn_Mix, relVelocityOut_Mix, relMachIn_Mix, relMachOut_Mix;
-  su2double nBlades;
+      absFlowAngleOut, pressureOut_BC, relVelocityIn_Mix, relVelocityOut_Mix, relMachIn, relMachOut;
+  su2double nBlades,  TurboRadius;
+
   unsigned short iSpan, iDim, i, n1, n2, n1t,n2t;
 
   int rank = MASTER_NODE;
@@ -4880,8 +4881,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     su2double *TotTurbPerfIn = NULL,*TotTurbPerfOut = NULL;
     int *TotMarkerTP;
 
-    n1          = 18;
-    n2          = 18;
+    n1          = 20;
+    n2          = 20;
     n1t         = n1*size;
     n2t         = n2*size;
     TurbPerfIn  = new su2double[n1];
@@ -4932,8 +4933,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     avgVel2Out             = -1.0;
     relVelocityIn_Mix      = -1.0;
     relVelocityOut_Mix     = -1.0;
-    relMachIn_Mix          = -1.0;
-    relMachOut_Mix         = -1.0;
+    relMachIn              = -1.0;
+    relMachOut             = -1.0;
     markerTP               = -1;
 
     for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
@@ -4970,7 +4971,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             normalVelocityIn_Mix    = AverageTurboVelocity[iMarker][iSpan][0];
             tangVelocityIn_Mix      = AverageTurboVelocity[iMarker][iSpan][1];
             if (nDim>3){
-              relMachIn_Mix         = AverageTurboMach[iMarker][iSpan][2];
+              relMachIn         = AverageTurboMach[iMarker][iSpan][2];
               relVelocityIn_Mix     = AverageTurboVelocity[iMarker][iSpan][2];
             }
             absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
@@ -5034,6 +5035,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfIn[15] = normalVelocityIn_Mix;
             TurbPerfIn[16] = tangVelocityIn_Mix;
             TurbPerfIn[17] = absFlowAngleIn;
+            TurbPerfIn[18] = relMachIn;
+            TurbPerfIn[19] = relVelocityIn_Mix;
 #endif
           }
 
@@ -5067,7 +5070,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             normalVelocityOut_Mix     = AverageTurboVelocity[iMarker][iSpan][0];
             tangVelocityOut_Mix       = AverageTurboVelocity[iMarker][iSpan][1];
             if (nDim>3){
-              relMachOut_Mix          = AverageTurboMach[iMarker][iSpan][2];
+              relMachOut              = AverageTurboMach[iMarker][iSpan][2];
               relVelocityOut_Mix      = AverageTurboVelocity[iMarker][iSpan][2];
             }
             absFlowAngleOut           = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
@@ -5113,7 +5116,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfOut[15] = absFlowAngleOut;
             TurbPerfOut[16] = pressureOut_BC;
             TurbPerfOut[17] = avgVel2Out;
-
+            TurbPerfOut[18] = relMachOut;
+            TurbPerfOut[19] = relVelocityOut_Mix;
 #endif
 
           }
@@ -5183,6 +5187,10 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           tangVelocityIn_Mix     = TotTurbPerfIn[n1*i+16];
           absFlowAngleIn         = 0.0;
           absFlowAngleIn         = TotTurbPerfIn[n1*i+17];
+          relMachIn              = 0.0;
+          relMachIn              = TotTurbPerfIn[n1*i+18];
+          relVelocityIn_Mix      = 0.0;
+          relVelocityIn_Mix      = TotTurbPerfIn[n1*i+19];
           markerTP               = -1;
           markerTP               = TotMarkerTP[i];
           //        cout << " I am assigning this value "<< TotMarkerTP[i] << endl;
@@ -5225,6 +5233,10 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           pressureOut_BC         = TotTurbPerfOut[n2*i+16];
           avgVel2Out             = 0.0;
           avgVel2Out             = TotTurbPerfOut[n2*i+17];
+          relMachOut             = 0.0;
+          relMachOut             = TotTurbPerfOut[n1*i+18];
+          relVelocityOut_Mix     = 0.0;
+          relVelocityOut_Mix     = TotTurbPerfOut[n1*i+19];
         }
       }
 
@@ -5270,6 +5282,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       MachOut           [markerTP -1][iSpan][0]   = normalMachOut   ;
       MachIn            [markerTP -1][iSpan][1]   = tangMachIn      ;
       MachOut           [markerTP -1][iSpan][1]   = tangMachOut     ;
+      MachIn            [markerTP -1][iSpan][2]   = relMachIn    ;
+      MachOut           [markerTP -1][iSpan][2]   = relMachOut   ;
 
       /*----Quantities needed for BC convergence test -----*/
 
@@ -5284,9 +5298,11 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       PressureOut       [markerTP -1][iSpan]      = pressureOut_Mix      ;
       PressureOut_BC    [markerTP -1][iSpan]      = pressureOut_BC       ;
       TurboVelocityIn   [markerTP -1][iSpan][0]   = normalVelocityIn_Mix ;
-      TurboVelocityIn   [markerTP -1][iSpan][1]   = tangVelocityIn_Mix   ;
       TurboVelocityOut  [markerTP -1][iSpan][0]   = normalVelocityOut_Mix;
+      TurboVelocityIn   [markerTP -1][iSpan][1]   = tangVelocityIn_Mix   ;
       TurboVelocityOut  [markerTP -1][iSpan][1]   = tangVelocityOut_Mix  ;
+      TurboVelocityIn   [markerTP -1][iSpan][2]   = relVelocityIn_Mix   ;
+      TurboVelocityOut  [markerTP -1][iSpan][2]   = relVelocityOut_Mix  ;
     }
   }
 
@@ -5308,6 +5324,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       spanwise_performance_filename.append(string(buffer));
     }
 
+    /*--- Start of write file turboperformance spanwise ---*/
+
     ofstream myfile;
     myfile.open (spanwise_performance_filename.data(), ios::out | ios::trunc);
     myfile.setf(ios::scientific);
@@ -5318,6 +5336,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
 
     myfile.width(15); myfile << "\"iMarkerTP\"";
     myfile.width(15); myfile << "\"iSpan\"";
+    myfile.width(22); myfile << "\"TurboRadius\"";
     myfile.width(22); myfile << "\"TotalPressureLoss\"";
     myfile.width(22); myfile << "\"KineticEnergyLoss\"";
     myfile.width(22); myfile << "\"EulerianWork\"";
@@ -5327,6 +5346,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     myfile.width(22); myfile << "\"TotalRothalpyOut\"";
     myfile.width(22); myfile << "\"TotalEnthalpyOutIs\"";
     myfile.width(22); myfile << "\"EntropyIn\"";
+    myfile.width(22); myfile << "\"EntropyOut\"";
     myfile.width(22); myfile << "\"EntropyGen\"";
     myfile.width(22); myfile << "\"AbsFlowAngleIn\"";
     myfile.width(22); myfile << "\"AbsFlowAngleOut\"";
@@ -5347,12 +5367,12 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     myfile.width(22); myfile << "\"DensityOut\"";
     myfile.width(22); myfile << "\"PressureOut\"";
     myfile.width(22); myfile << "\"PressureOut_BC\"";
-    for (iDim = 0; iDim < nDim; iDim++){
-      myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\"";
-      myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\"";
-      myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\"";
-      myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\"";
-    }
+
+    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"MachIn"      << iDim << "\"";   }
+    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"MachOut"     << iDim << "\"";   }
+    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"TurboVelIn"  << iDim << "\"";   }
+    for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22-2); myfile << "\"TurboVelOut" << iDim << "\"";   }
+
     myfile << endl;
     //     myfile.width(20); myfile << "\"Mach2\"" ;
     //     myfile.width(20); myfile << "\"Mach3\"" <<endl;
@@ -5360,8 +5380,10 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       if (PressureIn[iMarkerTP-1][0]!=0.0){
         for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
           //for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
+          TurboRadius = geometry->GetTurboRadius(iMarkerTP-1,iSpan);
           myfile.width(15); myfile << iMarkerTP;
           myfile.width(15); myfile << iSpan;
+          myfile.width(15); myfile << TurboRadius;
           //myfile.width(15); myfile << iMarker;
           myfile.width(22); myfile << TotalPressureLoss   [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << KineticEnergyLoss   [iMarkerTP-1][iSpan]        ;
@@ -5372,6 +5394,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           myfile.width(22); myfile << TotalRothalpyOut    [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << TotalEnthalpyOutIs  [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << EntropyIn           [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EntropyOut          [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << EntropyGen          [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << AbsFlowAngleIn      [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
           myfile.width(22); myfile << AbsFlowAngleOut     [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
@@ -5392,16 +5415,17 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           myfile.width(22); myfile << DensityOut          [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << PressureOut         [iMarkerTP-1][iSpan]        ;
           myfile.width(22); myfile << PressureOut_BC      [iMarkerTP-1][iSpan]        ;
-          for (iDim = 0; iDim < nDim; iDim++){
-            myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]  ;
-            myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]  ;
-            myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]  ;
-            myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]  ;
-          }
+
+          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]  ;  }
+          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]  ;  }
+          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]  ;  }
+          for (iDim = 0; iDim < nDim; iDim++){  myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]  ;  }
+
           myfile << endl;
         }
       }
     }
+    /*--- End of write file turboperformance spanwise ---*/
   }
 }
 

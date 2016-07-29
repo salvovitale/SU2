@@ -5356,53 +5356,53 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     //     myfile.width(20); myfile << "\"Mach2\"" ;
     //     myfile.width(20); myfile << "\"Mach3\"" <<endl;
     for (iMarkerTP=1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
-
-      for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
-        //for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
-        myfile.width(15); myfile << iMarkerTP;
-        myfile.width(15); myfile << iSpan;
-        //myfile.width(15); myfile << iMarker;
-        myfile.width(22); myfile << TotalPressureLoss   [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << KineticEnergyLoss   [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << EulerianWork        [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalEnthalpyIn     [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalEnthalpyOut    [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalRothalpyIn     [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalRothalpyOut    [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalEnthalpyOutIs  [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << EntropyIn           [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << EntropyGen          [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << AbsFlowAngleIn      [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
-        myfile.width(22); myfile << AbsFlowAngleOut     [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
-        myfile.width(22); myfile << FlowAngleIn         [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
-        myfile.width(22); myfile << FlowAngleOut        [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
-        myfile.width(22); myfile << MassFlowIn          [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << MassFlowOut         [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << EnthalpyOut         [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << EnthalpyOutIs       [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << VelocityOutIs       [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalPresureIn      [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalTemperatureIn  [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << FlowAngleIn_BC      [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
-        myfile.width(22); myfile << EntropyIn_BC        [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << TotalEnthalpyIn_BC  [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << DensityIn           [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << PressureIn          [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << DensityOut          [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << PressureOut         [iMarkerTP-1][iSpan]        ;
-        myfile.width(22); myfile << PressureOut_BC      [iMarkerTP-1][iSpan]        ;
-        for (iDim = 0; iDim < nDim; iDim++){
-          myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]  ;
-          myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]  ;
-          myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]  ;
-          myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]  ;
+      if (PressureIn[iMarkerTP-1][0]!=0.0){
+        for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
+          //for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
+          myfile.width(15); myfile << iMarkerTP;
+          myfile.width(15); myfile << iSpan;
+          //myfile.width(15); myfile << iMarker;
+          myfile.width(22); myfile << TotalPressureLoss   [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << KineticEnergyLoss   [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EulerianWork        [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalEnthalpyIn     [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalEnthalpyOut    [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalRothalpyIn     [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalRothalpyOut    [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalEnthalpyOutIs  [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EntropyIn           [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EntropyGen          [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << AbsFlowAngleIn      [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
+          myfile.width(22); myfile << AbsFlowAngleOut     [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
+          myfile.width(22); myfile << FlowAngleIn         [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
+          myfile.width(22); myfile << FlowAngleOut        [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
+          myfile.width(22); myfile << MassFlowIn          [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << MassFlowOut         [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EnthalpyOut         [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << EnthalpyOutIs       [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << VelocityOutIs       [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalPresureIn      [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalTemperatureIn  [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << FlowAngleIn_BC      [iMarkerTP-1][iSpan]*PI_NUMBER/180.0        ;
+          myfile.width(22); myfile << EntropyIn_BC        [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << TotalEnthalpyIn_BC  [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << DensityIn           [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << PressureIn          [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << DensityOut          [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << PressureOut         [iMarkerTP-1][iSpan]        ;
+          myfile.width(22); myfile << PressureOut_BC      [iMarkerTP-1][iSpan]        ;
+          for (iDim = 0; iDim < nDim; iDim++){
+            myfile.width(22); myfile << MachIn              [iMarkerTP-1][iSpan][iDim]  ;
+            myfile.width(22); myfile << MachOut             [iMarkerTP-1][iSpan][iDim]  ;
+            myfile.width(22); myfile << TurboVelocityIn     [iMarkerTP-1][iSpan][iDim]  ;
+            myfile.width(22); myfile << TurboVelocityOut    [iMarkerTP-1][iSpan][iDim]  ;
+          }
+          myfile << endl;
         }
-        myfile << endl;
       }
     }
   }
 }
-
 
 void CEulerSolver::TurboPerformance2nd(CConfig *config){
   // Add here [iSpan]
@@ -5449,7 +5449,7 @@ void CEulerSolver::TurboPerformance2nd(CConfig *config){
         EntropyGen[nBladesRow + iStage][iSpan]            = EntropyGen[iStage*2 + 1][iSpan] + EntropyGen[iStage*2][iSpan];
       }
 
-      /*---Comnpute performance for full machine---*/
+      /*---Compute performance for full machine---*/
       FluidModel->SetTDState_Ps(PressureOut[nBladesRow-1][iSpan], EntropyIn[0][iSpan]);
       EnthalpyOutIs[nBladesRow + nStages][iSpan]          = FluidModel->GetStaticEnergy() + PressureOut[nBladesRow-1][iSpan]/FluidModel->GetDensity();
       FluidModel->SetTDState_Prho(PressureOut[nBladesRow-1][iSpan], DensityOut[nBladesRow-1][iSpan]);
@@ -5464,10 +5464,10 @@ void CEulerSolver::TurboPerformance2nd(CConfig *config){
       MassFlowIn[nBladesRow + nStages][iSpan]             = MassFlowIn[0][iSpan];
       MassFlowOut[nBladesRow + nStages][iSpan]            = MassFlowOut[nBladesRow-1][iSpan];
     }
-    EntropyGen[nBladesRow + nStages][iSpan]               = 0.0;
-    for(iBlade = 0; iBlade < nBladesRow; iBlade++ ){
-      EntropyGen[nBladesRow + nStages][iSpan] += EntropyGen[iBlade][iSpan];
-    }
+  }
+  EntropyGen[nBladesRow + nStages][nSpanWiseSections]            = 0.0;
+  for(iBlade = 0; iBlade < nBladesRow; iBlade++ ){
+    EntropyGen[nBladesRow + nStages][nSpanWiseSections] += EntropyGen[iBlade][nSpanWiseSections];
   }
 }
 
@@ -10400,6 +10400,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       else
       {
         c_avg[4] = -2.0*(AveragePressure[val_marker][iSpan]-Pressure_e);
+        //[nSpa]
       }
       break;
 

@@ -574,6 +574,7 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
    TotalStaticEfficiency         = new su2double*[nMarkerTurboPerf];
    TotalTotalEfficiency          = new su2double*[nMarkerTurboPerf];
    KineticEnergyLoss             = new su2double*[nMarkerTurboPerf];
+   TRadius                       = new su2double*[nMarkerTurboPerf];
    TotalPressureLoss             = new su2double*[nMarkerTurboPerf];
    MassFlowIn                    = new su2double*[nMarkerTurboPerf];
    MassFlowOut                   = new su2double*[nMarkerTurboPerf];
@@ -613,6 +614,7 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
      TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
      TotalTotalEfficiency    [iMarker] = new su2double [nSpanWiseSections + 1];
      KineticEnergyLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
+     TRadius                 [iMarker] = new su2double [nSpanWiseSections + 1];
      TotalPressureLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
      MassFlowIn              [iMarker] = new su2double [nSpanWiseSections + 1];
      MassFlowOut             [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -654,6 +656,7 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
        TotalStaticEfficiency   [iMarker][iSpan] = 0.0;
        TotalTotalEfficiency    [iMarker][iSpan] = 0.0;
        KineticEnergyLoss       [iMarker][iSpan] = 0.0;
+       TRadius                 [iMarker][iSpan] = 0.0;
        TotalPressureLoss       [iMarker][iSpan] = 0.0;
        MassFlowIn              [iMarker][iSpan] = 0.0;
        MassFlowOut             [iMarker][iSpan] = 0.0;
@@ -4859,8 +4862,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       avgPressureOut, avgTotalRelPressureIn, avgTotalRelPressureOut, avgEntropyIn, avgEntropyOut, flowAngleIn, massFlowIn, tangMachIn, normalMachIn, 	flowAngleOut,
       massFlowOut, tangMachOut, normalMachOut, avgTotTempIn, avgTotPresIn, P_Total, T_Total, *FlowDir, alphaIn_BC, gammaIn_BC, entropyIn_BC, totalEnthalpyIn_BC, densityIn_Mix,
       pressureIn_Mix, normalVelocityIn_Mix, tangVelocityIn_Mix, densityOut_Mix, pressureOut_Mix, normalVelocityOut_Mix, tangVelocityOut_Mix, absFlowAngleIn,
-      absFlowAngleOut, pressureOut_BC, relVelocityIn_Mix, relVelocityOut_Mix, relMachIn, relMachOut;
-  su2double nBlades,  TurboRadius;
+      absFlowAngleOut, pressureOut_BC, relVelocityIn_Mix, relVelocityOut_Mix, relMachIn, relMachOut, radius;
+  su2double nBlades;
 
   unsigned short iSpan, iDim, i, n1, n2, n1t,n2t;
 
@@ -4881,7 +4884,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     su2double *TotTurbPerfIn = NULL,*TotTurbPerfOut = NULL;
     int *TotMarkerTP;
 
-    n1          = 20;
+    n1          = 21;
     n2          = 20;
     n1t         = n1*size;
     n2t         = n2*size;
@@ -4935,6 +4938,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     relVelocityOut_Mix     = -1.0;
     relMachIn              = -1.0;
     relMachOut             = -1.0;
+    radius                 = -1.0;
     markerTP               = -1;
 
     for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
@@ -4943,7 +4947,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           Marker_Tag         = config->GetMarker_All_TagBound(iMarker);
           nBlades            = config->GetnBlades(iZone);
           if (config->GetMarker_All_TurbomachineryFlag(iMarker) == INFLOW){
-            markerTP = iMarkerTP;
+            markerTP         = iMarkerTP;
+            radius           = geometry->GetTurboRadius(iMarker,iSpan);
             avgVelRel2In     = 0.0;
             avgGridVel2In    = 0.0;
             avgVel2In        = 0.0;
@@ -5041,6 +5046,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfIn[17] = absFlowAngleIn;
             TurbPerfIn[18] = relMachIn;
             TurbPerfIn[19] = relVelocityIn_Mix;
+            TurbPerfIn[20] = radius;
 #endif
           }
 
@@ -5188,8 +5194,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           relMachIn              = TotTurbPerfIn[n1*i+18];
           relVelocityIn_Mix      = 0.0;
           relVelocityIn_Mix      = TotTurbPerfIn[n1*i+19];
-          markerTP               = -1;
-          markerTP               = TotMarkerTP[i];
+          radius                 = 0.0;
+          radius                 = TotTurbPerfIn[n1*i+20];
           //        cout << " I am assigning this value "<< TotMarkerTP[i] << endl;
         }
 
@@ -5255,6 +5261,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       PressureRatio[markerTP -1][iSpan] = avgTotalRelPressureIn/avgPressureOut;
 
       /*----Quantities needed for computing the turbomachinery performance -----*/
+      TRadius           [markerTP -1][iSpan]      = radius;
       TotalPressureLoss [markerTP -1][iSpan]      = (avgTotalRelPressureIn - avgTotalRelPressureOut)/(avgTotalRelPressureOut - avgPressureOut);
       KineticEnergyLoss [markerTP -1][iSpan]      = (avgEnthalpyOut - avgEnthalpyOutIs)/(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out);
       EulerianWork      [markerTP -1][iSpan]      = avgTotalEnthalpyIn - avgTotalEnthalpyOut;
@@ -5367,10 +5374,10 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     for (iMarkerTP=1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
       if (PressureIn[iMarkerTP-1][0]!=0.0){
         for(iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
-          TurboRadius = geometry->GetTurboRadius(iMarkerTP-1,iSpan);
+
           myfile.width(15); myfile << iMarkerTP;
           myfile.width(15); myfile << iSpan;
-          myfile.width(15); myfile << TurboRadius;
+          myfile.width(22); myfile << TRadius             [iMarkerTP-1][iSpan];
           myfile.width(22); myfile << TotalPressureLoss   [iMarkerTP-1][iSpan];
           myfile.width(22); myfile << KineticEnergyLoss   [iMarkerTP-1][iSpan];
           myfile.width(22); myfile << EulerianWork        [iMarkerTP-1][iSpan];
@@ -14840,6 +14847,7 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
   TotalStaticEfficiency         = new su2double*[nMarkerTurboPerf];
   TotalTotalEfficiency 					= new su2double*[nMarkerTurboPerf];
   KineticEnergyLoss							= new su2double*[nMarkerTurboPerf];
+  TRadius                       = new su2double*[nMarkerTurboPerf];
   TotalPressureLoss							= new su2double*[nMarkerTurboPerf];
   MassFlowIn										= new su2double*[nMarkerTurboPerf];
   MassFlowOut										= new su2double*[nMarkerTurboPerf];
@@ -14879,6 +14887,7 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
     TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
     TotalTotalEfficiency    [iMarker] = new su2double [nSpanWiseSections + 1];
     KineticEnergyLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
+    TRadius                 [iMarker] = new su2double [nSpanWiseSections + 1];
     TotalPressureLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
     MassFlowIn              [iMarker] = new su2double [nSpanWiseSections + 1];
     MassFlowOut             [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -14920,6 +14929,7 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
       TotalStaticEfficiency   [iMarker][iSpan] = 0.0;
       TotalTotalEfficiency    [iMarker][iSpan] = 0.0;
       KineticEnergyLoss       [iMarker][iSpan] = 0.0;
+      TRadius                 [iMarker][iSpan] = 0.0;
       TotalPressureLoss       [iMarker][iSpan] = 0.0;
       MassFlowIn              [iMarker][iSpan] = 0.0;
       MassFlowOut             [iMarker][iSpan] = 0.0;

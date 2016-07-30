@@ -3419,6 +3419,7 @@ protected:
   su2double **TotalStaticEfficiency,
       **TotalTotalEfficiency,
       **KineticEnergyLoss,
+      **TRadius,
       **TotalPressureLoss,
       **MassFlowIn,
       **MassFlowOut,

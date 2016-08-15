@@ -2,7 +2,7 @@
  * \file option_structure.hpp
  * \brief Defines classes for referencing options for easy input in CConfig
  * \author J. Hicken, B. Tracey
- * \version 4.1.3 "Cardinal"
+ * \version 4.2.0 "Cardinal"
  *
  * Many of the classes in this file are templated, and therefore must
  * be declared and defined here; to keep all elements together, there
@@ -119,6 +119,8 @@ const unsigned int MAX_TERMS = 6;		         /*!< \brief Maximum number of terms 
 const unsigned int MAX_ZONES = 3;            /*!< \brief Maximum number of zones. */
 const unsigned int MAX_FE_KINDS = 4;            	/*!< \brief Maximum number of Finite Elements. */
 const unsigned int NO_RK_ITER = 0;		       /*!< \brief No Runge-Kutta iteration. */
+
+const unsigned int OVERHEAD = 4; /*!< \brief Overhead space above nMarker when allocating space for boundary elems (MPI + periodic). */
 
 const unsigned int MESH_0 = 0; /*!< \brief Definition of the finest grid level. */
 const unsigned int MESH_1 = 1; /*!< \brief Definition of the finest grid level. */
@@ -804,7 +806,8 @@ enum RIEMANN_TYPE {
   MIXING_IN = 7, /*!< \brief User does not specify anything information are retrieved from the other domain */
   MIXING_OUT = 8, /*!< \brief User does not specify anything information are retrieved from the other domain */
   SUPERSONIC_OUTFLOW = 9,
-	RADIAL_EQUILIBRIUM = 10
+	RADIAL_EQUILIBRIUM = 10,
+	GLOBAL_STATIC_PRESSURE = 11
 };
 
 static const map<string, RIEMANN_TYPE> Riemann_Map = CCreateMap<string, RIEMANN_TYPE>
@@ -817,7 +820,8 @@ static const map<string, RIEMANN_TYPE> Riemann_Map = CCreateMap<string, RIEMANN_
 ("MIXING_IN", MIXING_IN)
 ("MIXING_OUT", MIXING_OUT)
 ("SUPERSONIC_OUTFLOW", SUPERSONIC_OUTFLOW)
-("RADIAL_EQUILIBRIUM", RADIAL_EQUILIBRIUM);
+("RADIAL_EQUILIBRIUM", RADIAL_EQUILIBRIUM)
+("GLOBAL_STATIC_PRESSURE", GLOBAL_STATIC_PRESSURE);
 
 
 static const map<string, RIEMANN_TYPE> NRBC_Map = CCreateMap<string, RIEMANN_TYPE>
@@ -830,7 +834,8 @@ static const map<string, RIEMANN_TYPE> NRBC_Map = CCreateMap<string, RIEMANN_TYP
 ("MIXING_IN", MIXING_IN)
 ("MIXING_OUT", MIXING_OUT)
 ("SUPERSONIC_OUTFLOW", SUPERSONIC_OUTFLOW)
-("RADIAL_EQUILIBRIUM", RADIAL_EQUILIBRIUM);
+("RADIAL_EQUILIBRIUM", RADIAL_EQUILIBRIUM)
+("GLOBAL_STATIC_PRESSURE", GLOBAL_STATIC_PRESSURE);
 
 /*!
  * \brief types of mixing process for averaging quantities at the boundaries.
@@ -850,6 +855,19 @@ static const map<string, MIXINGPROCESS_TYPE> MixingProcess_Map = CCreateMap<stri
 ("MIXEDOUT_AVERAGE",  MIXEDOUT_AVERAGE)
 ("MIXEDOUT_AVERAGE_CYL",  MIXEDOUT_AVERAGE_CYL)
 ("MASSFLOW_AVERAGE", MASSFLOW_AVERAGE);
+
+
+/*!
+ * \brief this option allow to compute the span-wise section in different ways.
+ */
+enum SPANWISE_TYPE {
+  AUTOMATIC = 1,		/*!< \brief number of span-wise section are computed automatically */
+  EQUISPACED = 2           /*!< \brief number of span-wise section are specified from the user */
+};
+
+static const map<string, SPANWISE_TYPE> SpanWise_Map = CCreateMap<string, SPANWISE_TYPE>
+("AUTOMATIC", AUTOMATIC)
+("EQUISPACED", EQUISPACED);
 
 /*!
  * \brief types of mixing process for averaging quantities at the boundaries.
@@ -1716,15 +1734,22 @@ class COptionDoubleArray : public COptionBase{
   su2double * & field; // Reference to the feildname
   string name; // identifier for the option
   const int size;
+  su2double * def;
+  su2double * vals;
   su2double * default_value;
 
 public:
   COptionDoubleArray(string option_field_name, const int list_size, su2double * & option_field, su2double * default_value) : field(option_field), size(list_size) {
     this->name = option_field_name;
     this->default_value = default_value;
+    def  = NULL;
+    vals = NULL;
   }
 
-  ~COptionDoubleArray() {};
+  ~COptionDoubleArray() {
+     if(def  != NULL) delete [] def; 
+     if(vals != NULL) delete [] vals; 
+  };
   string SetValue(vector<string> option_value) {
     // Check that the size is correct
     if (option_value.size() != (unsigned long)this->size) {
@@ -1741,7 +1766,7 @@ public:
       newstring.append(" found");
       return newstring;
     }
-    su2double * vals = new su2double[this->size];
+    vals = new su2double[this->size];
     for (int i  = 0; i < this->size; i++) {
       istringstream is(option_value[i]);
       su2double val;
@@ -1756,7 +1781,11 @@ public:
   }
 
   void SetDefault() {
-    this->field = this->default_value;
+    def = new su2double [size];
+    for (int i = 0; i < size; i++) {
+      def[i] = default_value[i];
+    }
+    this->field = def;
   }
 };
 
@@ -2662,10 +2691,10 @@ template <class Tenum>
 class COptionNRBC : public COptionBase{
 
   map<string, Tenum> m;
-  unsigned short* & field; // Reference to the fieldname
-  string name; // identifier for the option
   unsigned short & size;
   string * & marker;
+  unsigned short* & field; // Reference to the fieldname
+  string name; // identifier for the option
   su2double * & var1;
   su2double * & var2;
   su2double ** & flowdir;

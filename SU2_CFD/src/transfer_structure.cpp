@@ -2,7 +2,7 @@
  * \file transfer_structure.cpp
  * \brief Main subroutines for MPI transfer of information between zones
  * \author R. Sanchez
- * \version 4.1.3 "Cardinal"
+ * \version 4.2.0 "Cardinal"
  *
  * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
  *                      Dr. Thomas D. Economon (economon@stanford.edu).
@@ -1298,9 +1298,10 @@ void CTransfer::Allgather_InterfaceAverage(CSolver *donor_solution, CSolver *tar
 
 	nMarkerTarget  = target_geometry->GetnMarker();
 	nMarkerDonor   = donor_geometry->GetnMarker();
-	nSpanDonor     = donor_config->Get_nSpanWiseSections();
-	nSpanTarget		 = target_config->Get_nSpanWiseSections();
-
+//TODO turbo this approach only works if all the turboamchinery marker of all zones have the same amount of span wise sections.
+//TODO turbo initialization needed for the MPI routine should be place somewhere else.
+	nSpanDonor     = donor_config->GetnSpanWiseSections();
+	nSpanTarget		 = donor_config->GetnSpanWiseSections();
 	// here the number of span should be already known
 	// so perhaps when this option would be different for boundary markers then this should be done after the loop
 	avgDensityDonor   		   =  new su2double[nSpanDonor];

@@ -2,7 +2,7 @@
  * \file geometry_structure.inl
  * \brief In-Line subroutines of the <i>geometry_structure.hpp</i> file.
  * \author F. Palacios, T. Economon
- * \version 4.1.3 "Cardinal"
+ * \version 4.2.0 "Cardinal"
  *
  * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
  *                      Dr. Thomas D. Economon (economon@stanford.edu).
@@ -151,6 +151,8 @@ inline void CGeometry::SetnDim(unsigned short val_nDim) { nDim = val_nDim; }
 
 inline unsigned long CGeometry::GetnVertex(unsigned short val_marker) { return nVertex[val_marker]; }
 
+inline unsigned short CGeometry::GetnSpanWiseSections(unsigned short marker_flag) { return nSpanWiseSections[marker_flag -1]; }
+
 inline unsigned long CGeometry::GetnVertexSpan(unsigned short val_marker, unsigned short val_span) { return nVertexSpan[val_marker][val_span]; }
 
 inline unsigned long CGeometry::GetnFreqSpan(unsigned short val_marker, unsigned short val_span) { return (nTotVertexSpan[val_marker][val_span]/2 -1); }
@@ -170,6 +172,8 @@ inline void CGeometry::SetBoundVolume(void) { }
 inline void CGeometry::SetVertex(void) { }
 
 inline void CGeometry::SetVertex(CConfig *config) { }
+
+inline void CGeometry::ComputeNSpan(CConfig *config, unsigned short val_iZone, unsigned short marker_flag, bool allocate) { }
 
 inline void CGeometry::SetTurboVertex(CConfig *config,unsigned short val_iZone, unsigned short marker_flag, bool allocate) { }
 
@@ -241,7 +245,14 @@ inline void CPhysicalGeometry::SetPoint_Connectivity(CGeometry *geometry) { CGeo
 
 inline void CMultiGridGeometry::SetPoint_Connectivity(void) { CGeometry::SetPoint_Connectivity(); }
 
-inline long CPhysicalGeometry::GetGlobal_to_Local_Point(long val_ipoint) { return Global_to_Local_Point[val_ipoint]; }
+inline long CPhysicalGeometry::GetGlobal_to_Local_Point(long val_ipoint) {
+  map<long, long>::const_iterator MI = Global_to_Local_Point.find(val_ipoint);
+  if (MI != Global_to_Local_Point.end()) {
+    return Global_to_Local_Point[val_ipoint];
+  } else {
+    return -1;
+  }
+}
 
 inline unsigned short CPhysicalGeometry::GetGlobal_to_Local_Marker(unsigned short val_imarker) { return Global_to_Local_Marker[val_imarker]; }
 
@@ -335,3 +346,5 @@ inline su2double CPhysicalGeometry::GetSpanArea(unsigned short val_marker, unsig
 inline su2double CPhysicalGeometry::GetTurboRadius(unsigned short val_marker, unsigned short val_span){return TurboRadius[val_marker][val_span];}
 
 inline unsigned long CPhysicalGeometry::GetnTotVertexSpan(unsigned short val_marker, unsigned short val_span){return nTotVertexSpan[val_marker][val_span];}
+
+inline void CGeometry::Check_Periodicity(CConfig* config){}

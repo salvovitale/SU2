@@ -2,7 +2,7 @@
  * \file integration_structure.cpp
  * \brief This subroutine includes the space and time integration structure
  * \author F. Palacios, T. Economon
- * \version 4.1.3 "Cardinal"
+ * \version 4.2.0 "Cardinal"
  *
  * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
  *                      Dr. Thomas D. Economon (economon@stanford.edu).
@@ -94,7 +94,15 @@ void CIntegration::Space_Integration(CGeometry *geometry,
 
   solver_container[MainSolver]->BC_NearField_Boundary(geometry, solver_container, numerics[CONV_BOUND_TERM], config);
 
-  
+  /*--- Compute Fourier Transformations for markers where NRBC_BOUNDARY is applied---*/
+
+  if (config->GetBoolNRBC()){
+		solver_container[MainSolver]->PreprocessBC_NonReflecting(geometry, config, numerics[CONV_BOUND_TERM], INFLOW);
+
+		solver_container[MainSolver]->PreprocessBC_NonReflecting(geometry, config, numerics[CONV_BOUND_TERM], OUTFLOW);
+  }
+
+
   /*--- Weak boundary conditions ---*/
   
   for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++) {
@@ -104,7 +112,7 @@ void CIntegration::Space_Integration(CGeometry *geometry,
         break;
       case INLET_FLOW:
         solver_container[MainSolver]->BC_Inlet(geometry, solver_container, numerics[CONV_BOUND_TERM], numerics[VISC_BOUND_TERM], config, iMarker);
-        break;
+      break;
       case SUPERSONIC_INLET:
         solver_container[MainSolver]->BC_Supersonic_Inlet(geometry, solver_container, numerics[CONV_BOUND_TERM], numerics[VISC_BOUND_TERM], config, iMarker);
         break;

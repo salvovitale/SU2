@@ -492,9 +492,11 @@ public:
  * \version 4.0.1 "Cardinal"
  */
 
+
 class CTransfer_MixingPlaneInterface : public CTransfer {
 
 protected:
+	unsigned short nSpanWiseSections;
 
 public:
 

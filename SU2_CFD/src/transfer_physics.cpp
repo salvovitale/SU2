@@ -2,7 +2,7 @@
  * \file transfer_structure.cpp
  * \brief Main subroutines for physics of the information transfer between zones
  * \author R. Sanchez
- * \version 4.1.3 "Cardinal"
+ * \version 4.2.0 "Cardinal"
  *
  * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
  *                      Dr. Thomas D. Economon (economon@stanford.edu).
@@ -377,6 +377,7 @@ CTransfer_MixingPlaneInterface::CTransfer_MixingPlaneInterface(unsigned short va
 	unsigned short iVar;
 	nVar = val_nVar;
 
+
 	Donor_Variable     = new su2double[nVar + 2];
 	Target_Variable    = new su2double[nVar + 2];
 
@@ -387,12 +388,13 @@ CTransfer_MixingPlaneInterface::CTransfer_MixingPlaneInterface(unsigned short va
 		Target_Variable[iVar] = 0.0;
 	}
 
+	/*---Initilize span-wise section number---*/
+	nSpanWiseSections = config->GetnSpanWiseSections();
+
 
 }
 
 CTransfer_MixingPlaneInterface::~CTransfer_MixingPlaneInterface(void) {
-	if (Donor_Variable       != NULL) delete [] Donor_Variable;
-	if (Target_Variable      != NULL) delete [] Target_Variable;
 }
 
 
@@ -444,7 +446,6 @@ void CTransfer_MixingPlaneInterface::GetSetTurboPerformance(CSolver *donor_solut
 //	TotalStaticEfficiency[iMarker_Monitoring] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalStaticEfficiency(iMarker_Monitoring);
 //	TotalTotalEfficiency[iMarker_Monitoring]  = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalTotalEfficiency(iMarker_Monitoring);
 
-  unsigned short nSpanWiseSections = config->Get_nSpanWiseSections();
 
   target_solution->SetKineticEnergyLoss (donor_solution->GetKineticEnergyLoss (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
   target_solution->SetTotalPressureLoss (donor_solution->GetTotalPressureLoss (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);

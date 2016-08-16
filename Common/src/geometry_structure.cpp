@@ -8617,7 +8617,7 @@ void CPhysicalGeometry::ComputeNSpan(CConfig *config, unsigned short val_iZone, 
   		SU2_MPI::Allgather(MyValueSpan, nSpan_max , MPI_DOUBLE, MyTotValueSpan, nSpan_max, MPI_DOUBLE, MPI_COMM_WORLD);
   		SU2_MPI::Allgather(&nSpan_loc, 1 , MPI_INT, My_nSpan_loc, 1, MPI_INT, MPI_COMM_WORLD);
 
-
+  		jSpan = 0;
   		for (iSize = 0; iSize< size; iSize++){
   			for(iSpan = 0; iSpan < My_nSpan_loc[iSize]; iSpan++){
   				valueSpan[jSpan] = MyTotValueSpan[iSize*nSpan_max + iSpan];

@@ -1357,6 +1357,13 @@ public:
    */
   virtual su2double GetRothalpyOut(unsigned short inMarkerTP, unsigned short valSpan);
 
+  /*!
+   * \brief A virtual member.
+   * \param[in] inMarkerTP - bound marker.
+   * \return Value of (TODO) Add variable description.
+   */
+  virtual su2double GetTRadius(unsigned short inMarkerTP, unsigned short valSpan);
+
 	/*!
 	 * \brief A virtual member.
 	 * \param[in] value      - turboperformance value to set.
@@ -1671,7 +1678,12 @@ public:
    * \param[in] inMarkerTP - turboperformance marker.
    */
   virtual void SetRothalpyOut(su2double value, unsigned short inMarkerTP, unsigned short valSpan);
-
+  /*!
+   * \brief A virtual member.
+   * \param[in] value      - turboperformance value to set.
+   * \param[in] inMarkerTP - turboperformance marker.
+   */
+  virtual void SetTRadius(su2double value, unsigned short inMarkerTP, unsigned short valSpan);
 	/*!
 	 * \brief A virtual member.
 	 * \param[in] geometry - Geometrical definition of the problem.
@@ -4747,6 +4759,13 @@ public:
    */
   su2double GetRothalpyOut(unsigned short inMarkerTP, unsigned short valSpan);
 
+  /*!
+   * \brief Provide the (TODO) Add variable description
+   * \param[in] inMarkerTP - bound marker.
+   * \return Value of the Entropy generated.
+   */
+  su2double GetTRadius(unsigned short inMarkerTP, unsigned short valSpan);
+
 	/*!
 	 * \brief Set Total Pressure Losses (turbomachinery performance).
 	 * \param[in] value      - turboperformance value to set.
@@ -5061,6 +5080,13 @@ public:
    * \param[in] inMarkerTP - turboperformance marker.
    */
   void SetRothalpyOut(su2double value, unsigned short inMarkerTP, unsigned short valSpan);
+
+  /*!
+   * \brief Set (TODO) Add variable description.
+   * \param[in] value      - turboperformance value to set.
+   * \param[in] inMarkerTP - turboperformance marker.
+   */
+  void SetTRadius(su2double value, unsigned short inMarkerTP, unsigned short valSpan);
 
   /*!
 	 * \brief Update the solution using a Runge-Kutta scheme.

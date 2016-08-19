@@ -540,6 +540,8 @@ inline su2double CSolver::GetRothalpyIn         (unsigned short inMarkerTP, unsi
 
 inline su2double CSolver::GetRothalpyOut        (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
 
+inline su2double CSolver::GetTRadius            (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
 inline void CSolver::SetTotalPressureLoss    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetKineticEnergyLoss    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
@@ -629,6 +631,8 @@ inline void CSolver::SetEnthalpyIn          (su2double  value, unsigned short in
 inline void CSolver::SetRothalpyIn          (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetRothalpyOut         (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTRadius             (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::BC_Euler_Wall(CGeometry *geometry, CSolver **solver_container, CNumerics *numerics, CConfig *config, 
 									 unsigned short val_marker) { }
@@ -1198,6 +1202,8 @@ inline su2double  CEulerSolver::GetRothalpyIn            (unsigned short inMarke
 
 inline su2double  CEulerSolver::GetRothalpyOut           (unsigned short inMarkerTP, unsigned short valSpan){return RothalpyOut         [inMarkerTP][valSpan];}
 
+inline su2double  CEulerSolver::GetTRadius               (unsigned short inMarkerTP, unsigned short valSpan){return TRadius             [inMarkerTP][valSpan];}
+
 inline void CEulerSolver::SetTotalPressureLoss    (su2double value, unsigned short inMarkerTP, unsigned short valSpan){ TotalPressureLoss    [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::SetKineticEnergyLoss    (su2double value, unsigned short inMarkerTP, unsigned short valSpan){ KineticEnergyLoss    [inMarkerTP][valSpan] = value;}
@@ -1308,6 +1314,7 @@ inline void CEulerSolver::SetRothalpyIn               (su2double value, unsigned
 
 inline void CEulerSolver::SetRothalpyOut              (su2double value, unsigned short inMarkerTP, unsigned short valSpan){RothalpyOut         [inMarkerTP][valSpan] = value;}
 
+inline void CEulerSolver::SetTRadius                  (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TRadius             [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::ComputeTurboVelocity(su2double *cartesianVelocity, su2double *turboNormal, su2double *turboVelocity, unsigned short marker_flag, unsigned short kind_turb) {
 

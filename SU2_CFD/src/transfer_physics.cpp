@@ -482,6 +482,14 @@ void CTransfer_MixingPlaneInterface::GetSetTurboPerformance(CSolver *donor_solut
   target_solution->SetTotalRothalpyOut  (donor_solution->GetTotalRothalpyOut  (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
   target_solution->SetAbsFlowAngleOut   (donor_solution->GetAbsFlowAngleOut   (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
   target_solution->SetPressureOut_BC    (donor_solution->GetPressureOut_BC    (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
-
+  target_solution->SetPressureOut       (donor_solution->GetPressureOut       (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetTemperatureIn      (donor_solution->GetTemperatureIn      (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetTemperatureOut     (donor_solution->GetTemperatureOut     (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetTotalPressureIn    (donor_solution->GetTotalPressureIn    (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetTotalPressureOut   (donor_solution->GetTotalPressureOut   (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetTotalTemperatureOut(donor_solution->GetTotalTemperatureOut(donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetEnthalpyIn         (donor_solution->GetEnthalpyIn         (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetRothalpyIn         (donor_solution->GetRothalpyIn         (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
+  target_solution->SetRothalpyOut        (donor_solution->GetRothalpyOut        (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
 }
 

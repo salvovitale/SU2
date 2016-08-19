@@ -623,6 +623,14 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
    TotalRothalpyOut              = new su2double*[nMarkerTurboPerf];
    AbsFlowAngleOut               = new su2double*[nMarkerTurboPerf];
    PressureOut_BC                = new su2double*[nMarkerTurboPerf];
+   TemperatureIn                 = new su2double*[nMarkerTurboPerf];
+   TemperatureOut                = new su2double*[nMarkerTurboPerf];
+   TotalPressureIn               = new su2double*[nMarkerTurboPerf];
+   TotalPressureOut              = new su2double*[nMarkerTurboPerf];
+   TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
+   EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
+   RothalpyIn                    = new su2double*[nMarkerTurboPerf];
+   RothalpyOut                   = new su2double*[nMarkerTurboPerf];
 
    for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
      TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -663,6 +671,14 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
      TotalRothalpyOut        [iMarker] = new su2double [nSpanWiseSections + 1];
      AbsFlowAngleOut         [iMarker] = new su2double [nSpanWiseSections + 1];
      PressureOut_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
+     TemperatureIn           [iMarker] = new su2double [nSpanWiseSections + 1];
+     TemperatureOut          [iMarker] = new su2double [nSpanWiseSections + 1];
+     TotalPressureIn         [iMarker] = new su2double [nSpanWiseSections + 1];
+     TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
+     TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
+     EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+     RothalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+     RothalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
 
 
 
@@ -706,6 +722,14 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
        AbsFlowAngleOut         [iMarker][iSpan] = 0.0;
        PressureOut_BC          [iMarker][iSpan] = 0.0;
 
+       TemperatureIn           [iMarker][iSpan] = 0.0;
+       TemperatureOut          [iMarker][iSpan] = 0.0;
+       TotalPressureIn         [iMarker][iSpan] = 0.0;
+       TotalPressureOut        [iMarker][iSpan] = 0.0;
+       TotalTemperatureOut     [iMarker][iSpan] = 0.0;
+       EnthalpyIn              [iMarker][iSpan] = 0.0;
+       RothalpyIn              [iMarker][iSpan] = 0.0;
+       RothalpyOut             [iMarker][iSpan] = 0.0;
 
        MachIn           [iMarker][iSpan]           = new su2double[nDim];
        MachOut          [iMarker][iSpan]           = new su2double[nDim];
@@ -5299,6 +5323,14 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       MachOut           [markerTP -1][iSpan][1]   = tangMachOut     ;
       MachIn            [markerTP -1][iSpan][2]   = relMachIn    ;
       MachOut           [markerTP -1][iSpan][2]   = relMachOut   ;
+      TemperatureIn       [markerTP -1][iSpan]      =  -1.0;
+      TemperatureOut      [markerTP -1][iSpan]      =  -1.0;
+      TotalPressureIn     [markerTP -1][iSpan]      =  -1.0;
+      TotalPressureOut    [markerTP -1][iSpan]      =  -1.0;
+      TotalTemperatureOut [markerTP -1][iSpan]      =  -1.0;
+      EnthalpyIn          [markerTP -1][iSpan]      =  -1.0;
+      RothalpyIn          [markerTP -1][iSpan]      =  -1.0;
+      RothalpyOut         [markerTP -1][iSpan]      =  -1.0;
 
       /*----Quantities needed for BC convergence test -----*/
 
@@ -15006,6 +15038,14 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
   TotalRothalpyOut							= new su2double*[nMarkerTurboPerf];
   AbsFlowAngleOut								= new su2double*[nMarkerTurboPerf];
   PressureOut_BC								= new su2double*[nMarkerTurboPerf];
+  TemperatureIn                 = new su2double*[nMarkerTurboPerf];
+  TemperatureOut                = new su2double*[nMarkerTurboPerf];
+  TotalPressureIn               = new su2double*[nMarkerTurboPerf];
+  TotalPressureOut              = new su2double*[nMarkerTurboPerf];
+  TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
+  EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
+  RothalpyIn                    = new su2double*[nMarkerTurboPerf];
+  RothalpyOut                   = new su2double*[nMarkerTurboPerf];
 
   for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
     TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -15046,7 +15086,14 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
     TotalRothalpyOut        [iMarker] = new su2double [nSpanWiseSections + 1];
     AbsFlowAngleOut         [iMarker] = new su2double [nSpanWiseSections + 1];
     PressureOut_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
-
+    TemperatureIn           [iMarker] = new su2double [nSpanWiseSections + 1];
+    TemperatureOut          [iMarker] = new su2double [nSpanWiseSections + 1];
+    TotalPressureIn         [iMarker] = new su2double [nSpanWiseSections + 1];
+    TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
+    TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
+    EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+    RothalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+    RothalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
 
 
     for (iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
@@ -15089,6 +15136,14 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
       AbsFlowAngleOut         [iMarker][iSpan] = 0.0;
       PressureOut_BC          [iMarker][iSpan] = 0.0;
 
+      TemperatureIn           [iMarker][iSpan] = 0.0;
+      TemperatureOut          [iMarker][iSpan] = 0.0;
+      TotalPressureIn         [iMarker][iSpan] = 0.0;
+      TotalPressureOut        [iMarker][iSpan] = 0.0;
+      TotalTemperatureOut     [iMarker][iSpan] = 0.0;
+      EnthalpyIn              [iMarker][iSpan] = 0.0;
+      RothalpyIn              [iMarker][iSpan] = 0.0;
+      RothalpyOut             [iMarker][iSpan] = 0.0;
 
       MachIn           [iMarker][iSpan]           = new su2double[nDim];
       MachOut          [iMarker][iSpan]           = new su2double[nDim];

@@ -4315,7 +4315,16 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     **TotalRothalpyIn      = NULL,
     **TotalRothalpyOut     = NULL,
     **AbsFlowAngleOut      = NULL,
-    **PressureOut_BC       = NULL;
+    **PressureOut_BC       = NULL,
+    **TemperatureIn        = NULL,
+    **TemperatureOut       = NULL,
+    **TotalPressureIn      = NULL,
+    **TotalPressureOut     = NULL,
+    **TotalTemperatureOut  = NULL,
+    **EnthalpyIn           = NULL,
+    **RothalpyIn           = NULL,
+    **RothalpyOut          = NULL;
+
 
 
     /*--- Initialize variables to store information from all domains (adjoint solution) ---*/
@@ -4454,6 +4463,15 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 		TotalRothalpyOut			= new su2double*[nTurboPerf];
 		AbsFlowAngleOut				= new su2double*[nTurboPerf];
 		PressureOut_BC				= new su2double*[nTurboPerf];
+		TemperatureIn         = new su2double*[nTurboPerf];
+		TemperatureOut        = new su2double*[nTurboPerf];
+		TotalPressureIn       = new su2double*[nTurboPerf];
+		TotalPressureOut      = new su2double*[nTurboPerf];
+		TotalTemperatureOut   = new su2double*[nTurboPerf];
+		EnthalpyIn            = new su2double*[nTurboPerf];
+		RothalpyIn            = new su2double*[nTurboPerf];
+		RothalpyOut           = new su2double*[nTurboPerf];
+
 
 
 		for(iMarker=0; iMarker<nTurboPerf; iMarker++){
@@ -4495,6 +4513,15 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
       TotalRothalpyOut      [iMarker] = new su2double [nSpanWiseSections+1];
       AbsFlowAngleOut       [iMarker] = new su2double [nSpanWiseSections+1];
       PressureOut_BC        [iMarker] = new su2double [nSpanWiseSections+1];
+      TemperatureIn         [iMarker] = new su2double [nSpanWiseSections+1];
+      TemperatureOut        [iMarker] = new su2double [nSpanWiseSections+1];
+      TotalPressureIn       [iMarker] = new su2double [nSpanWiseSections+1];
+      TotalPressureOut      [iMarker] = new su2double [nSpanWiseSections+1];
+      TotalTemperatureOut   [iMarker] = new su2double [nSpanWiseSections+1];
+      EnthalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
+      RothalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
+      RothalpyOut           [iMarker] = new su2double [nSpanWiseSections+1];
+
 
       for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
         MachOut         [iMarker][iSpan] = new su2double[nDim];
@@ -4631,6 +4658,15 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 TotalRothalpyIn      [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalRothalpyIn      (iMarker_Monitoring,iSpan);
                 TotalRothalpyOut     [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalRothalpyOut     (iMarker_Monitoring,iSpan);
                 EnthalpyOutIs        [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEnthalpyOutIs        (iMarker_Monitoring,iSpan);
+                TemperatureIn        [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTemperatureIn        (iMarker_Monitoring,iSpan);
+                TemperatureOut       [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTemperatureOut       (iMarker_Monitoring,iSpan);
+                TotalPressureIn      [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalPressureIn      (iMarker_Monitoring,iSpan);
+                TotalPressureOut     [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalPressureOut     (iMarker_Monitoring,iSpan);
+                TotalTemperatureOut  [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalTemperatureOut  (iMarker_Monitoring,iSpan);
+                EnthalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEnthalpyIn           (iMarker_Monitoring,iSpan);
+                RothalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyIn           (iMarker_Monitoring,iSpan);
+                RothalpyOut          [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyOut          (iMarker_Monitoring,iSpan);
+
 						for (iDim = 0; iDim < nDim; iDim++){
                   MachIn             [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachIn               (iMarker_Monitoring,iSpan)[iDim];
                   MachOut            [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachOut              (iMarker_Monitoring,iSpan)[iDim];
@@ -6060,6 +6096,16 @@ for(iMarker = 0; iMarker< nTurboPerf; iMarker++){
         delete [] MachOut              [iMarker];
         delete [] TurboVelocityIn      [iMarker];
         delete [] TurboVelocityOut     [iMarker];
+        delete [] TemperatureIn        [iMarker];
+        delete [] TemperatureOut       [iMarker];
+        delete [] TotalPressureIn      [iMarker];
+        delete [] TotalPressureOut     [iMarker];
+        delete [] TotalTemperatureOut  [iMarker];
+        delete [] EnthalpyIn           [iMarker];
+        delete [] RothalpyIn           [iMarker];
+        delete [] RothalpyOut          [iMarker];
+
+
       }
       delete [] TotalStaticEfficiency;
       delete [] TotalTotalEfficiency;
@@ -6097,6 +6143,13 @@ for(iMarker = 0; iMarker< nTurboPerf; iMarker++){
       delete [] MachOut;
       delete [] TurboVelocityIn;
       delete [] TurboVelocityOut;
+      delete [] TemperatureOut     ;
+      delete [] TotalPressureIn    ;
+      delete [] TotalPressureOut   ;
+      delete [] TotalTemperatureOut;
+      delete [] EnthalpyIn         ;
+      delete [] RothalpyIn         ;
+      delete [] RothalpyOut        ;
     }
 	}
 }

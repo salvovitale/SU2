@@ -524,6 +524,22 @@ inline su2double CSolver::GetAbsFlowAngleOut      (unsigned short inMarkerTP, un
 
 inline su2double CSolver::GetPressureOut_BC       (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
 
+inline su2double CSolver::GetTemperatureIn      (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetTemperatureOut     (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetTotalPressureIn    (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetTotalPressureOut   (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetTotalTemperatureOut(unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetEnthalpyIn         (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetRothalpyIn         (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
+inline su2double CSolver::GetRothalpyOut        (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
+
 inline void CSolver::SetTotalPressureLoss    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetKineticEnergyLoss    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
@@ -597,6 +613,22 @@ inline void CSolver::SetTotalEnthalpyOutIs   (su2double  value, unsigned short i
 inline void CSolver::SetAbsFlowAngleOut      (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetPressureOut_BC       (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTemperatureIn       (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTemperatureOut      (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTotalPressureIn     (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTotalPressureOut    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetTotalTemperatureOut (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetEnthalpyIn          (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetRothalpyIn          (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
+
+inline void CSolver::SetRothalpyOut         (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::BC_Euler_Wall(CGeometry *geometry, CSolver **solver_container, CNumerics *numerics, CConfig *config, 
 									 unsigned short val_marker) { }
@@ -1150,6 +1182,22 @@ inline su2double  CEulerSolver::GetAbsFlowAngleOut      (unsigned short inMarker
 
 inline su2double  CEulerSolver::GetPressureOut_BC       (unsigned short inMarkerTP, unsigned short valSpan){return PressureOut_BC       [inMarkerTP][valSpan];}
 
+inline su2double  CEulerSolver::GetTemperatureIn         (unsigned short inMarkerTP, unsigned short valSpan){return TemperatureIn       [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetTemperatureOut        (unsigned short inMarkerTP, unsigned short valSpan){return TemperatureOut      [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetTotalPressureIn       (unsigned short inMarkerTP, unsigned short valSpan){return TotalPressureIn     [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetTotalPressureOut      (unsigned short inMarkerTP, unsigned short valSpan){return TotalPressureOut    [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetTotalTemperatureOut   (unsigned short inMarkerTP, unsigned short valSpan){return TotalTemperatureOut [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetEnthalpyIn            (unsigned short inMarkerTP, unsigned short valSpan){return EnthalpyIn          [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetRothalpyIn            (unsigned short inMarkerTP, unsigned short valSpan){return RothalpyIn          [inMarkerTP][valSpan];}
+
+inline su2double  CEulerSolver::GetRothalpyOut           (unsigned short inMarkerTP, unsigned short valSpan){return RothalpyOut         [inMarkerTP][valSpan];}
+
 inline void CEulerSolver::SetTotalPressureLoss    (su2double value, unsigned short inMarkerTP, unsigned short valSpan){ TotalPressureLoss    [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::SetKineticEnergyLoss    (su2double value, unsigned short inMarkerTP, unsigned short valSpan){ KineticEnergyLoss    [inMarkerTP][valSpan] = value;}
@@ -1243,6 +1291,23 @@ inline void CEulerSolver::SetTotalEnthalpyOutIs   (su2double value, unsigned sho
 inline void CEulerSolver::SetAbsFlowAngleOut      (su2double value, unsigned short inMarkerTP, unsigned short valSpan){AbsFlowAngleOut       [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::SetPressureOut_BC       (su2double value, unsigned short inMarkerTP, unsigned short valSpan){PressureOut_BC        [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetTemperatureIn            (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TemperatureIn       [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetTemperatureOut           (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TemperatureOut      [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetTotalPressureIn          (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TotalPressureIn     [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetTotalPressureOut         (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TotalPressureOut    [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetTotalTemperatureOut      (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TotalTemperatureOut [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetEnthalpyIn               (su2double value, unsigned short inMarkerTP, unsigned short valSpan){EnthalpyIn          [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetRothalpyIn               (su2double value, unsigned short inMarkerTP, unsigned short valSpan){RothalpyIn          [inMarkerTP][valSpan] = value;}
+
+inline void CEulerSolver::SetRothalpyOut              (su2double value, unsigned short inMarkerTP, unsigned short valSpan){RothalpyOut         [inMarkerTP][valSpan] = value;}
+
 
 inline void CEulerSolver::ComputeTurboVelocity(su2double *cartesianVelocity, su2double *turboNormal, su2double *turboVelocity, unsigned short marker_flag, unsigned short kind_turb) {
 

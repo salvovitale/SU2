@@ -4321,9 +4321,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     **TotalPressureIn      = NULL,
     **TotalPressureOut     = NULL,
     **TotalTemperatureOut  = NULL,
-    **EnthalpyIn           = NULL,
-    **RothalpyIn           = NULL,
-    **RothalpyOut          = NULL;
+    **EnthalpyIn           = NULL;
 
 
 
@@ -4469,8 +4467,6 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 		TotalPressureOut      = new su2double*[nTurboPerf];
 		TotalTemperatureOut   = new su2double*[nTurboPerf];
 		EnthalpyIn            = new su2double*[nTurboPerf];
-		RothalpyIn            = new su2double*[nTurboPerf];
-		RothalpyOut           = new su2double*[nTurboPerf];
 
 
 
@@ -4519,15 +4515,13 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
       TotalPressureOut      [iMarker] = new su2double [nSpanWiseSections+1];
       TotalTemperatureOut   [iMarker] = new su2double [nSpanWiseSections+1];
       EnthalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
-      RothalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
-      RothalpyOut           [iMarker] = new su2double [nSpanWiseSections+1];
 
 
       for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
-        MachOut         [iMarker][iSpan] = new su2double[nDim];
-        MachIn          [iMarker][iSpan] = new su2double[nDim];
-        TurboVelocityIn [iMarker][iSpan] = new su2double[nDim];
-        TurboVelocityOut[iMarker][iSpan] = new su2double[nDim];
+        MachOut         [iMarker][iSpan] = new su2double[4];
+        MachIn          [iMarker][iSpan] = new su2double[4];
+        TurboVelocityIn [iMarker][iSpan] = new su2double[4];
+        TurboVelocityOut[iMarker][iSpan] = new su2double[4];
       }
 		}
 
@@ -4664,10 +4658,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 TotalPressureOut     [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalPressureOut     (iMarker_Monitoring,iSpan);
                 TotalTemperatureOut  [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalTemperatureOut  (iMarker_Monitoring,iSpan);
                 EnthalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEnthalpyIn           (iMarker_Monitoring,iSpan);
-                RothalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyIn           (iMarker_Monitoring,iSpan);
-                RothalpyOut          [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyOut          (iMarker_Monitoring,iSpan);
 
-						for (iDim = 0; iDim < nDim; iDim++){
+						for (iDim = 0; iDim < 4; iDim++){
                   MachIn             [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachIn               (iMarker_Monitoring,iSpan)[iDim];
                   MachOut            [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachOut              (iMarker_Monitoring,iSpan)[iDim];
                   TurboVelocityIn    [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTurboVelocityIn      (iMarker_Monitoring,iSpan)[iDim];
@@ -6104,8 +6096,6 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 		  delete [] TotalPressureOut     [iMarker];
 		  delete [] TotalTemperatureOut  [iMarker];
 		  delete [] EnthalpyIn           [iMarker];
-		  delete [] RothalpyIn           [iMarker];
-		  delete [] RothalpyOut          [iMarker];
 
 
 		}
@@ -6150,8 +6140,6 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
 		delete [] TotalPressureOut   ;
 		delete [] TotalTemperatureOut;
 		delete [] EnthalpyIn         ;
-		delete [] RothalpyIn         ;
-		delete [] RothalpyOut        ;
     }
   }
 }
@@ -6222,9 +6210,7 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
       **TotalPressureIn       = NULL,
       **TotalPressureOut      = NULL,
       **TotalTemperatureOut   = NULL,
-      **EnthalpyIn            = NULL,
-      **RothalpyIn            = NULL,
-      **RothalpyOut           = NULL;
+      **EnthalpyIn            = NULL;
 
   /*--- Allocate memory for the turboperformace ---*/
   TRadius               = new su2double*[nTurboPerf];
@@ -6272,9 +6258,6 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
   TotalPressureOut      = new su2double*[nTurboPerf];
   TotalTemperatureOut   = new su2double*[nTurboPerf];
   EnthalpyIn            = new su2double*[nTurboPerf];
-  RothalpyIn            = new su2double*[nTurboPerf];
-  RothalpyOut           = new su2double*[nTurboPerf];
-
 
 
   for(iMarker=0; iMarker<nTurboPerf; iMarker++){
@@ -6323,15 +6306,13 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
     TotalPressureOut      [iMarker] = new su2double [nSpanWiseSections+1];
     TotalTemperatureOut   [iMarker] = new su2double [nSpanWiseSections+1];
     EnthalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
-    RothalpyIn            [iMarker] = new su2double [nSpanWiseSections+1];
-    RothalpyOut           [iMarker] = new su2double [nSpanWiseSections+1];
 
 
     for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
-      MachOut         [iMarker][iSpan] = new su2double[nDim];
-      MachIn          [iMarker][iSpan] = new su2double[nDim];
-      TurboVelocityIn [iMarker][iSpan] = new su2double[nDim];
-      TurboVelocityOut[iMarker][iSpan] = new su2double[nDim];
+      MachOut         [iMarker][iSpan] = new su2double[4];
+      MachIn          [iMarker][iSpan] = new su2double[4];
+      TurboVelocityIn [iMarker][iSpan] = new su2double[4];
+      TurboVelocityOut[iMarker][iSpan] = new su2double[4];
     }
   }
 
@@ -6378,10 +6359,7 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
       TotalPressureOut     [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalPressureOut     (iMarker_Monitoring,iSpan);
       TotalTemperatureOut  [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotalTemperatureOut  (iMarker_Monitoring,iSpan);
       EnthalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetEnthalpyIn           (iMarker_Monitoring,iSpan);
-      RothalpyIn           [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyIn           (iMarker_Monitoring,iSpan);
-      RothalpyOut          [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyOut          (iMarker_Monitoring,iSpan);
-      RothalpyOut          [iMarker_Monitoring][iSpan]       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetRothalpyOut          (iMarker_Monitoring,iSpan);
-      for (iDim = 0; iDim < nDim; iDim++){
+      for (iDim = 0; iDim < 4; iDim++){
         MachIn             [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachIn               (iMarker_Monitoring,iSpan)[iDim];
         MachOut            [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetMachOut              (iMarker_Monitoring,iSpan)[iDim];
         TurboVelocityIn    [iMarker_Monitoring][iSpan][iDim] = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTurboVelocityIn      (iMarker_Monitoring,iSpan)[iDim];
@@ -6405,7 +6383,7 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
 
     myfile.open (spanwise_performance_filename.data(), ios::out | ios::trunc);
     myfile.setf(ios::scientific);
-    myfile.precision(8);
+    myfile.precision(12);
 
     myfile << "TITLE = \"Spanwise values visualization file\"" << endl;
     myfile << "VARIABLES =" << endl;
@@ -6432,8 +6410,6 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
     myfile.width(30); myfile << "\"EnthalpyIn[J]\"";
     myfile.width(30); myfile << "\"EnthalpyOut[J]\"";
     myfile.width(30); myfile << "\"EnthalpyOutIs[J]\"";
-    myfile.width(30); myfile << "\"RothalpyIn[J]\"";
-    myfile.width(30); myfile << "\"RothalpyOut[J]\"";
     myfile.width(30); myfile << "\"EntropyIn[J]\"";
     myfile.width(30); myfile << "\"EntropyOut[J]\"";
     myfile.width(30); myfile << "\"EntropyGen[J]\"";
@@ -6452,15 +6428,22 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
     myfile.width(30); myfile << "\"AbsFlowAngleOut[deg]\"";
     myfile.width(30); myfile << "\"FlowAngleIn[deg]\"";
     myfile.width(30); myfile << "\"FlowAngleOut[deg]\"";
-    //myfile.width(30); myfile << "\"MachIn[-]\"";
-    //myfile.width(30); myfile << "\"MachOut[-]\"";
-    //myfile.width(30); myfile << "\"TurboVelocityIn[m/s]\"";
-    //myfile.width(30); myfile << "\"TurboVelocityOut[m/s]\"";
-
-    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30-2); myfile << "\"MachIn"      << iDim << "\""; }
-    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30-2); myfile << "\"MachOut"     << iDim << "\""; }
-    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30-2); myfile << "\"TurboVelIn"  << iDim << "\""; }
-    for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30-2); myfile << "\"TurboVelOut" << iDim << "\""; }
+    myfile.width(30); myfile << "\"MachInNormal[-]\"";
+    myfile.width(30); myfile << "\"MachOutNormal[-]\"";
+    myfile.width(30); myfile << "\"MachInTang[-]\"";
+    myfile.width(30); myfile << "\"MachOutTang[-]\"";
+    myfile.width(30); myfile << "\"MachInRadial[-]\"";
+    myfile.width(30); myfile << "\"MachOutRadial[-]\"";
+    myfile.width(30); myfile << "\"MachIn[-]\"";
+    myfile.width(30); myfile << "\"MachOut[-]\"";
+    myfile.width(30); myfile << "\"TurboVelocityInNormal[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityOutNormal[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityInTang[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityOutTang[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityInRadial[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityOutRadial[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityIn[m/s]\"";
+    myfile.width(30); myfile << "\"TurboVelocityOut[m/s]\"";
 
     myfile << endl;
 
@@ -6490,8 +6473,6 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
           myfile.width(30); myfile << EnthalpyIn           [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << EnthalpyOut          [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << EnthalpyOutIs        [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
-          myfile.width(30); myfile << RothalpyIn           [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
-          myfile.width(30); myfile << RothalpyOut          [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << EntropyIn            [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << EntropyOut           [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << EntropyGen           [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
@@ -6511,10 +6492,14 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
           myfile.width(30); myfile << FlowAngleIn          [iMarker_Monitoring-1][iSpan]*180.0/PI_NUMBER;
           myfile.width(30); myfile << FlowAngleOut         [iMarker_Monitoring-1][iSpan]*180.0/PI_NUMBER;
 
-          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30); myfile << MachIn              [iMarker_Monitoring-1][iSpan][iDim]; }
-          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30); myfile << MachOut             [iMarker_Monitoring-1][iSpan][iDim]; }
-          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30); myfile << TurboVelocityIn     [iMarker_Monitoring-1][iSpan][iDim]; }
-          for (iDim = 0; iDim < nDim; iDim++){ myfile.width(30); myfile << TurboVelocityOut    [iMarker_Monitoring-1][iSpan][iDim]; }
+          for (iDim = 0; iDim < 4; iDim++){
+            myfile.width(30); myfile << MachIn              [iMarker_Monitoring-1][iSpan][iDim];
+            myfile.width(30); myfile << MachOut             [iMarker_Monitoring-1][iSpan][iDim];
+          }
+          for (iDim = 0; iDim < 4; iDim++){
+            myfile.width(30); myfile << TurboVelocityIn     [iMarker_Monitoring-1][iSpan][iDim]*config[ZONE_0]->GetVelocity_Ref();;
+            myfile.width(30); myfile << TurboVelocityOut    [iMarker_Monitoring-1][iSpan][iDim]*config[ZONE_0]->GetVelocity_Ref();;
+          }
 
           myfile << endl;
         }
@@ -6573,8 +6558,6 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
     delete [] TotalPressureOut     [iMarker];
     delete [] TotalTemperatureOut  [iMarker];
     delete [] EnthalpyIn           [iMarker];
-    delete [] RothalpyIn           [iMarker];
-    delete [] RothalpyOut          [iMarker];
 
 
   }
@@ -6619,8 +6602,6 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
   delete [] TotalPressureOut   ;
   delete [] TotalTemperatureOut;
   delete [] EnthalpyIn         ;
-  delete [] RothalpyIn         ;
-  delete [] RothalpyOut        ;
 
 }
 

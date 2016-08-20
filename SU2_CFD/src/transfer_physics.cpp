@@ -489,7 +489,5 @@ void CTransfer_MixingPlaneInterface::GetSetTurboPerformance(CSolver *donor_solut
   target_solution->SetTotalPressureOut   (donor_solution->GetTotalPressureOut   (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
   target_solution->SetTotalTemperatureOut(donor_solution->GetTotalTemperatureOut(donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
   target_solution->SetEnthalpyIn         (donor_solution->GetEnthalpyIn         (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
-  target_solution->SetRothalpyIn         (donor_solution->GetRothalpyIn         (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
-  target_solution->SetRothalpyOut        (donor_solution->GetRothalpyOut        (donorZone, nSpanWiseSections), donorZone, nSpanWiseSections);
 }
 

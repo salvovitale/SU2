@@ -629,8 +629,6 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
    TotalPressureOut              = new su2double*[nMarkerTurboPerf];
    TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
    EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
-   RothalpyIn                    = new su2double*[nMarkerTurboPerf];
-   RothalpyOut                   = new su2double*[nMarkerTurboPerf];
 
    for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
      TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -677,8 +675,6 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
      TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
      TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
      EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-     RothalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-     RothalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
 
 
 
@@ -728,15 +724,12 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
        TotalPressureOut        [iMarker][iSpan] = 0.0;
        TotalTemperatureOut     [iMarker][iSpan] = 0.0;
        EnthalpyIn              [iMarker][iSpan] = 0.0;
-       RothalpyIn              [iMarker][iSpan] = 0.0;
-       RothalpyOut             [iMarker][iSpan] = 0.0;
+       MachIn           [iMarker][iSpan]           = new su2double[4];
+       MachOut          [iMarker][iSpan]           = new su2double[4];
+       TurboVelocityIn  [iMarker][iSpan]           = new su2double[4];
+       TurboVelocityOut [iMarker][iSpan]           = new su2double[4];
 
-       MachIn           [iMarker][iSpan]           = new su2double[nDim];
-       MachOut          [iMarker][iSpan]           = new su2double[nDim];
-       TurboVelocityIn  [iMarker][iSpan]           = new su2double[nDim];
-       TurboVelocityOut [iMarker][iSpan]           = new su2double[nDim];
-
-       for (iDim = 0; iDim < nDim; iDim++){
+       for (iDim = 0; iDim < 4; iDim++){
          MachIn           [iMarker][iSpan][iDim]   = 0.0;
          MachOut          [iMarker][iSpan][iDim]   = 0.0;
          TurboVelocityIn  [iMarker][iSpan][iDim]   = 0.0;
@@ -4904,7 +4897,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       avgPressureOut, avgTotalRelPressureIn, avgTotalRelPressureOut, avgEntropyIn, avgEntropyOut, flowAngleIn, massFlowIn, tangMachIn, normalMachIn, 	flowAngleOut,
       massFlowOut, tangMachOut, normalMachOut, avgTotTempIn, avgTotPresIn, P_Total, T_Total, *FlowDir, alphaIn_BC, entropyIn_BC, totalEnthalpyIn_BC, densityIn_Mix,
       pressureIn_Mix, normalVelocityIn_Mix, tangVelocityIn_Mix, densityOut_Mix, pressureOut_Mix, normalVelocityOut_Mix, tangVelocityOut_Mix, absFlowAngleIn,
-      absFlowAngleOut, pressureOut_BC, relVelocityIn_Mix, relVelocityOut_Mix, relMachIn, relMachOut, radius;
+      absFlowAngleOut, pressureOut_BC, radialVelocityIn_Mix, radialVelocityOut_Mix, radialMachIn, radialMachOut, radius ,       avgMachIn    , avgMachOut   ,
+      temperatureIn_Mix, temperatureOut_Mix, totalTemperatureOut_Mix, enthalpyIn_Mix, avgVelocityIn_Mix, avgVelocityOut_Mix  ;
   su2double nBlades;
 
   unsigned short iSpan, iDim, i, n1, n2, n1t,n2t;
@@ -4927,8 +4921,8 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
     su2double *TotTurbPerfIn = NULL,*TotTurbPerfOut = NULL;
     int *TotMarkerTP;
 
-    n1          = 21;
-    n2          = 20;
+    n1          = 25;
+    n2          = 24;
     n1t         = n1*size;
     n2t         = n2*size;
     TurbPerfIn  = new su2double[n1];
@@ -4940,48 +4934,56 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       TurbPerfOut[i]   = -1.0;
 #endif
 
-    avgTotalRothalpyIn     = -1.0;
-    avgTotalEnthalpyIn     = -1.0;
-    avgEntropyIn           = -1.0;
-    avgEntropyOut          = -1.0;
-    avgTotalRelPressureIn  = -1.0;
-    flowAngleIn            = -1.0;
-    massFlowIn             = -1.0;
-    tangMachIn             = -1.0;
-    normalMachIn           = -1.0;
-    avgTotTempIn           = -1.0;
-    avgTotPresIn           = -1.0;
-    alphaIn_BC             = -1.0;
-    entropyIn_BC           = -1.0;
-    totalEnthalpyIn_BC     = -1.0;
-    avgTotalRothalpyOut    = -1.0;
-    avgTotalEnthalpyOut    = -1.0;
-    avgTotalRelPressureOut = -1.0;
-    avgPressureOut         = -1.0;
-    avgEnthalpyOut         = -1.0;
-    avgGridVel2Out         = -1.0;
-    flowAngleOut           = -1.0;
-    massFlowOut            = -1.0;
-    tangMachOut            = -1.0;
-    normalMachOut          = -1.0;
-    densityIn_Mix          = -1.0;
-    pressureIn_Mix         = -1.0;
-    normalVelocityIn_Mix   = -1.0;
-    tangVelocityIn_Mix     = -1.0;
-    densityOut_Mix         = -1.0;
-    pressureOut_Mix        = -1.0;
-    normalVelocityOut_Mix  = -1.0;
-    tangVelocityOut_Mix    = -1.0;
-    absFlowAngleIn         = -1.0;
-    absFlowAngleOut        = -1.0;
-    pressureOut_BC         = -1.0;
-    avgVel2Out             = -1.0;
-    relVelocityIn_Mix      = -1.0;
-    relVelocityOut_Mix     = -1.0;
-    relMachIn              = -1.0;
-    relMachOut             = -1.0;
-    radius                 = -1.0;
-    markerTP               = -1;
+    avgTotalRothalpyIn      = -1.0;
+    avgTotalEnthalpyIn      = -1.0;
+    avgEntropyIn            = -1.0;
+    avgEntropyOut           = -1.0;
+    avgTotalRelPressureIn   = -1.0;
+    flowAngleIn             = -1.0;
+    massFlowIn              = -1.0;
+    tangMachIn              = -1.0;
+    normalMachIn            = -1.0;
+    avgTotTempIn            = -1.0;
+    avgTotPresIn            = -1.0;
+    alphaIn_BC              = -1.0;
+    entropyIn_BC            = -1.0;
+    totalEnthalpyIn_BC      = -1.0;
+    avgTotalRothalpyOut     = -1.0;
+    avgTotalEnthalpyOut     = -1.0;
+    avgTotalRelPressureOut  = -1.0;
+    avgPressureOut          = -1.0;
+    avgEnthalpyOut          = -1.0;
+    avgGridVel2Out          = -1.0;
+    flowAngleOut            = -1.0;
+    massFlowOut             = -1.0;
+    tangMachOut             = -1.0;
+    normalMachOut           = -1.0;
+    densityIn_Mix           = -1.0;
+    pressureIn_Mix          = -1.0;
+    normalVelocityIn_Mix    = -1.0;
+    tangVelocityIn_Mix      = -1.0;
+    densityOut_Mix          = -1.0;
+    pressureOut_Mix         = -1.0;
+    normalVelocityOut_Mix   = -1.0;
+    tangVelocityOut_Mix     = -1.0;
+    absFlowAngleIn          = -1.0;
+    absFlowAngleOut         = -1.0;
+    pressureOut_BC          = -1.0;
+    avgVel2Out              = -1.0;
+    radialVelocityIn_Mix    = -1.0;
+    radialVelocityOut_Mix   = -1.0;
+    radialMachIn            = -1.0;
+    radialMachOut           = -1.0;
+    radius                  = -1.0;
+    avgMachIn               = -1.0;
+    avgMachOut              = -1.0;
+    temperatureIn_Mix       = -1.0;
+    temperatureOut_Mix      = -1.0;
+    totalTemperatureOut_Mix = -1.0;
+    enthalpyIn_Mix          = -1.0;
+    avgVelocityIn_Mix       = -1.0;
+    avgVelocityOut_Mix      = -1.0;
+    markerTP                = -1;
 
     for (iMarker = 0; iMarker < config->GetnMarker_All(); iMarker++){
       for (iMarkerTP = 1; iMarkerTP < config->GetnMarker_Turbomachinery()+1; iMarkerTP++){
@@ -5017,11 +5019,20 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             pressureIn_Mix          = AveragePressure[iMarker][iSpan];
             normalVelocityIn_Mix    = AverageTurboVelocity[iMarker][iSpan][0];
             tangVelocityIn_Mix      = AverageTurboVelocity[iMarker][iSpan][1];
-            if (nDim>3){
-              relMachIn             = AverageTurboMach[iMarker][iSpan][2];
-              relVelocityIn_Mix     = AverageTurboVelocity[iMarker][iSpan][2];
+            if (nDim>2){
+              radialMachIn             = AverageTurboMach[iMarker][iSpan][2];
+              radialVelocityIn_Mix     = AverageTurboVelocity[iMarker][iSpan][2];
+            }else{
+              radialMachIn             = 0.0;
+              radialVelocityIn_Mix     = 0.0;
             }
             absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
+            if (absFlowAngleIn != absFlowAngleIn){absFlowAngleIn = 0.0;}
+
+            temperatureIn_Mix       = AverageTotTemperature[iMarker][iSpan] - 0.5*avgVel2In;
+            enthalpyIn_Mix          = AverageEnthalpy[iMarker][iSpan];
+            avgMachIn               = sqrt(normalMachIn*normalMachIn + tangMachIn*tangMachIn + radialMachIn*radialMachIn);
+            avgVelocityIn_Mix       = sqrt(normalVelocityIn_Mix*normalVelocityIn_Mix + tangVelocityIn_Mix*tangVelocityIn_Mix + radialVelocityIn_Mix*radialVelocityIn_Mix);
 
             //TODO(turbo) better location has to be found for this computation, perhaps in the outputstructure file.
             if(config->GetBoolNRBC() || config->GetBoolRiemann()){
@@ -5050,6 +5061,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
                   alphaIn_BC  = atan(ExtAverageTurboVelocity[iMarker][0][1]/ExtAverageTurboVelocity[iMarker][0][0]);
                 }
               }
+              if (alphaIn_BC != alphaIn_BC){alphaIn_BC = 0.0;}
 
               /* --- Computes the total state --- */
               FluidModel->SetTDState_PT(P_Total, T_Total);
@@ -5081,9 +5093,13 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfIn[15] = normalVelocityIn_Mix;
             TurbPerfIn[16] = tangVelocityIn_Mix;
             TurbPerfIn[17] = absFlowAngleIn;
-            TurbPerfIn[18] = relMachIn;
-            TurbPerfIn[19] = relVelocityIn_Mix;
+            TurbPerfIn[18] = radialMachIn;
+            TurbPerfIn[19] = radialVelocityIn_Mix;
             TurbPerfIn[20] = radius;
+            TurbPerfIn[21] = temperatureIn_Mix;
+            TurbPerfIn[22] = enthalpyIn_Mix;
+            TurbPerfIn[23] = avgMachIn;
+            TurbPerfIn[24] = avgVelocityIn_Mix;
 #endif
           }
 
@@ -5116,11 +5132,21 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             pressureOut_Mix           = AveragePressure[iMarker][iSpan];
             normalVelocityOut_Mix     = AverageTurboVelocity[iMarker][iSpan][0];
             tangVelocityOut_Mix       = AverageTurboVelocity[iMarker][iSpan][1];
-            if (nDim>3){
-              relMachOut              = AverageTurboMach[iMarker][iSpan][2];
-              relVelocityOut_Mix      = AverageTurboVelocity[iMarker][iSpan][2];
+            if (nDim>2){
+              radialMachOut              = AverageTurboMach[iMarker][iSpan][2];
+              radialVelocityOut_Mix      = AverageTurboVelocity[iMarker][iSpan][2];
+            }else{
+              radialMachOut              = 0.0;
+              radialVelocityOut_Mix      = 0.0;
             }
             absFlowAngleOut           = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
+            if (absFlowAngleOut != absFlowAngleOut){absFlowAngleOut = 0.0;}
+
+            temperatureOut_Mix      = AverageTotTemperature[iMarker][iSpan] - 0.5*avgVel2Out;
+            totalTemperatureOut_Mix = AverageTotTemperature[iMarker][iSpan] ;
+            avgMachOut               = sqrt(normalMachOut*normalMachOut + tangMachOut*tangMachOut + radialMachOut*radialMachOut);
+            avgVelocityOut_Mix       = sqrt(normalVelocityOut_Mix*normalVelocityOut_Mix + tangVelocityOut_Mix*tangVelocityOut_Mix + radialVelocityOut_Mix*radialVelocityOut_Mix);
+
 
             if(config->GetBoolNRBC() || config->GetBoolRiemann()){
 
@@ -5153,8 +5179,12 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             TurbPerfOut[15] = absFlowAngleOut;
             TurbPerfOut[16] = pressureOut_BC;
             TurbPerfOut[17] = avgVel2Out;
-            TurbPerfOut[18] = relMachOut;
-            TurbPerfOut[19] = relVelocityOut_Mix;
+            TurbPerfOut[18] = radialMachOut;
+            TurbPerfOut[19] = radialVelocityOut_Mix;
+            TurbPerfOut[20] = temperatureOut_Mix;
+            TurbPerfOut[21] = totalTemperatureOut_Mix;
+            TurbPerfOut[22] = avgMachOut;
+            TurbPerfOut[23] = avgVelocityOut_Mix;
 #endif
           }
         }
@@ -5223,12 +5253,21 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           tangVelocityIn_Mix     = TotTurbPerfIn[n1*i+16];
           absFlowAngleIn         = 0.0;
           absFlowAngleIn         = TotTurbPerfIn[n1*i+17];
-          relMachIn              = 0.0;
-          relMachIn              = TotTurbPerfIn[n1*i+18];
-          relVelocityIn_Mix      = 0.0;
-          relVelocityIn_Mix      = TotTurbPerfIn[n1*i+19];
+          radialMachIn           = 0.0;
+          radialMachIn           = TotTurbPerfIn[n1*i+18];
+          radialVelocityIn_Mix   = 0.0;
+          radialVelocityIn_Mix   = TotTurbPerfIn[n1*i+19];
           radius                 = 0.0;
           radius                 = TotTurbPerfIn[n1*i+20];
+          temperatureIn_Mix      = 0.0;
+          temperatureIn_Mix      = TotTurbPerfIn[n1*i+21];
+          enthalpyIn_Mix         = 0.0;
+          enthalpyIn_Mix         = TotTurbPerfIn[n1*i+22];
+          avgMachIn              = 0.0;
+          avgMachIn              = TotTurbPerfIn[n1*i+23];
+          avgVelocityIn_Mix      = 0.0;
+          avgVelocityIn_Mix      = TotTurbPerfIn[n1*i+24];
+
           markerTP               = -1;
           markerTP               = TotMarkerTP[i];
           //        cout << " I am assigning this value "<< TotMarkerTP[i] << endl;
@@ -5271,10 +5310,19 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
           pressureOut_BC         = TotTurbPerfOut[n2*i+16];
           avgVel2Out             = 0.0;
           avgVel2Out             = TotTurbPerfOut[n2*i+17];
-          relMachOut             = 0.0;
-          relMachOut             = TotTurbPerfOut[n1*i+18];
-          relVelocityOut_Mix     = 0.0;
-          relVelocityOut_Mix     = TotTurbPerfOut[n1*i+19];
+          radialMachOut           = 0.0;
+          radialMachOut           = TotTurbPerfOut[n2*i+18];
+          radialVelocityOut_Mix   = 0.0;
+          radialVelocityOut_Mix   = TotTurbPerfOut[n2*i+19];
+          temperatureOut_Mix      = 0.0;
+          temperatureOut_Mix      = TotTurbPerfOut[n2*i+20];
+          totalTemperatureOut_Mix = 0.0;
+          totalTemperatureOut_Mix = TotTurbPerfOut[n2*i+21];
+          avgMachOut              = 0.0;
+          avgMachOut              = TotTurbPerfOut[n2*i+22];
+          avgVelocityOut_Mix      = 0.0;
+          avgVelocityOut_Mix      = TotTurbPerfOut[n2*i+23];
+
         }
       }
 
@@ -5298,7 +5346,13 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       /*----Quantities needed for computing the turbomachinery performance -----*/
       TRadius           [markerTP -1][iSpan]      = radius;
       TotalPressureLoss [markerTP -1][iSpan]      = (avgTotalRelPressureIn - avgTotalRelPressureOut)/(avgTotalRelPressureOut - avgPressureOut);
+      if ((avgTotalRelPressureOut - avgPressureOut)<0.0001){
+        TotalPressureLoss [markerTP -1][iSpan]      = 1000.0;
+      }
       KineticEnergyLoss [markerTP -1][iSpan]      = (avgEnthalpyOut - avgEnthalpyOutIs)/(avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out);
+      if ((avgTotalRothalpyIn - avgEnthalpyOut + 0.5*avgGridVel2Out)<0.0001){
+        KineticEnergyLoss [markerTP -1][iSpan]      = 1000.0;
+      }
       EulerianWork      [markerTP -1][iSpan]      = avgTotalEnthalpyIn - avgTotalEnthalpyOut;
       TotalEnthalpyIn   [markerTP -1][iSpan]      = avgTotalEnthalpyIn;
       TotalEnthalpyOut  [markerTP -1][iSpan]      = avgTotalEnthalpyOut;
@@ -5321,16 +5375,17 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       MachOut           [markerTP -1][iSpan][0]   = normalMachOut   ;
       MachIn            [markerTP -1][iSpan][1]   = tangMachIn      ;
       MachOut           [markerTP -1][iSpan][1]   = tangMachOut     ;
-      MachIn            [markerTP -1][iSpan][2]   = relMachIn    ;
-      MachOut           [markerTP -1][iSpan][2]   = relMachOut   ;
-      TemperatureIn       [markerTP -1][iSpan]      =  -1.0;
-      TemperatureOut      [markerTP -1][iSpan]      =  -1.0;
-      TotalPressureIn     [markerTP -1][iSpan]      =  -1.0;
-      TotalPressureOut    [markerTP -1][iSpan]      =  -1.0;
-      TotalTemperatureOut [markerTP -1][iSpan]      =  -1.0;
-      EnthalpyIn          [markerTP -1][iSpan]      =  -1.0;
-      RothalpyIn          [markerTP -1][iSpan]      =  -1.0;
-      RothalpyOut         [markerTP -1][iSpan]      =  -1.0;
+      MachIn            [markerTP -1][iSpan][2]   = radialMachIn    ;
+      MachOut           [markerTP -1][iSpan][2]   = radialMachOut   ;
+      MachIn            [markerTP -1][iSpan][3]   = avgMachIn    ;
+      MachOut           [markerTP -1][iSpan][3]   = avgMachOut   ;
+      TemperatureIn       [markerTP -1][iSpan]    = temperatureIn_Mix;
+      TemperatureOut      [markerTP -1][iSpan]    = temperatureOut_Mix;
+      TotalPressureIn     [markerTP -1][iSpan]    = pressureIn_Mix;
+      TotalPressureOut    [markerTP -1][iSpan]    = pressureOut_Mix;
+      TotalTemperatureOut [markerTP -1][iSpan]    = totalTemperatureOut_Mix;
+      EnthalpyIn          [markerTP -1][iSpan]    = enthalpyIn_Mix;
+
 
       /*----Quantities needed for BC convergence test -----*/
 
@@ -5348,8 +5403,10 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
       TurboVelocityOut  [markerTP -1][iSpan][0]   = normalVelocityOut_Mix;
       TurboVelocityIn   [markerTP -1][iSpan][1]   = tangVelocityIn_Mix   ;
       TurboVelocityOut  [markerTP -1][iSpan][1]   = tangVelocityOut_Mix  ;
-      TurboVelocityIn   [markerTP -1][iSpan][2]   = relVelocityIn_Mix   ;
-      TurboVelocityOut  [markerTP -1][iSpan][2]   = relVelocityOut_Mix  ;
+      TurboVelocityIn   [markerTP -1][iSpan][2]   = radialVelocityIn_Mix   ;
+      TurboVelocityOut  [markerTP -1][iSpan][2]   = radialVelocityOut_Mix  ;
+      TurboVelocityIn   [markerTP -1][iSpan][3]   = avgVelocityIn_Mix   ;
+      TurboVelocityOut  [markerTP -1][iSpan][3]   = avgVelocityOut_Mix  ;
     }
   }
 }
@@ -14933,8 +14990,6 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
   TotalPressureOut              = new su2double*[nMarkerTurboPerf];
   TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
   EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
-  RothalpyIn                    = new su2double*[nMarkerTurboPerf];
-  RothalpyOut                   = new su2double*[nMarkerTurboPerf];
 
   for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
     TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
@@ -14981,9 +15036,6 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
     TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
     TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
     EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-    RothalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-    RothalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
-
 
     for (iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
       TotalStaticEfficiency   [iMarker][iSpan] = 0.0;
@@ -15031,15 +15083,13 @@ CNSSolver::CNSSolver(CGeometry *geometry, CConfig *config, unsigned short iMesh)
       TotalPressureOut        [iMarker][iSpan] = 0.0;
       TotalTemperatureOut     [iMarker][iSpan] = 0.0;
       EnthalpyIn              [iMarker][iSpan] = 0.0;
-      RothalpyIn              [iMarker][iSpan] = 0.0;
-      RothalpyOut             [iMarker][iSpan] = 0.0;
 
-      MachIn           [iMarker][iSpan]           = new su2double[nDim];
-      MachOut          [iMarker][iSpan]           = new su2double[nDim];
-      TurboVelocityIn  [iMarker][iSpan]           = new su2double[nDim];
-      TurboVelocityOut [iMarker][iSpan]           = new su2double[nDim];
+      MachIn           [iMarker][iSpan]           = new su2double[4];
+      MachOut          [iMarker][iSpan]           = new su2double[4];
+      TurboVelocityIn  [iMarker][iSpan]           = new su2double[4];
+      TurboVelocityOut [iMarker][iSpan]           = new su2double[4];
 
-      for (iDim = 0; iDim < nDim; iDim++){
+      for (iDim = 0; iDim < 4; iDim++){
         MachIn           [iMarker][iSpan][iDim]   = 0.0;
         MachOut          [iMarker][iSpan][iDim]   = 0.0;
         TurboVelocityIn  [iMarker][iSpan][iDim]   = 0.0;

@@ -536,10 +536,6 @@ inline su2double CSolver::GetTotalTemperatureOut(unsigned short inMarkerTP, unsi
 
 inline su2double CSolver::GetEnthalpyIn         (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
 
-inline su2double CSolver::GetRothalpyIn         (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
-
-inline su2double CSolver::GetRothalpyOut        (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
-
 inline su2double CSolver::GetTRadius            (unsigned short inMarkerTP, unsigned short valSpan){return 0;}
 
 inline void CSolver::SetTotalPressureLoss    (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
@@ -627,10 +623,6 @@ inline void CSolver::SetTotalPressureOut    (su2double  value, unsigned short in
 inline void CSolver::SetTotalTemperatureOut (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetEnthalpyIn          (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
-
-inline void CSolver::SetRothalpyIn          (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
-
-inline void CSolver::SetRothalpyOut         (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
 inline void CSolver::SetTRadius             (su2double  value, unsigned short inMarkerTP, unsigned short valSpan){}
 
@@ -1198,10 +1190,6 @@ inline su2double  CEulerSolver::GetTotalTemperatureOut   (unsigned short inMarke
 
 inline su2double  CEulerSolver::GetEnthalpyIn            (unsigned short inMarkerTP, unsigned short valSpan){return EnthalpyIn          [inMarkerTP][valSpan];}
 
-inline su2double  CEulerSolver::GetRothalpyIn            (unsigned short inMarkerTP, unsigned short valSpan){return RothalpyIn          [inMarkerTP][valSpan];}
-
-inline su2double  CEulerSolver::GetRothalpyOut           (unsigned short inMarkerTP, unsigned short valSpan){return RothalpyOut         [inMarkerTP][valSpan];}
-
 inline su2double  CEulerSolver::GetTRadius               (unsigned short inMarkerTP, unsigned short valSpan){return TRadius             [inMarkerTP][valSpan];}
 
 inline void CEulerSolver::SetTotalPressureLoss    (su2double value, unsigned short inMarkerTP, unsigned short valSpan){ TotalPressureLoss    [inMarkerTP][valSpan] = value;}
@@ -1309,10 +1297,6 @@ inline void CEulerSolver::SetTotalPressureOut         (su2double value, unsigned
 inline void CEulerSolver::SetTotalTemperatureOut      (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TotalTemperatureOut [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::SetEnthalpyIn               (su2double value, unsigned short inMarkerTP, unsigned short valSpan){EnthalpyIn          [inMarkerTP][valSpan] = value;}
-
-inline void CEulerSolver::SetRothalpyIn               (su2double value, unsigned short inMarkerTP, unsigned short valSpan){RothalpyIn          [inMarkerTP][valSpan] = value;}
-
-inline void CEulerSolver::SetRothalpyOut              (su2double value, unsigned short inMarkerTP, unsigned short valSpan){RothalpyOut         [inMarkerTP][valSpan] = value;}
 
 inline void CEulerSolver::SetTRadius                  (su2double value, unsigned short inMarkerTP, unsigned short valSpan){TRadius             [inMarkerTP][valSpan] = value;}
 

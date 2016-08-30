@@ -5028,6 +5028,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             }
             absFlowAngleIn          = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
             if (absFlowAngleIn != absFlowAngleIn){absFlowAngleIn = 0.0;}
+            if (flowAngleIn != flowAngleIn){flowAngleIn = 0.0;}
 
             temperatureIn_Mix       = AverageTotTemperature[iMarker][iSpan] - 0.5*avgVel2In;
             enthalpyIn_Mix          = AverageEnthalpy[iMarker][iSpan];
@@ -5141,6 +5142,7 @@ void CEulerSolver::TurboPerformance(CConfig *config, CGeometry *geometry){
             }
             absFlowAngleOut           = atan(AverageTurboVelocity[iMarker][iSpan][1]/AverageTurboVelocity[iMarker][iSpan][0]);
             if (absFlowAngleOut != absFlowAngleOut){absFlowAngleOut = 0.0;}
+            if (flowAngleOut != flowAngleOut){flowAngleOut = 0.0;}
 
             temperatureOut_Mix      = AverageTotTemperature[iMarker][iSpan] - 0.5*avgVel2Out;
             totalTemperatureOut_Mix = AverageTotTemperature[iMarker][iSpan] ;

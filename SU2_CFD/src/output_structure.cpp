@@ -6414,8 +6414,8 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
     myfile.width(30); myfile << "\"TRadius[m]\"";
     myfile.width(30); myfile << "\"TotalPressureLoss[%]\"";
     myfile.width(30); myfile << "\"KineticEnergyLoss[%]\"";
-    myfile.width(30); myfile << "\"TotalStaticEfficiency[%]\"";
-    myfile.width(30); myfile << "\"TotalTotalEfficiency[%]\"";
+    //myfile.width(30); myfile << "\"TotalStaticEfficiency[%]\"";
+    //myfile.width(30); myfile << "\"TotalTotalEfficiency[%]\"";
     myfile.width(30); myfile << "\"EulerianWork[J]\"";
     myfile.width(30); myfile << "\"PressureIn[Pa]\"";
     myfile.width(30); myfile << "\"PressureOut[Pa]\"";
@@ -6477,8 +6477,8 @@ void COutput::SpanwiseFile(CGeometry ***geometry,
           myfile.width(30); myfile << TRadius              [iMarker_Monitoring-1][iSpan]*1;
           myfile.width(30); myfile << TotalPressureLoss    [iMarker_Monitoring-1][iSpan]*100;
           myfile.width(30); myfile << KineticEnergyLoss    [iMarker_Monitoring-1][iSpan]*100;
-          myfile.width(30); myfile << TotalStaticEfficiency[iMarker_Monitoring-1][iSpan]*100;
-          myfile.width(30); myfile << TotalTotalEfficiency [iMarker_Monitoring-1][iSpan]*100;
+//          myfile.width(30); myfile << TotalStaticEfficiency[iMarker_Monitoring-1][iSpan]*100;
+//          myfile.width(30); myfile << TotalTotalEfficiency [iMarker_Monitoring-1][iSpan]*100;
           myfile.width(30); myfile << EulerianWork         [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetEnergy_Ref();
           myfile.width(30); myfile << PressureIn           [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetPressure_Ref();
           myfile.width(30); myfile << PressureOut          [iMarker_Monitoring-1][iSpan]*config[ZONE_0]->GetPressure_Ref();

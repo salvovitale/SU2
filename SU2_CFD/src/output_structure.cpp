@@ -4859,26 +4859,8 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     bool write_heads;
     if (Unsteady) write_heads = (iIntIter == 0);
     else write_heads = (((iExtIter % (config[val_iZone]->GetWrt_Con_Freq()*40)) == 0));
-    
-    /*--- Check whether the current simulation has reached the specified
-     convergence criteria, and set StopCalc to true, if so. ---*/
 
-    bool FinalCalc;
-    switch (config[ZONE_0]->GetKind_Solver()) {
-    case EULER: case NAVIER_STOKES: case RANS:
-      FinalCalc = integration[ZONE_0][FLOW_SOL]->GetConvergence(); break;
-    case WAVE_EQUATION:
-      FinalCalc = integration[ZONE_0][WAVE_SOL]->GetConvergence(); break;
-    case HEAT_EQUATION:
-      FinalCalc = integration[ZONE_0][HEAT_SOL]->GetConvergence(); break;
-    case FEM_ELASTICITY:
-      FinalCalc = integration[ZONE_0][FEA_SOL]->GetConvergence(); break;
-    case ADJ_EULER: case ADJ_NAVIER_STOKES: case ADJ_RANS:
-    case DISC_ADJ_EULER: case DISC_ADJ_NAVIER_STOKES: case DISC_ADJ_RANS:
-      FinalCalc = integration[ZONE_0][ADJFLOW_SOL]->GetConvergence(); break;
-    }
-
-    bool write_turbo = (((iExtIter % (config[val_iZone]->GetWrt_Con_Freq()*200)) == 0) || (iExtIter == (config[val_iZone]->GetnExtIter() -1)) || FinalCalc );
+    bool write_turbo = (((iExtIter % (config[val_iZone]->GetWrt_Con_Freq()*200)) == 0) || (iExtIter == (config[val_iZone]->GetnExtIter() -1)));
     
     /*--- Analogous for dynamic problems (as of now I separate the problems, it may be worthy to do all together later on ---*/
     bool write_heads_FEM;
@@ -5204,9 +5186,6 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                   cout << endl;
                 }
                 if (turbo && write_turbo){
-                  ///*--- Write file with turboperformance spanwise output ---*/
-                  //SpanwiseFile(geometry,solver_container,config,val_iZone);
-
 									cout << endl << "------------------------- Turbomachinery Summary ------------------------" << endl;
 									cout << endl;
 									for (iMarker_Monitoring = 0; iMarker_Monitoring < config[ZONE_0]->GetnMarker_Turbomachinery(); iMarker_Monitoring++){

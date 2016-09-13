@@ -2574,9 +2574,9 @@ void CDriver::Output(unsigned long ExtIter){
       bool turbo = config_container[val_iZone]->GetBoolTurbomachinery();
       for (val_iZone=0; val_iZone<nZone; val_iZone++){
         output->SetConvHistory_Body(NULL, geometry_container, solver_container, config_container, integration_container, true, 0.0, val_iZone);
-        if (rank == MASTER_NODE) cout << endl << "Writing file with turboperformance spanwise output";
         if (turbo){
           /*--- Write file with turboperformance spanwise output ---*/
+          if (rank == MASTER_NODE) cout << endl << "Writing file with turboperformance spanwise output";
           output->SpanwiseFile(geometry_container,solver_container,config_container,val_iZone);
         }
       }

@@ -8628,8 +8628,10 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
   for(iMarkerTP = 0; iMarkerTP < nMarkerTP; iMarkerTP++ ){
   	for(iSpan = 0; iSpan < nSpanWiseSection +1; iSpan++){
   		FluidModel->SetTDState_PT(config->GetTotalPressureIn_BC(), config->GetTotalTemperatureIn_BC());
-  		TotalEnthalpyIn_BC[iMarkerTP][iSpan] = FluidModel->GetStaticEnergy()+ FluidModel->GetPressure()/FluidModel->GetDensity();
-  		EntropyIn_BC[iMarkerTP][iSpan] = FluidModel->GetEntropy();
+//  		TotalEnthalpyIn_BC[iMarkerTP][iSpan] = FluidModel->GetStaticEnergy()+ FluidModel->GetPressure()/FluidModel->GetDensity();
+//  		EntropyIn_BC[iMarkerTP][iSpan] = FluidModel->GetEntropy();
+  		TotalEnthalpyIn_BC[iMarkerTP][iSpan] = config->GetTotalPressureIn_BC();
+  		EntropyIn_BC[iMarkerTP][iSpan] = config->GetTotalTemperatureIn_BC();
   	}
   }
 
@@ -8654,7 +8656,8 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
 
 			/*--- Compute static Inflow quantities ---*/
 			FluidModel->SetTDState_Prho(PressureIn[iMarkerTP][iSpan], DensityIn[iMarkerTP][iSpan]);
-			EntropyIn[iMarkerTP][iSpan]					 = FluidModel->GetEntropy();
+//			EntropyIn[iMarkerTP][iSpan]					 = FluidModel->GetEntropy();
+			EntropyIn[iMarkerTP][iSpan]          = sqrt(absVel2);
 			MassFlowIn[iMarkerTP][iSpan]         = DensityIn[iMarkerTP][iSpan]*TurboVelocityIn[iMarkerTP][iSpan][0]*area;
 			AbsFlowAngleIn[iMarkerTP][iSpan]     = atan(TurboVelocityIn[iMarkerTP][iSpan][1]/TurboVelocityIn[iMarkerTP][iSpan][0]);
 			EnthalpyIn[iMarkerTP][iSpan]         = FluidModel->GetStaticEnergy() + PressureIn[iMarkerTP][iSpan]/DensityIn[iMarkerTP][iSpan];
@@ -8669,7 +8672,8 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
 
 
 			/*--- Compute Total Inflow quantities ---*/
-			TotalEnthalpyIn[iMarkerTP][iSpan]    = EnthalpyIn[iMarkerTP][iSpan] + 0.5*absVel2;
+//			TotalEnthalpyIn[iMarkerTP][iSpan]    = EnthalpyIn[iMarkerTP][iSpan] + 0.5*absVel2;
+			TotalEnthalpyIn[iMarkerTP][iSpan]    = DensityIn[iMarkerTP][iSpan];
 			FluidModel->SetTDState_hs(TotalEnthalpyIn[iMarkerTP][iSpan], EntropyIn[iMarkerTP][iSpan]);
 			TotalPressureIn[iMarkerTP][iSpan]    = FluidModel->GetPressure();
 			TotalTemperatureIn[iMarkerTP][iSpan] = FluidModel->GetTemperature();
@@ -8779,7 +8783,7 @@ void COutput::WriteTutboPerfConvHistory(CConfig *config){
 		cout << "Blade performance between boundaries " << inMarker_Tag << " and "<< outMarker_Tag << " : "<<endl;
 		cout << endl;
 		cout << "     Total Pressure Loss(%)" << "   Kinetic Energy Loss(%)" << "      Entropy Generation(%)" << endl;
-		cout.width(25); cout << TotalPressureLoss[iMarker_Monitoring][nSpanWiseSections]*100.0;
+		cout.width(25); cout << PressureIn[iMarker_Monitoring][nSpanWiseSections];
 		cout.width(25); cout << KineticEnergyLoss[iMarker_Monitoring][nSpanWiseSections]*100.0;
 		cout.width(25); cout << EntropyGen[iMarker_Monitoring][nSpanWiseSections]*100.0;
 		cout << endl;

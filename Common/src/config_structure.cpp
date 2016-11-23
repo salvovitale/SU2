@@ -5705,7 +5705,7 @@ su2double CConfig::GetPressureOut_BC() {
   unsigned short iMarker_BC;
   su2double pres_out;
   for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-    if (Kind_Data_NRBC[iMarker_BC] == STATIC_PRESSURE || Kind_Data_NRBC[iMarker_BC] == GLOBAL_STATIC_PRESSURE || Kind_Data_NRBC[iMarker_BC] == RADIAL_EQUILIBRIUM ){
+    if (Kind_Data_NRBC[iMarker_BC] == STATIC_PRESSURE || Kind_Data_NRBC[iMarker_BC] == STATIC_PRESSURE_1D || Kind_Data_NRBC[iMarker_BC] == RADIAL_EQUILIBRIUM ){
     	pres_out = NRBC_Var1[iMarker_BC];
     }
   }
@@ -5721,7 +5721,8 @@ su2double CConfig::GetTotalPressureIn_BC() {
 	unsigned short iMarker_BC;
 	su2double tot_pres_in;
 	for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-		if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT ){
+		if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D
+				|| Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY || Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY_1D){
 			tot_pres_in = NRBC_Var1[iMarker_BC];
 		}
 	}
@@ -5740,7 +5741,8 @@ su2double CConfig::GetTotalTemperatureIn_BC() {
   unsigned short iMarker_BC;
   su2double tot_temp_in;
   for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT ){
+    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D
+    		|| Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY || Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY_1D){
     	tot_temp_in = NRBC_Var2[iMarker_BC];
     }
   }
@@ -5760,7 +5762,8 @@ su2double CConfig::GetFlowAngleIn_BC() {
   unsigned short iMarker_BC;
   su2double alpha_in;
   for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT ){
+    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D
+    		|| Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY || Kind_Data_NRBC[iMarker_BC] == DENSITY_VELOCITY_1D){
     	alpha_in = atan(NRBC_FlowDir[iMarker_BC][1]/NRBC_FlowDir[iMarker_BC][0]);
     }
   }

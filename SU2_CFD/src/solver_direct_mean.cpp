@@ -8638,7 +8638,7 @@ void CEulerSolver::BC_TurboRiemann(CGeometry *geometry, CSolver **solver_contain
   long iVertex;
   su2double P_Total, T_Total, *Flow_Dir;
   su2double *Velocity_b, Velocity2_b, Enthalpy_b, Energy_b, StaticEnergy_b, Density_b, Kappa_b, Chi_b, Pressure_b, Temperature_b;
-  su2double *Velocity_e, Velocity2_e, Enthalpy_e, Entropy_e, Energy_e = 0.0, StaticEnthalpy_e, StaticEnergy_e, Density_e = 0.0, Pressure_e;
+  su2double *Velocity_e, Velocity2_e, VelMag_e, Enthalpy_e, Entropy_e, Energy_e = 0.0, StaticEnthalpy_e, StaticEnergy_e, Density_e = 0.0, Pressure_e;
   su2double *Velocity_i, Velocity2_i, Enthalpy_i, Energy_i, StaticEnergy_i, Density_i, Kappa_i, Chi_i, Pressure_i, SoundSpeed_i;
   su2double ProjVelocity_i;
   su2double **P_Tensor, **invP_Tensor, *Lambda_i, **Jacobian_b, **DubDu, *dw, *u_e, *u_i, *u_b;
@@ -8806,6 +8806,24 @@ void CEulerSolver::BC_TurboRiemann(CGeometry *geometry, CSolver **solver_contain
 				Energy_e = StaticEnergy_e + 0.5 * Velocity2_e;
 //				if (tkeNeeded) Energy_e += GetTke_Inf();
 				break;
+
+      case DENSITY_VELOCITY:
+
+        /*--- Retrieve the specified density and velocity magnitude ---*/
+        Density_e  = config->GetRiemann_Var1(Marker_Tag);
+        VelMag_e   = config->GetRiemann_Var2(Marker_Tag);
+        Flow_Dir = config->GetRiemann_FlowDir(Marker_Tag);
+
+        /*--- Non-dim. the inputs if necessary. ---*/
+        Density_e /= config->GetDensity_Ref();
+        VelMag_e /= config->GetVelocity_Ref();
+
+        for (iDim = 0; iDim < nDim; iDim++)
+					turboVelocity[iDim] = VelMag_e*Flow_Dir[iDim];
+        ComputeBackVelocity(turboVelocity,turboNormal, Velocity_e, config->GetMarker_All_TurbomachineryFlag(val_marker),config->GetKind_TurboMachinery(iZone));
+
+        Energy_e = Energy_i;
+        break;
 
 
 			case MIXING_OUT:
@@ -9291,7 +9309,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
 
   su2double *Velocity_b, Velocity2_b, Enthalpy_b, Energy_b, StaticEnergy_b, Density_b, Kappa_b, Chi_b, Pressure_b, Temperature_b;
   su2double *Velocity_i, Velocity2_i, Enthalpy_i, Energy_i, StaticEnergy_i, Density_i, Kappa_i, Chi_i, Pressure_i, SoundSpeed_i;
-  su2double Pressure_e;
+  su2double Pressure_e, Density_BC, VelMag_BC,  *turboVelocity_BC;
   su2double ProjVelocity_i;
   su2double **P_Tensor, **invP_Tensor, *Lambda_i, **Jacobian_b, **DubDu, *dw, *u_b;
   su2double *gridVel;
@@ -9306,12 +9324,13 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
   su2double relfacFou       = config->GetNRBC_RelaxFactorFourier(Marker_Tag);
   su2double *Normal;
   su2double TwoPi = 2.0*PI_NUMBER;
-  Normal 		 		= new su2double[nDim];
-  turboNormal 	= new su2double[nDim];
-  UnitNormal 		= new su2double[nDim];
-  turboVelocity = new su2double[nDim];
-  Velocity_i 		= new su2double[nDim];
-  Velocity_b 		= new su2double[nDim];
+  Normal 		 		   = new su2double[nDim];
+  turboNormal 		 = new su2double[nDim];
+  UnitNormal 			 = new su2double[nDim];
+  turboVelocity 	 = new su2double[nDim];
+  turboVelocity_BC = new su2double[nDim];
+  Velocity_i 		   = new su2double[nDim];
+  Velocity_b 		   = new su2double[nDim];
 
 
   su2double AverageSoundSpeed, *AverageTurboMach, AverageEntropy, AverageEnthalpy;
@@ -9441,7 +9460,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       }
       break;
 
-    case GLOBAL_TOTAL_CONDITIONS_PT:
+    case TOTAL_CONDITIONS_PT_1D:
 
       /*--- Retrieve the specified total conditions for this inlet. ---*/
       P_Total  = config->GetNRBC_Var1(Marker_Tag);
@@ -9497,6 +9516,84 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       }
       break;
 
+
+    case DENSITY_VELOCITY:
+
+    	/*--- Retrieve the specified density and velocity magnitude ---*/
+    	Density_BC  = config->GetNRBC_Var1(Marker_Tag);
+    	VelMag_BC  = config->GetNRBC_Var2(Marker_Tag);
+    	FlowDir = config->GetNRBC_FlowDir(Marker_Tag);
+
+    	/*--- Non-dim. the inputs if necessary. ---*/
+    	Density_BC /= config->GetDensity_Ref();
+    	VelMag_BC /= config->GetVelocity_Ref();
+
+    	for (iDim = 0; iDim < nDim; iDim++)
+    		turboVelocity_BC[iDim] = VelMag_BC*FlowDir[iDim];
+
+    	if (nDim == 2){
+    		deltaprim[0] = Density_BC - AverageDensity[val_marker][iSpan];
+    		deltaprim[1] = turboVelocity_BC[0] - AverageTurboVelocity[val_marker][iSpan][0];
+    		deltaprim[2] = turboVelocity_BC[1] - AverageTurboVelocity[val_marker][iSpan][1];
+    		deltaprim[3] = 0.0;
+    	}
+    	else{
+    		deltaprim[0] = Density_BC - AverageDensity[val_marker][iSpan];
+    		deltaprim[1] = turboVelocity_BC[0] - AverageTurboVelocity[val_marker][iSpan][0];
+    		deltaprim[2] = turboVelocity_BC[1] - AverageTurboVelocity[val_marker][iSpan][1];
+    		deltaprim[3] = turboVelocity_BC[2] - AverageTurboVelocity[val_marker][iSpan][2];
+    		deltaprim[4] = 0.0;
+    	}
+
+    	FluidModel->SetTDState_Prho(AveragePressure[val_marker][iSpan], AverageDensity[val_marker][iSpan]);
+    	AverageSoundSpeed = FluidModel->GetSoundSpeed();
+    	conv_numerics->GetCharJump(AverageSoundSpeed, AverageDensity[val_marker][iSpan], deltaprim, cj);
+
+			for (iVar = 0; iVar < nVar-1; iVar++){
+				c_avg[iVar] = cj[iVar];
+			}
+
+    	break;
+
+    case DENSITY_VELOCITY_1D:
+
+    	/*--- Retrieve the specified density and velocity magnitude ---*/
+    	Density_BC  = config->GetNRBC_Var1(Marker_Tag);
+    	VelMag_BC  = config->GetNRBC_Var2(Marker_Tag);
+    	FlowDir = config->GetNRBC_FlowDir(Marker_Tag);
+
+    	/*--- Non-dim. the inputs if necessary. ---*/
+    	Density_BC /= config->GetDensity_Ref();
+    	VelMag_BC /= config->GetVelocity_Ref();
+
+    	for (iDim = 0; iDim < nDim; iDim++)
+    		turboVelocity_BC[iDim] = VelMag_BC*FlowDir[iDim];
+
+    	if (nDim == 2){
+    		deltaprim[0] = Density_BC - AverageDensity[val_marker][nSpanWiseSections];
+    		deltaprim[1] = turboVelocity_BC[0] - AverageTurboVelocity[val_marker][nSpanWiseSections][0];
+    		deltaprim[2] = turboVelocity_BC[1] - AverageTurboVelocity[val_marker][nSpanWiseSections][1];
+    		deltaprim[3] = 0.0;
+    	}
+    	else{
+    		deltaprim[0] = Density_BC - AverageDensity[val_marker][nSpanWiseSections];
+    		deltaprim[1] = turboVelocity_BC[0] - AverageTurboVelocity[val_marker][nSpanWiseSections][0];
+    		deltaprim[2] = turboVelocity_BC[1] - AverageTurboVelocity[val_marker][nSpanWiseSections][1];
+    		deltaprim[3] = turboVelocity_BC[2] - AverageTurboVelocity[val_marker][nSpanWiseSections][2];
+    		deltaprim[4] = 0.0;
+    	}
+
+    	FluidModel->SetTDState_Prho(AveragePressure[val_marker][nSpanWiseSections], AverageDensity[val_marker][nSpanWiseSections]);
+    	AverageSoundSpeed = FluidModel->GetSoundSpeed();
+    	conv_numerics->GetCharJump(AverageSoundSpeed, AverageDensity[val_marker][nSpanWiseSections], deltaprim, cj);
+
+			for (iVar = 0; iVar < nVar-1; iVar++){
+				c_avg[iVar] = cj[iVar];
+			}
+
+    	break;
+
+
     case MIXING_IN: case MIXING_OUT:
 
       /* --- Compute average jump of primitive at the mixing-plane interface--- */
@@ -9536,7 +9633,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       }
       break;
 
-    case GLOBAL_STATIC_PRESSURE:
+    case STATIC_PRESSURE_1D:
       Pressure_e = config->GetNRBC_Var1(Marker_Tag);
       Pressure_e /= config->GetPressure_Ref();
 
@@ -9642,7 +9739,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
 
 
 
-      case TOTAL_CONDITIONS_PT: case MIXING_IN:case GLOBAL_TOTAL_CONDITIONS_PT:
+      case TOTAL_CONDITIONS_PT: case MIXING_IN:case TOTAL_CONDITIONS_PT_1D:case DENSITY_VELOCITY_1D:case DENSITY_VELOCITY:
 
         if (AvgMach < 1.000){
           Beta_inf= I*complex<su2double>(sqrt(1.0 - AvgMach));
@@ -9701,8 +9798,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
         }
         break;
 
-
-      case STATIC_PRESSURE:case GLOBAL_STATIC_PRESSURE:case MIXING_OUT:case RADIAL_EQUILIBRIUM:
+      case STATIC_PRESSURE:case STATIC_PRESSURE_1D:case MIXING_OUT:case RADIAL_EQUILIBRIUM:
 
         /* --- implementation of NRBC ---*/
         if (AvgMach >= 1.000){
@@ -10015,6 +10111,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
   delete [] turboNormal;
   delete [] UnitNormal;
   delete [] turboVelocity;
+  delete [] turboVelocity_BC;
   delete [] Velocity_b;
   delete [] Velocity_i;
   delete [] AverageTurboMach;

@@ -9447,7 +9447,7 @@ void CEulerSolver::TurboMixingProcess(CGeometry *geometry, CConfig *config, unsi
                }
                val_init_pressure = TotalAreaPressure/TotalArea;
 
-               if (abs(AverageFlux[iMarker][iSpan][0])<(10.0e-9)*TotalAreaDensity) {
+               if (abs(AverageFlux[iMarker][iSpan][0])<(10.0e-6)) {
 //                 cout << "Mass flux is 0.0 so a Area Averaged algorithm is used for the Mixing Procees" << endl;
                  AverageDensity[iMarker][iSpan] = TotalAreaDensity / TotalArea;
                  AveragePressure[iMarker][iSpan] = TotalAreaPressure / TotalArea;

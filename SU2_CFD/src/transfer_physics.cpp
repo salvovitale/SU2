@@ -360,8 +360,8 @@ CTransfer_MixingPlaneInterface::CTransfer_MixingPlaneInterface(unsigned short va
 	nVar = val_nVar;
 
 
-	Donor_Variable     = new su2double[nVar + 2];
-	Target_Variable    = new su2double[nVar + 2];
+	Donor_Variable     = new su2double[nVar];
+	Target_Variable    = new su2double[nVar];
 
 
 
@@ -385,17 +385,15 @@ void CTransfer_MixingPlaneInterface::GetDonor_Variable(CSolver *donor_solution, 
 								   	     	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	 	CConfig *donor_config, unsigned long Marker_Donor,
 																														unsigned long iSpan, unsigned long rank) {
 
-	unsigned short nDim = nVar - 2;
+	unsigned short nDim = donor_geometry->GetnDim();
 
 	Donor_Variable[0] = donor_solution->GetAverageDensity(Marker_Donor, iSpan);
 	Donor_Variable[1]	= donor_solution->GetAveragePressure(Marker_Donor, iSpan);
-//	Donor_Variable[2] = donor_solution->GetAverageTotPressure(Marker_Donor, iSpan);
-// 	Donor_Variable[3] = donor_solution->GetAverageTotTemperature(Marker_Donor, iSpan);
- 	Donor_Variable[4] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[0];
- 	Donor_Variable[5] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[1];
+ 	Donor_Variable[2] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[0];
+ 	Donor_Variable[3] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[1];
 
  	if(nDim == 3){
- 		Donor_Variable[6] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[2];
+ 		Donor_Variable[4] = donor_solution->GetAverageTurboVelocity(Marker_Donor, iSpan)[2];
  	}
 
 }
@@ -405,18 +403,16 @@ void CTransfer_MixingPlaneInterface::SetTarget_Variable(CSolver *target_solution
 										  CConfig *target_config, unsigned long Marker_Target,
 										  unsigned long iSpan, unsigned long rank) {
 
-	unsigned short nDim = nVar - 2;
+	unsigned short nDim = nDim = donor_geometry->GetnDim();
 
 	target_solution->SetExtAverageDensity(Marker_Target, iSpan, Target_Variable[0]);
 	target_solution->SetExtAveragePressure(Marker_Target, iSpan, Target_Variable[1]);
-//	target_solution->SetExtAverageTotPressure(Marker_Target, iSpan, Target_Variable[2]);
-//  target_solution->SetExtAverageTotTemperature(Marker_Target, iSpan, Target_Variable[3]);
-	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 0, Target_Variable[4]);
-	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 1, Target_Variable[5]);
+	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 0, Target_Variable[2]);
+	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 1, Target_Variable[3]);
 
 
   if(nDim == 3){
-  	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 2, Target_Variable[6]);
+  	target_solution->SetExtAverageTurboVelocity(Marker_Target, iSpan, 2, Target_Variable[4]);
   }
 
 

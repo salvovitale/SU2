@@ -403,7 +403,7 @@ void CTransfer_MixingPlaneInterface::SetTarget_Variable(CSolver *target_solution
 										  CConfig *target_config, unsigned long Marker_Target,
 										  unsigned long iSpan, unsigned long rank) {
 
-	unsigned short nDim = nDim = donor_geometry->GetnDim();
+	unsigned short nDim = nDim = target_geometry->GetnDim();
 
 	target_solution->SetExtAverageDensity(Marker_Target, iSpan, Target_Variable[0]);
 	target_solution->SetExtAveragePressure(Marker_Target, iSpan, Target_Variable[1]);

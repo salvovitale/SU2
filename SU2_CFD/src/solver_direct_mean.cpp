@@ -5446,7 +5446,7 @@ void CEulerSolver::TurboPerformance2nd(CConfig *config){
         vel2out = 0.0;
         for (iDim = 0; iDim<nDim; iDim++)
           vel2out += MachOut[iStage*2 +1][iSpan][iDim]*MachOut[iStage*2 +1][iSpan][iDim];
-        vel2out = FluidModel->GetSoundSpeed2();
+        vel2out *= FluidModel->GetSoundSpeed2();
         TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]    = EnthalpyOutIs[nBladesRow + iStage][iSpan] + 0.5*vel2out;
 
         TotalTotalEfficiency[nBladesRow + iStage][iSpan]  = (TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOut[iStage*2 + 1][iSpan])/(TotalEnthalpyIn[iStage*2][iSpan] - TotalEnthalpyOutIs[nBladesRow + iStage][iSpan]);

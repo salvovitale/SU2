@@ -230,10 +230,9 @@ void CTrapezoidalMap::Search_Band_For_Edge(su2double x, su2double y) {
 
 CLookUpTable::CLookUpTable(CConfig *config, bool dimensional) :
 		CFluidModel() {
-	LUT_Debug_Mode = false;
 	rank = MASTER_NODE;
 	CurrentZone = 1;
-	nInterpPoints = 6;
+	nInterpPoints = 3;
 	CurrentPoints.resize(nInterpPoints, 0);
 	LUT_Debug_Mode = config->GetLUT_Debug_Mode();
 	Interpolation_Matrix.resize(nInterpPoints,
@@ -286,11 +285,6 @@ CLookUpTable::CLookUpTable(CConfig *config, bool dimensional) :
 				<< endl;
 	}
 	Get_Unique_Edges();
-	if (rank == MASTER_NODE) {
-		cout << "Number of edges in zone 0: " << Table_Zone_Edges[0].size() << endl;
-		cout << "Number of edges in zone 1: " << Table_Zone_Edges[1].size() << endl;
-
-	}
 
 	if (rank == MASTER_NODE) {
 		// Building an KD_tree for the HS thermopair
@@ -376,7 +370,8 @@ void CLookUpTable::Get_Unique_Edges() {
 //Import all potential edges into a vector (assumes only triangles are used)
 	//Run through both zones of the lutmesh.tec (2 zones assumed)
 	for (unsigned int j = 0; j < 2; j++) {
-		Table_Zone_Edges[j].resize(3 * nTable_Zone_Triangles[j], vector<unsigned long>(3, 0));
+		Table_Zone_Edges[j].resize(3 * nTable_Zone_Triangles[j],
+				vector<unsigned long>(3, 0));
 		//Fill with edges (based on triangulation
 		//For each zone, go through all the triangles
 		for (unsigned int i = 0; i < nTable_Zone_Triangles[j]; i++) {
@@ -418,7 +413,8 @@ void CLookUpTable::Get_Unique_Edges() {
 		//Traverse the current edge list
 		while (k_temp < Table_Zone_Edges[j].size() - 1) {
 			//Each unique edge is connected to at least 1 face so push_back the connectivity arr.
-			Table_Edge_To_Face_Connectivity[j].push_back(vector<unsigned long>(1, -1));
+			Table_Edge_To_Face_Connectivity[j].push_back(
+					vector<unsigned long>(1, -1));
 			//Set the connectivty of the edge with a final index of k_final to the index of the
 			//face that the temporary edge with index k_temp is associated to
 			Table_Edge_To_Face_Connectivity[j][k_final][0] =
@@ -434,10 +430,10 @@ void CLookUpTable::Get_Unique_Edges() {
 				//be connected to only a single edge)
 				Table_Edge_To_Face_Connectivity[j][k_final].push_back(
 						Table_Zone_Edges[j][k_temp + 1][2]);
-				k_temp++;//sic!
+				k_temp++;				//sic!
 			}
 			//Move on to the next temporary edge
-			k_temp++;//sic!
+			k_temp++;				//sic!
 			//Advance to the next final unique edge
 			k_final++;
 		}
@@ -508,7 +504,8 @@ void CLookUpTable::Compute_Interpolation_Coefficients() {
 
 	//Now for each triangle in the zone calculate the e.g. 16 nearest points
 	for (unsigned int i = 0; i < Table_Zone_Triangles[CurrentZone].size(); i++) {
-		vector<unsigned long> Points_in_Triangle = Table_Zone_Triangles[CurrentZone][i];
+		vector<unsigned long> Points_in_Triangle =
+				Table_Zone_Triangles[CurrentZone][i];
 		//The query point is to be the weighted average of the vertexes of the
 		//triangle
 		query[0] = 0;
@@ -521,16 +518,14 @@ void CLookUpTable::Compute_Interpolation_Coefficients() {
 		query[1] += ThermoTables_Pressure[CurrentZone][Points_in_Triangle[1]];
 		query[1] += ThermoTables_Pressure[CurrentZone][Points_in_Triangle[2]];
 		query[1] /= 3;
-		if (nInterpPoints>3){
-		//If more than 3 points are required, than search the tree for the closet points
-		KD_tree->Determine_N_NearestNodes(nInterpPoints, query.data(),
-				best_dist.data(), result_IDs.data(), result_ranks.data());
-		//Set the found points as the current points
-		CurrentPoints = result_IDs;
-		Interpolation_Points[CurrentZone][i] = result_IDs;
-		}
-		else if (nInterpPoints==3)
-		{
+		if (nInterpPoints > 3) {
+			//If more than 3 points are required, than search the tree for the closet points
+			KD_tree->Determine_N_NearestNodes(nInterpPoints, query.data(),
+					best_dist.data(), result_IDs.data(), result_ranks.data());
+			//Set the found points as the current points
+			CurrentPoints = result_IDs;
+			Interpolation_Points[CurrentZone][i] = result_IDs;
+		} else if (nInterpPoints == 3) {
 			result_IDs = Table_Zone_Triangles[CurrentZone][i];
 			CurrentPoints = result_IDs;
 			Interpolation_Points[CurrentZone][i] = result_IDs;
@@ -565,6 +560,7 @@ void CLookUpTable::Get_Bounding_Simplex_From_TrapezoidalMap(
 	t_map[CurrentZone].Find_Containing_Simplex(x, y);
 	CurrentFace = t_map[CurrentZone].getCurrentFace();
 	CurrentPoints = Interpolation_Points[CurrentZone][CurrentFace];
+	cout<<CurrentFace;
 
 }
 
@@ -808,7 +804,7 @@ vector<su2double> CLookUpTable::Evaluate_Interpolation_Vector(su2double x,
 	interpolation_vector[0] = 1;
 	interpolation_vector[1] = x;
 	interpolation_vector[2] = y;
-	interpolation_vector[3] = x * y;
+//	interpolation_vector[3] = x * y;
 //	interpolation_vector[4] = x * y * y;
 //	interpolation_vector[5] = x * y * y * y;
 //	interpolation_vector[6] = x * x;
@@ -824,19 +820,9 @@ vector<su2double> CLookUpTable::Evaluate_Interpolation_Vector(su2double x,
 
 //interpolation_vector[4] = x * x;
 //	interpolation_vector[5] = y * y;
-	interpolation_vector[4] = log(y);
-	interpolation_vector[5] = log(x);
+//interpolation_vector[4] = log(y);
+//interpolation_vector[5] = log(x);
 //	interpolation_vector[8] = log(x + y);
-
-//	interpolation_vector[8] = exp(x);
-//	interpolation_vector[9] = exp(y);
-//	interpolation_vector[8] = log(y);
-//	interpolation_vector[10] = exp(x);
-//	interpolation_vector[11] = exp(y);
-//	interpolation_vector[12] = exp(x * y);
-//	interpolation_vector[13] = exp(-x);
-//	interpolation_vector[14] = exp(-y);
-//	interpolation_vector[15] = exp(x * y);
 
 	return interpolation_vector;
 }
@@ -867,7 +853,7 @@ vector<vector<double> > CLookUpTable::Interpolation_Matrix_Prepare_And_Invert(
 }
 
 void CLookUpTable::Calculate_Query_Specific_Coefficients(su2double x,
-		su2double y) {
+su2double y) {
 	vector<su2double> query_vector = Evaluate_Interpolation_Vector(x, y);
 	Query_Specific_Interpolation_Coefficients.resize(nInterpPoints, 0);
 	su2double d;

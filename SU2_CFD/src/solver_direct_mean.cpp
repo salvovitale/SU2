@@ -16207,6 +16207,75 @@ void CEulerSolver::GatherInOutAverageValues(CConfig *config, CGeometry *geometry
   }
 }
 
+void CEulerSolver::ComputeTurboVelocity(su2double *cartesianVelocity, su2double *turboNormal, su2double *turboVelocity, unsigned short marker_flag, unsigned short kind_turb) {
+
+	bool turbine = (kind_turb != CURVED_CHANNEL_ZX);
+	if (turbine){
+		if ((kind_turb == AXIAL && nDim == 3) || (kind_turb == CENTRIPETAL_AXIAL && marker_flag == OUTFLOW) || (kind_turb == AXIAL_CENTRIFUGAL && marker_flag == INFLOW) ){
+			turboVelocity[2] =  turboNormal[0]*cartesianVelocity[0] + cartesianVelocity[1]*turboNormal[1];
+			turboVelocity[1] =  turboNormal[0]*cartesianVelocity[1] - turboNormal[1]*cartesianVelocity[0];
+			turboVelocity[0] = cartesianVelocity[2];
+		}
+		else{
+			turboVelocity[0] =  turboNormal[0]*cartesianVelocity[0] + cartesianVelocity[1]*turboNormal[1];
+			turboVelocity[1] =  turboNormal[0]*cartesianVelocity[1] - turboNormal[1]*cartesianVelocity[0];
+			if (marker_flag == INFLOW){
+				turboVelocity[0] *= -1.0;
+				turboVelocity[1] *= -1.0;
+			}
+			if(nDim == 3)
+				turboVelocity[2] = cartesianVelocity[2];
+		}
+	}
+	else{
+		if(kind_turb == CURVED_CHANNEL_ZX && marker_flag == OUTFLOW){
+			turboVelocity[2] =  turboNormal[0]*cartesianVelocity[1] + cartesianVelocity[2]*turboNormal[1];
+			turboVelocity[1] =  turboNormal[0]*cartesianVelocity[2] - turboNormal[1]*cartesianVelocity[1];
+			turboVelocity[0] = cartesianVelocity[0];
+		}
+		else{
+			turboVelocity[2] =  turboNormal[0]*cartesianVelocity[0] + cartesianVelocity[1]*turboNormal[1];
+			turboVelocity[1] =  turboNormal[0]*cartesianVelocity[1] - turboNormal[1]*cartesianVelocity[0];
+			turboVelocity[0] = cartesianVelocity[2];
+		}
+	}
+}
+
+void CEulerSolver::ComputeBackVelocity(su2double *turboVelocity, su2double *turboNormal, su2double *cartesianVelocity, unsigned short marker_flag, unsigned short kind_turb){
+
+	bool turbine = (kind_turb != CURVED_CHANNEL_ZX);
+	if (turbine){
+		if ((kind_turb == AXIAL && nDim == 3) || (kind_turb == CENTRIPETAL_AXIAL && marker_flag == OUTFLOW) || (kind_turb == AXIAL_CENTRIFUGAL && marker_flag == INFLOW)){
+			cartesianVelocity[0] = turboVelocity[2]*turboNormal[0] - turboVelocity[1]*turboNormal[1];
+			cartesianVelocity[1] = turboVelocity[2]*turboNormal[1] + turboVelocity[1]*turboNormal[0];
+			cartesianVelocity[2] = turboVelocity[0];
+		}
+		else{
+			cartesianVelocity[0] =  turboVelocity[0]*turboNormal[0] - turboVelocity[1]*turboNormal[1];
+			cartesianVelocity[1] =  turboVelocity[0]*turboNormal[1] + turboVelocity[1]*turboNormal[0];
+
+			if (marker_flag == INFLOW){
+				cartesianVelocity[0] *= -1.0;
+				cartesianVelocity[1] *= -1.0;
+			}
+
+			if(nDim == 3)
+				cartesianVelocity[2] = turboVelocity[2];
+		}
+	}
+	else{
+		if(kind_turb == CURVED_CHANNEL_ZX && marker_flag == OUTFLOW){
+			cartesianVelocity[1] = turboVelocity[2]*turboNormal[0] - turboVelocity[1]*turboNormal[1];
+			cartesianVelocity[2] = turboVelocity[2]*turboNormal[1] + turboVelocity[1]*turboNormal[0];
+			cartesianVelocity[0] = turboVelocity[0];
+		}
+		else{
+			cartesianVelocity[0] = turboVelocity[2]*turboNormal[0] - turboVelocity[1]*turboNormal[1];
+			cartesianVelocity[1] = turboVelocity[2]*turboNormal[1] + turboVelocity[1]*turboNormal[0];
+			cartesianVelocity[2] = turboVelocity[0];
+		}
+	}
+}
 CNSSolver::CNSSolver(void) : CEulerSolver() {
 
   /*--- Basic array initialization ---*/

@@ -48,7 +48,7 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
   bool turbulent = ((config->GetKind_Solver() == RANS) || (config->GetKind_Solver() == DISC_ADJ_RANS));
   bool spalart_allmaras = (config->GetKind_Turb_Model() == SA);
   bool menter_sst       = (config->GetKind_Turb_Model() == SST);
-
+  bool channel;
   unsigned short nBladesRow, nStages;
 
   nBladesRow = config->GetnMarker_Turbomachinery();
@@ -57,6 +57,7 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
 
   /*--- Compute BC imposed value for convergence monitoring ---*/
   for(iMarkerTP = 0; iMarkerTP < nMarkerTP; iMarkerTP++ ){
+  	channel = (config->GetKind_TurboMachinery(iMarkerTP)== CURVED_CHANNEL_ZX);
     for(iSpan = 0; iSpan < config->GetnSpan_iZones(iMarkerTP) + 1; iSpan++){
       if(config->GetRampOutletPressure() && config->GetExtIter() > 0){
         PressureOut_BC[iMarkerTP][iSpan] = config->GetMonitorOutletPressure()/config->GetPressure_Ref();
@@ -91,8 +92,13 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
       /*--- Compute static Inflow quantities ---*/
       FluidModel->SetTDState_Prho(PressureIn[iMarkerTP][iSpan], DensityIn[iMarkerTP][iSpan]);
       EntropyIn[iMarkerTP][iSpan]					 = FluidModel->GetEntropy();
-      MassFlowIn[iMarkerTP][iSpan]         = config->GetnBlades(iMarkerTP)*DensityIn[iMarkerTP][iSpan]*TurboVelocityIn[iMarkerTP][iSpan][0]*area;
-      AbsFlowAngleIn[iMarkerTP][iSpan]     = atan(TurboVelocityIn[iMarkerTP][iSpan][1]/TurboVelocityIn[iMarkerTP][iSpan][0]);
+      if(!channel){
+      	MassFlowIn[iMarkerTP][iSpan]         = config->GetnBlades(iMarkerTP)*DensityIn[iMarkerTP][iSpan]*TurboVelocityIn[iMarkerTP][iSpan][0]*area;
+      }
+      else{
+      	MassFlowIn[iMarkerTP][iSpan]         = DensityIn[iMarkerTP][iSpan]*TurboVelocityIn[iMarkerTP][iSpan][0]*area;
+      }
+			AbsFlowAngleIn[iMarkerTP][iSpan]     = atan(TurboVelocityIn[iMarkerTP][iSpan][1]/TurboVelocityIn[iMarkerTP][iSpan][0]);
       EnthalpyIn[iMarkerTP][iSpan]         = FluidModel->GetStaticEnergy() + PressureIn[iMarkerTP][iSpan]/DensityIn[iMarkerTP][iSpan];
       soundSpeed                           = FluidModel->GetSoundSpeed();
 
@@ -174,7 +180,12 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
       /*--- Compute all the Outflow quantities ---*/
       FluidModel->SetTDState_Prho(PressureOut[iMarkerTP][iSpan], DensityOut[iMarkerTP][iSpan]);
       EntropyOut[iMarkerTP][iSpan]				 = FluidModel->GetEntropy();
-      MassFlowOut[iMarkerTP][iSpan]         = config->GetnBlades(iMarkerTP)*DensityOut[iMarkerTP][iSpan]*TurboVelocityOut[iMarkerTP][iSpan][0]*area;
+      if(!channel){
+      	MassFlowOut[iMarkerTP][iSpan]         = config->GetnBlades(iMarkerTP)*DensityOut[iMarkerTP][iSpan]*TurboVelocityOut[iMarkerTP][iSpan][0]*area;
+      }
+      else{
+      	MassFlowOut[iMarkerTP][iSpan]         = DensityOut[iMarkerTP][iSpan]*TurboVelocityOut[iMarkerTP][iSpan][0]*area;
+      }
       AbsFlowAngleOut[iMarkerTP][iSpan]     = atan(TurboVelocityOut[iMarkerTP][iSpan][1]/TurboVelocityOut[iMarkerTP][iSpan][0]);
       EnthalpyOut[iMarkerTP][iSpan]         = FluidModel->GetStaticEnergy() + PressureOut[iMarkerTP][iSpan]/DensityOut[iMarkerTP][iSpan];
       soundSpeed                           = FluidModel->GetSoundSpeed();

@@ -619,6 +619,7 @@ private:
   nRefOriginMoment_Z;           /*!< \brief Number of Z-coordinate moment computation origins. */
   string Mesh_FileName,			/*!< \brief Mesh input file. */
   Mesh_Out_FileName,				/*!< \brief Mesh output file. */
+  SpanWise_BCInlet_FileName,/*!< \brief SpanWise BC inlet file. */
   Solution_FlowFileName,			/*!< \brief Flow solution input file. */
   Solution_LinFileName,			/*!< \brief Linearized flow solution input file. */
   Solution_AdjFileName,			/*!< \brief Adjoint solution input file for drag functional. */
@@ -3871,6 +3872,11 @@ su2double GetUpwindMachLimit(void);
 	 * \return boolean.
 	 */
 	bool GetBoolTurbMixingPlane(void);
+  /*!
+   * \brief Verify if there is mixing plane interface specified from config file.
+   * \return boolean.
+   */
+  bool GetBoolSpanwiseBC_Inlet(void);
 
 /*!
  * \brief Verify if there is mixing plane interface specified from config file.
@@ -3915,10 +3921,16 @@ void SetnBlades(unsigned short val_iZone, su2double nblades);
 	bool GetBoolRiemann(void);
 
   /*!
+   * \brief Get the name of the file with the spanwise BC inlet.
+   * \return Name of the file with the spanwise BC inlet.
+   */
+  string GetSpanWise_BCInlet_FileName(void);
+
+  /*!
    * \brief number Turbomachinery performance option specified from config file.
    * \return number of bound.
    */
-	unsigned short GetnMarker_Turbomachinery(void);
+  unsigned short GetnMarker_Turbomachinery(void);
 
 /*!
  * \brief Get number of shroud markers.
@@ -4319,7 +4331,7 @@ string GetMarker_Shroud(unsigned short val_marker);
    * \return Name of the file with the solution of the flow problem.
    */
   string GetSolution_FlowFileName(void);
-  
+
   /*!
    * \brief Get the name of the file with the solution of the adjoint flow problem
    *		  with drag objective function.

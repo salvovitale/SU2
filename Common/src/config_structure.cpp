@@ -869,6 +869,8 @@ void CConfig::SetConfig_Options(unsigned short val_iZone, unsigned short val_nZo
   /*!\brief MARKER_SHROUD \n DESCRIPTION: markers in which velocity is forced to 0.0 .
    * \n Format: (shroud1, shroud2, ...)*/
   addStringListOption("MARKER_SHROUD", nMarker_Shroud, Marker_Shroud);
+  /*!\brief SPANWISE_BCINLET_FILENAME \n DESCRIPTION: Restart flow input file (the file output under the filename set by RESTART_FLOW_FILENAME) \n DEFAULT: solution_flow.dat \ingroup Config */
+  addStringOption("SPANWISE_BCINLET_FILENAME", SpanWise_BCInlet_FileName, string("spanwise_BCInlet.dat"));
   /*!\brief MARKER_SUPERSONIC_INLET  \n DESCRIPTION: Supersonic inlet boundary marker(s)
    * \n   Format: (inlet marker, temperature, static pressure, velocity_x,   velocity_y, velocity_z, ... ), i.e. primitive variables specified. \ingroup Config*/
   addInletOption("MARKER_SUPERSONIC_INLET", nMarker_Supersonic_Inlet, Marker_Supersonic_Inlet, Inlet_Temperature, Inlet_Pressure, Inlet_Velocity);
@@ -6408,7 +6410,7 @@ su2double CConfig::GetTotalPressureIn_BC() {
 	unsigned short iMarker_BC;
 	su2double tot_pres_in;
 	for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-		if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D){
+		if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D || Kind_Data_NRBC[iMarker_BC] == SPANWISE_TOTAL_CONDITIONS_PT){
 			tot_pres_in = NRBC_Var1[iMarker_BC];
 		}
 	}
@@ -6427,7 +6429,7 @@ su2double CConfig::GetTotalTemperatureIn_BC() {
   unsigned short iMarker_BC;
   su2double tot_temp_in;
   for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D){
+    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D || Kind_Data_NRBC[iMarker_BC] == SPANWISE_TOTAL_CONDITIONS_PT){
     	tot_temp_in = NRBC_Var2[iMarker_BC];
     }
   }
@@ -6443,11 +6445,22 @@ su2double CConfig::GetTotalTemperatureIn_BC() {
   return tot_temp_in/Temperature_Ref;
 }
 
+bool CConfig::GetBoolSpanwiseBC_Inlet() {
+  unsigned short iMarker_BC;
+  bool test = false;
+  for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
+    if (Kind_Data_NRBC[iMarker_BC] == SPANWISE_TOTAL_CONDITIONS_PT){
+      test = true;
+    }
+  }
+  return test;
+}
+
 su2double CConfig::GetFlowAngleIn_BC() {
   unsigned short iMarker_BC;
   su2double alpha_in;
   for (iMarker_BC = 0; iMarker_BC < nMarker_NRBC; iMarker_BC++){
-    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D){
+    if (Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT || Kind_Data_NRBC[iMarker_BC] == TOTAL_CONDITIONS_PT_1D || Kind_Data_NRBC[iMarker_BC] == SPANWISE_TOTAL_CONDITIONS_PT){
     	alpha_in = atan(NRBC_FlowDir[iMarker_BC][1]/NRBC_FlowDir[iMarker_BC][0]);
     }
   }

@@ -977,6 +977,8 @@ inline bool CConfig::GetBoolTurbMixingPlane(void) { return turbMixingPlane;}
 
 inline bool CConfig::GetSpatialFourier(void){return SpatialFourier;}
 
+inline string CConfig::GetSpanWise_BCInlet_FileName(void) { return SpanWise_BCInlet_FileName;}
+
 inline su2double CConfig::GetnBlades(unsigned short val_iZone) { return nBlades[val_iZone];}
 
 inline void CConfig::SetnBlades(unsigned short val_iZone, su2double nblades) { nBlades[val_iZone] = nblades;}

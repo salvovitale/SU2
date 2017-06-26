@@ -922,6 +922,8 @@ inline void CSolver::TurboAverageProcess(CSolver **solver, CGeometry *geometry, 
 
 inline void CSolver::GatherInOutAverageValues(CConfig *config, CGeometry *geometry){ }
 
+inline void CSolver::PreprocessSpanWiceBC_Inlet(CConfig *config, CGeometry *geometry){ }
+
 inline su2double CSolver::GetAverageDensity(unsigned short valMarker, unsigned short valSpan){return 0.0;}
 
 inline su2double CSolver::GetAveragePressure(unsigned short valMarker, unsigned short valSpan){return 0.0;}

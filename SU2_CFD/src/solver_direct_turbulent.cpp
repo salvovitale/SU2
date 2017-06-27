@@ -645,7 +645,7 @@ void CTurbSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contain
 
   switch(config->GetKind_Data_NRBC(Marker_Tag))
   {
-  case TOTAL_CONDITIONS_PT:case TOTAL_CONDITIONS_PT_1D: case DENSITY_VELOCITY:
+  case TOTAL_CONDITIONS_PT:case TOTAL_CONDITIONS_PT_1D: case DENSITY_VELOCITY:case SPANWISE_TOTAL_CONDITIONS_PT:
     BC_Inlet_Turbo(geometry, solver_container, conv_numerics, visc_numerics, config, val_marker);
     break;
   case MIXING_IN:

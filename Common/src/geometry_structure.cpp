@@ -9677,7 +9677,8 @@ void CPhysicalGeometry::ComputeNSpan(CConfig *config, unsigned short val_iZone, 
   short SendRecv;
   bool isPeriodic;
   unsigned short SpanWise_Kind = config->GetKind_SpanWise();
-  bool channel = (config->GetKind_TurboMachinery(val_iZone)== CURVED_CHANNEL_ZX);
+  bool channel = (config->GetKind_TurboMachinery(val_iZone)== CURVED_CHANNEL_ZX || config->GetKind_TurboMachinery(val_iZone)== CHANNEL_X ||
+                  config->GetKind_TurboMachinery(val_iZone)== CHANNEL);
 #ifdef HAVE_MPI
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);
@@ -9949,6 +9950,16 @@ void CPhysicalGeometry::ComputeNSpan(CConfig *config, unsigned short val_iZone, 
                       if (radius > max) max = radius;
                     }
                     break;
+                  case CHANNEL:
+                    radius = sqrt(coord[0]*coord[0]+coord[1]*coord[1]);
+                    if (radius < min) min = radius;
+                    if (radius > max) max = radius;
+                    break;
+                  case CHANNEL_X:
+                    radius = sqrt(coord[1]*coord[1]+coord[2]*coord[2]);
+                    if (radius < min) min = radius;
+                    if (radius > max) max = radius;
+                    break;
                   }
                 }
               }
@@ -10001,8 +10012,8 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
   min    =  10.0E+06;
   minInt =  10.0E+06;
   max    = -10.0E+06;
-  bool channel = (config->GetKind_TurboMachinery(val_iZone)== CURVED_CHANNEL_ZX);
-
+  bool channel = (config->GetKind_TurboMachinery(val_iZone)== CURVED_CHANNEL_ZX || config->GetKind_TurboMachinery(val_iZone)== CHANNEL_X ||
+                  config->GetKind_TurboMachinery(val_iZone)== CHANNEL);
   su2double radius;
   long iVertex, iSpanVertex, jSpanVertex, kSpanVertex = 0;
   int *nTotVertex_gb, *nVertexSpanHalo;
@@ -10174,6 +10185,24 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
                   }
                 }
                 break;
+              case CHANNEL:
+                radius = sqrt(coord[0]*coord[0]+coord[1]*coord[1]);
+                for(iSpan = 0; iSpan < nSpanWiseSections[marker_flag-1]; iSpan++){
+                  if (dist > (abs(radius - SpanWiseValue[marker_flag-1][iSpan]))){
+                    dist= abs(radius-SpanWiseValue[marker_flag-1][iSpan]);
+                    jSpan=iSpan;
+                  }
+                }
+                break;
+              case CHANNEL_X:
+                radius = sqrt(coord[1]*coord[1]+coord[2]*coord[2]);
+                for(iSpan = 0; iSpan < nSpanWiseSections[marker_flag-1]; iSpan++){
+                  if (dist > (abs(radius - SpanWiseValue[marker_flag-1][iSpan]))){
+                    dist= abs(radius-SpanWiseValue[marker_flag-1][iSpan]);
+                    jSpan=iSpan;
+                  }
+                }
+                break;
               }
             }
 
@@ -10289,6 +10318,24 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
                   }
                 }
                 break;
+              case CHANNEL:
+                radius = sqrt(coord[0]*coord[0]+coord[1]*coord[1]);
+                for(iSpan = 0; iSpan < nSpanWiseSections[marker_flag-1]; iSpan++){
+                  if (dist > (abs(radius - SpanWiseValue[marker_flag-1][iSpan]))){
+                    dist= abs(radius-SpanWiseValue[marker_flag-1][iSpan]);
+                    jSpan=iSpan;
+                  }
+                }
+                break;
+              case CHANNEL_X:
+                radius = sqrt(coord[1]*coord[1]+coord[2]*coord[2]);
+                for(iSpan = 0; iSpan < nSpanWiseSections[marker_flag-1]; iSpan++){
+                  if (dist > (abs(radius - SpanWiseValue[marker_flag-1][iSpan]))){
+                    dist= abs(radius-SpanWiseValue[marker_flag-1][iSpan]);
+                    jSpan=iSpan;
+                  }
+                }
+                break;
               }
             }
             /*--- 2D problem do not need span-wise separation---*/
@@ -10305,8 +10352,8 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
             for (iDim = 0; iDim < nDim; iDim++) NormalArea[iDim] /= Area;
             /*--- store all the all the info into the auxiliary containers ---*/
             disordered[jSpan][nVertexSpanHalo[jSpan]] 	= iPoint;
-            oldVertex3D[jSpan][nVertexSpanHalo[jSpan]] = iVertex;
-            area[jSpan][nVertexSpanHalo[jSpan]]				= Area;
+            oldVertex3D[jSpan][nVertexSpanHalo[jSpan]]  = iVertex;
+            area[jSpan][nVertexSpanHalo[jSpan]]         = Area;
             for (iDim = 0; iDim < nDim; iDim++){
               unitnormal[jSpan][nVertexSpanHalo[jSpan]][iDim] = NormalArea[iDim];
             }
@@ -10525,6 +10572,19 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
                       TurboNormal[2] = 0.0;
                     }
                     break;
+                  case CHANNEL:
+                    Normal2 = 0.0;
+                    for(iDim = 0; iDim < 2; iDim++) Normal2 +=coord[iDim]*coord[iDim];
+                    TurboNormal[0] = coord[0]/sqrt(Normal2);
+                    TurboNormal[1] = coord[1]/sqrt(Normal2);
+                    TurboNormal[2] = 0.0;
+                    break;
+                  case CHANNEL_X:
+                    Normal2 = 0.0;
+                    for(iDim = 1; iDim < 3; iDim++) Normal2 +=coord[iDim]*coord[iDim];
+                    TurboNormal[0] = coord[1]/sqrt(Normal2);
+                    TurboNormal[1] = coord[2]/sqrt(Normal2);
+                    TurboNormal[2] = 0.0;
                   }
                   turbovertex[iMarker][iSpan][iInternalVertex]->SetTurboNormal(TurboNormal);
                   iInternalVertex++;

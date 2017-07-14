@@ -923,7 +923,9 @@ enum TURBOMACHINERY_TYPE {
   CENTRIPETAL = 3,		 /*!< \brief centripetal turbomachinery. */
   CENTRIPETAL_AXIAL = 4,		 /*!< \brief mixed flow turbine. */
   AXIAL_CENTRIFUGAL = 5,		 /*!< \brief mixed flow turbine. */
-  CURVED_CHANNEL_ZX = 6      /*!< \brief curved channel. */
+  CURVED_CHANNEL_ZX = 6,      /*!< \brief curved channel from z to x. */
+  CHANNEL = 7,                    /*!< \brief straight channel parallel to z axis. */
+  CHANNEL_X = 8                  /*!< \brief straight channel parallel to x axis. */
 };
 
 static const map<string, TURBOMACHINERY_TYPE> TurboMachinery_Map = CCreateMap<string, TURBOMACHINERY_TYPE>
@@ -932,7 +934,10 @@ static const map<string, TURBOMACHINERY_TYPE> TurboMachinery_Map = CCreateMap<st
 ("CENTRIPETAL",  CENTRIPETAL)
 ("CENTRIPETAL_AXIAL",  CENTRIPETAL_AXIAL)
 ("AXIAL_CENTRIFUGAL",  AXIAL_CENTRIFUGAL)
-("CURVED_CHANNEL_ZX", CURVED_CHANNEL_ZX );
+("CURVED_CHANNEL_ZX", CURVED_CHANNEL_ZX)
+("CHANNEL", CHANNEL)
+("CHANNEL_X", CHANNEL_X);
+
 
 ///*!
 // * \brief types of Turbomachinery performance indicators.

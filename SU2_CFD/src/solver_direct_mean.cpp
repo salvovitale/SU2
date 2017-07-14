@@ -11809,7 +11809,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       AverageEntropy  = FluidModel->GetEntropy();
 
       avgVel2 = 0.0;
-      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageVelocity[val_marker][iSpan][iDim]*AverageVelocity[val_marker][iSpan][iDim];
+      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageTurboVelocity[val_marker][iSpan][iDim]*AverageTurboVelocity[val_marker][iSpan][iDim];
       if (nDim == 2){
         R[0] = -(AverageEntropy - Entropy_BC);
         R[1] = -(AverageTurboVelocity[val_marker][iSpan][1] - tan(alphaIn_BC)*AverageTurboVelocity[val_marker][iSpan][0]);
@@ -11865,7 +11865,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
 
 
       avgVel2 = 0.0;
-      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageVelocity[val_marker][iSpan][iDim]*AverageVelocity[val_marker][iSpan][iDim];
+      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageTurboVelocity[val_marker][iSpan][iDim]*AverageTurboVelocity[val_marker][iSpan][iDim];
       if (nDim == 2){
         R[0] = -(AverageEntropy - Entropy_BC);
         R[1] = -(AverageTurboVelocity[val_marker][nSpanWiseSections][1] - tan(alphaIn_BC)*AverageTurboVelocity[val_marker][nSpanWiseSections][0]);
@@ -11911,7 +11911,7 @@ void CEulerSolver::BC_NonReflecting(CGeometry *geometry, CSolver **solver_contai
       AverageEntropy  = FluidModel->GetEntropy();
 
       avgVel2 = 0.0;
-      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageVelocity[val_marker][iSpan][iDim]*AverageVelocity[val_marker][iSpan][iDim];
+      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageTurboVelocity[val_marker][iSpan][iDim]*AverageTurboVelocity[val_marker][iSpan][iDim];
       if (nDim == 2){
         R[0] = -(AverageEntropy - Entropy_BC);
         R[1] = -(AverageTurboVelocity[val_marker][iSpan][1] - tan(alphaIn_BC)*AverageTurboVelocity[val_marker][iSpan][0]);

@@ -56,7 +56,8 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
 
   /*--- Compute BC imposed value for convergence monitoring ---*/
   for(iMarkerTP = 0; iMarkerTP < nMarkerTP; iMarkerTP++ ){
-  	channel = (config->GetKind_TurboMachinery(iMarkerTP)== CURVED_CHANNEL_ZX);
+    channel = (config->GetKind_TurboMachinery(iMarkerTP)== CURVED_CHANNEL_ZX || config->GetKind_TurboMachinery(iMarkerTP)== CHANNEL_X ||
+                   config->GetKind_TurboMachinery(iMarkerTP)== CHANNEL);
     for(iSpan = 0; iSpan < config->GetnSpan_iZones(iMarkerTP) + 1; iSpan++){
       if(config->GetRampOutletPressure() && config->GetExtIter() > 0){
         PressureOut_BC[iMarkerTP][iSpan] = config->GetMonitorOutletPressure()/config->GetPressure_Ref();

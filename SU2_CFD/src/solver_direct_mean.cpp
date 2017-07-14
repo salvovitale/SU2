@@ -128,6 +128,9 @@ CEulerSolver::CEulerSolver(void) : CSolver() {
   ExtAverageNu               = NULL;
   ExtAverageKine             = NULL;
   ExtAverageOmega            = NULL;
+  TotalPressure_BC           = NULL;
+  TotalTemperature_BC        = NULL;
+  FlowAngle_BC               = NULL;
 
 
   /*--- Initialize primitive quantities for turboperformace ---*/
@@ -300,6 +303,9 @@ CEulerSolver::CEulerSolver(CGeometry *geometry, CConfig *config, unsigned short 
   ExtAverageNu                      = NULL;
   ExtAverageKine                    = NULL;
   ExtAverageOmega                   = NULL;
+  TotalPressure_BC                  = NULL;
+  TotalTemperature_BC               = NULL;
+  FlowAngle_BC                      = NULL;
 
 
   /*--- Initialize primitive quantities for turboperformace ---*/
@@ -1104,6 +1110,24 @@ CEulerSolver::~CEulerSolver(void) {
     for (iMarker = 0; iMarker < nMarker; iMarker++)
       delete [] ExtAverageNu[iMarker];
     delete [] ExtAverageNu;
+  }
+
+  if(TotalPressure_BC !=NULL){
+    for (iMarker = 0; iMarker < nMarker; iMarker++)
+      delete [] TotalPressure_BC[iMarker];
+    delete [] TotalPressure_BC;
+  }
+
+  if(TotalTemperature_BC !=NULL){
+    for (iMarker = 0; iMarker < nMarker; iMarker++)
+      delete [] TotalTemperature_BC[iMarker];
+    delete [] TotalTemperature_BC;
+  }
+
+  if(FlowAngle_BC !=NULL){
+    for (iMarker = 0; iMarker < nMarker; iMarker++)
+      delete [] FlowAngle_BC[iMarker];
+    delete [] FlowAngle_BC;
   }
 
   if(TurboVelocityIn !=NULL){

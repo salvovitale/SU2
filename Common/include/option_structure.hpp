@@ -8,8 +8,8 @@
  * be declared and defined here; to keep all elements together, there
  * is no corresponding .cpp file at this time.
  *
- * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
- *                      Dr. Thomas D. Economon (economon@stanford.edu).
+ * SU2 Original Developers: Dr. Francisco D. Palacios.
+ *                          Dr. Thomas D. Economon.
  *
  * SU2 Developers: Prof. Juan J. Alonso's group at Stanford University.
  *                 Prof. Piero Colonna's group at Delft University of Technology.
@@ -176,6 +176,20 @@ static const map<string, VERB_LEVEL> Verb_Map = CCreateMap<string, VERB_LEVEL>
 ("HIGH", VERB_HIGH);
 
 /*!
+ * \brief Type of One-Dimensionalization
+ */
+enum ONED_TYPE {
+  ONED_NONE = 0, /*!< \brief no one-dimensionalization. */
+  ONED_AREA = 1, /*!< \brief Area-weighted average. */
+  ONED_MFLUX = 2 /*!< \brief Mass-flux weighted average. */
+};
+static const map<string, ONED_TYPE> OneD_Map = CCreateMap<string, ONED_TYPE>
+("NONE", ONED_NONE)
+("AREA", ONED_AREA)
+("MASSFLUX", ONED_MFLUX);
+
+
+/*!
  * \brief different solver types for the CFD component
  */
 enum ENUM_SOLVER {
@@ -283,16 +297,17 @@ static const map<string, ENUM_MAT_COMPRESS> MatComp_Map = CCreateMap<string, ENU
  * \brief types of interpolators
  */
 enum ENUM_INTERPOLATOR {
-  NEAREST_NEIGHBOR = 0,   /*!< \brief Nearest Neigbhor interpolation */
-  ISOPARAMETRIC = 1, /*!< \brief Isoparametric interpolation */
-  CONSISTCONSERVE = 2,/*!< \brief Consistent & Conservative interpolation (S.A. Brown 1997). Utilizes Isoparametric interpolation. */
+  NEAREST_NEIGHBOR 	= 0,   	/*!< \brief Nearest Neigbhor interpolation */
+  ISOPARAMETRIC 	= 1,	/*!< \brief Isoparametric interpolation */
+  CONSISTCONSERVE 	= 2,	/*!< \brief Consistent & Conservative interpolation (S.A. Brown 1997). Utilizes Isoparametric interpolation. */
+  WEIGHTED_AVERAGE  = 3, 	/*!< \brief Sliding Mesh Approach E. Rinaldi 2015 */
 };
 
 static const map<string, ENUM_INTERPOLATOR> Interpolator_Map = CCreateMap<string, ENUM_INTERPOLATOR>
 ("NEAREST_NEIGHBOR", NEAREST_NEIGHBOR)
-("ISOPARAMETRIC", ISOPARAMETRIC)
-("CONSISTCONSERVE", CONSISTCONSERVE);
-
+("ISOPARAMETRIC",    ISOPARAMETRIC)
+("CONSISTCONSERVE",  CONSISTCONSERVE)
+("WEIGHTED_AVERAGE", WEIGHTED_AVERAGE);
 
 /*!
  * \brief different regime modes
@@ -812,11 +827,11 @@ enum RIEMANN_TYPE {
   MIXING_IN = 7, /*!< \brief User does not specify anything information are retrieved from the other domain */
   MIXING_OUT = 8, /*!< \brief User does not specify anything information are retrieved from the other domain */
   SUPERSONIC_OUTFLOW = 9,
-	RADIAL_EQUILIBRIUM = 10,
-	TOTAL_CONDITIONS_PT_1D = 11,
-	STATIC_PRESSURE_1D = 12,
-	MIXING_IN_1D = 13,
-	MIXING_OUT_1D =14,
+  RADIAL_EQUILIBRIUM = 10,
+  TOTAL_CONDITIONS_PT_1D = 11,
+  STATIC_PRESSURE_1D = 12,
+  MIXING_IN_1D = 13,
+  MIXING_OUT_1D =14,
   SPANWISE_TOTAL_CONDITIONS_PT=15
 };
 
@@ -906,9 +921,9 @@ enum TURBOMACHINERY_TYPE {
   AXIAL       = 1,		/*!< \brief axial turbomachinery. */
   CENTRIFUGAL = 2,    /*!< \brief centrifugal turbomachinery. */
   CENTRIPETAL = 3,		 /*!< \brief centripetal turbomachinery. */
-	CENTRIPETAL_AXIAL = 4,		 /*!< \brief mixed flow turbine. */
-	AXIAL_CENTRIFUGAL = 5,		 /*!< \brief mixed flow turbine. */
-	CURVED_CHANNEL_ZX = 6      /*!< \brief curved channel. */
+  CENTRIPETAL_AXIAL = 4,		 /*!< \brief mixed flow turbine. */
+  AXIAL_CENTRIFUGAL = 5,		 /*!< \brief mixed flow turbine. */
+  CURVED_CHANNEL_ZX = 6      /*!< \brief curved channel. */
 };
 
 static const map<string, TURBOMACHINERY_TYPE> TurboMachinery_Map = CCreateMap<string, TURBOMACHINERY_TYPE>
@@ -1033,22 +1048,22 @@ enum ENUM_OBJECTIVE {
   AVG_TOTAL_PRESSURE = 28, 	    /*!< \brief Total Pressure objective function definition. */
   AVG_OUTLET_PRESSURE = 29,      /*!< \brief Static Pressure objective function definition. */
   MASS_FLOW_RATE = 30,           /*!< \brief Mass Flow Rate objective function definition. */
-  OUTFLOW_GENERALIZED = 31,       /*!<\brief Objective function defined via chain rule on primitive variable gradients. */
   AERO_DRAG_COEFFICIENT = 35, 	  /*!< \brief Aero Drag objective function definition. */
   RADIAL_DISTORTION = 36, 	      /*!< \brief Radial Distortion objective function definition. */
   CIRCUMFERENTIAL_DISTORTION = 37,  /*!< \brief Circumferential Distortion objective function definition. */
-  TOTAL_PRESSURE_LOSS=38,
-  KINETIC_ENERGY_LOSS=39,
-  TOTAL_EFFICIENCY=40,
-  TOTAL_STATIC_EFFICIENCY=41,
-  EULERIAN_WORK=42,
-  TOTAL_ENTHALPY_IN=43,
-  FLOW_ANGLE_IN=44,
-  FLOW_ANGLE_OUT=45,
-  MASS_FLOW_IN=46,
-  MASS_FLOW_OUT=47,
-  PRESSURE_RATIO=48,
-  ENTROPY_GENERATION=49
+  CUSTOM_OBJFUNC = 38, 	           /*!< \brief Custom objective function definition. */
+  TOTAL_PRESSURE_LOSS=39,
+  KINETIC_ENERGY_LOSS=40,
+  TOTAL_EFFICIENCY=41,
+  TOTAL_STATIC_EFFICIENCY=42,
+  EULERIAN_WORK=43,
+  TOTAL_ENTHALPY_IN=44,
+  FLOW_ANGLE_IN=45,
+  FLOW_ANGLE_OUT=46,
+  MASS_FLOW_IN=47,
+  MASS_FLOW_OUT=48,
+  PRESSURE_RATIO=49,
+  ENTROPY_GENERATION=50
 };
 
 static const map<string, ENUM_OBJECTIVE> Objective_Map = CCreateMap<string, ENUM_OBJECTIVE>
@@ -1081,10 +1096,10 @@ static const map<string, ENUM_OBJECTIVE> Objective_Map = CCreateMap<string, ENUM
 ("AVG_TOTAL_PRESSURE", AVG_TOTAL_PRESSURE)
 ("AVG_OUTLET_PRESSURE", AVG_OUTLET_PRESSURE)
 ("MASS_FLOW_RATE", MASS_FLOW_RATE)
-("OUTFLOW_GENERALIZED", OUTFLOW_GENERALIZED)
 ("AERO_DRAG", AERO_DRAG_COEFFICIENT)
 ("RADIAL_DISTORTION", RADIAL_DISTORTION)
 ("CIRCUMFERENTIAL_DISTORTION", CIRCUMFERENTIAL_DISTORTION)
+("CUSTOM_OBJFUNC", CUSTOM_OBJFUNC)
 ("TOTAL_EFFICIENCY", TOTAL_EFFICIENCY)
 ("TOTAL_STATIC_EFFICIENCY", TOTAL_STATIC_EFFICIENCY)
 ("TOTAL_PRESSURE_LOSS", TOTAL_PRESSURE_LOSS)
@@ -1270,8 +1285,7 @@ enum ENUM_PARAM {
   CST = 21,                  /*!< \brief CST method with Kulfan parameters for airfoil deformation. */
   SURFACE_BUMP = 22,	       /*!< \brief Surfacebump function for flat surfaces deformation. */
   SURFACE_FILE = 23,		     /*!< Nodal coordinates set using a surface file. */
-  CUSTOM = 24,               /*!< 'CUSTOM' for use in external python analysis. */
-  NO_DEFORMATION = 25,		   /*!< \brief No Deformation. */
+  NO_DEFORMATION = 24,		   /*!< \brief No Deformation. */
   ANGLE_OF_ATTACK = 101,	   /*!< \brief Angle of attack for airfoils. */
   FFD_ANGLE_OF_ATTACK = 102	 /*!< \brief Angle of attack for FFD problem. */
 };
@@ -1301,7 +1315,6 @@ static const map<string, ENUM_PARAM> Param_Map = CCreateMap<string, ENUM_PARAM>
 ("PARABOLIC", PARABOLIC)
 ("AIRFOIL", AIRFOIL)
 ("SURFACE_FILE", SURFACE_FILE)
-("CUSTOM", CUSTOM)
 ("NO_DEFORMATION", NO_DEFORMATION)
 ("CST", CST);
 
@@ -2272,7 +2285,6 @@ public:
         case FFD_THICKNESS:        nParamDV = 3; break;
         case FFD_ANGLE_OF_ATTACK:  nParamDV = 2; break;
         case SURFACE_FILE:         nParamDV = 0; break;
-        case CUSTOM:               nParamDV = 1; break;
         default : {
           string newstring;
           newstring.append(this->name);
@@ -2856,16 +2868,6 @@ public:
   }
 };
 
-//template <class Tenum>
-//class COptionNRBC : public COptionRiemann<Tenum> {
-//
-//public:
-//	  COptionNRBC(string option_field_name, unsigned short & nMarker_NRBC, string* & Marker_NRBC, unsigned short* & option_field,
-//			  	  const map<string, Tenum> m, su2double* & var1, su2double* & var2, su2double** & FlowDir): COptionRiemann<Tenum>(option_field_name, nMarker_NRBC,  Marker_NRBC, option_field,
-//			  	   m, var1, var2,FlowDir){}
-//	  ~COptionNRBC() {};
-//
-//};
 template <class Tenum>
 class COptionNRBC : public COptionBase{
 
@@ -3228,8 +3230,6 @@ public:
     this->translation = NULL;
   }
 };
-
-
 
 class COptionTurboPerformance : public COptionBase {
   string name; // identifier for the option

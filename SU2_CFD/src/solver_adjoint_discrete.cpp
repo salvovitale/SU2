@@ -4,8 +4,8 @@
  * \author T. Albring
  * \version 5.0.0 "Raven"
  *
- * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
- *                      Dr. Thomas D. Economon (economon@stanford.edu).
+ * SU2 Original Developers: Dr. Francisco D. Palacios.
+ *                          Dr. Thomas D. Economon.
  *
  * SU2 Developers: Prof. Juan J. Alonso's group at Stanford University.
  *                 Prof. Piero Colonna's group at Delft University of Technology.
@@ -185,7 +185,7 @@ void CDiscAdjSolver::SetRecording(CGeometry* geometry, CConfig *config){
 
   /*--- Set indices to zero ---*/
 
-//  RegisterVariables(geometry, config, true);
+  RegisterVariables(geometry, config, true);
 
 }
 
@@ -218,7 +218,7 @@ void CDiscAdjSolver::RegisterVariables(CGeometry *geometry, CConfig *config, boo
 
   /*--- Register farfield values as input ---*/
 
-  if((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS)) {
+  if((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS && !config->GetBoolTurbomachinery())) {
 
     su2double Velocity_Ref = config->GetVelocity_Ref();
     Alpha                  = config->GetAoA()*PI_NUMBER/180.0;
@@ -256,6 +256,20 @@ void CDiscAdjSolver::RegisterVariables(CGeometry *geometry, CConfig *config, boo
     config->SetPressure_FreeStreamND(Pressure);
     direct_solver->SetPressure_Inf(Pressure);
 
+  }
+
+  if ((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS) && config->GetBoolTurbomachinery()){
+
+    BPressure = config->GetPressureOut_BC();
+    Temperature = config->GetTotalTemperatureIn_BC();
+
+    if (!reset){
+      AD::RegisterInput(BPressure);
+      AD::RegisterInput(Temperature);
+    }
+
+    config->SetPressureOut_BC(BPressure);
+    config->SetTotalTemperatureIn_BC(Temperature);
   }
 
 
@@ -353,11 +367,12 @@ void CDiscAdjSolver::ExtractAdjoint_Solution(CGeometry *geometry, CConfig *confi
 }
 
 void CDiscAdjSolver::ExtractAdjoint_Variables(CGeometry *geometry, CConfig *config) {
-  su2double Local_Sens_Press, Local_Sens_Temp, Local_Sens_AoA, Local_Sens_Mach;
 
   /*--- Extract the adjoint values of the farfield values ---*/
 
-  if ((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS)) {
+  if ((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS) && !config->GetBoolTurbomachinery()) {
+    su2double Local_Sens_Press, Local_Sens_Temp, Local_Sens_AoA, Local_Sens_Mach;
+
     Local_Sens_Mach  = SU2_TYPE::GetDerivative(Mach);
     Local_Sens_AoA   = SU2_TYPE::GetDerivative(Alpha);
     Local_Sens_Temp  = SU2_TYPE::GetDerivative(Temperature);
@@ -374,6 +389,23 @@ void CDiscAdjSolver::ExtractAdjoint_Variables(CGeometry *geometry, CConfig *conf
     Total_Sens_Temp  = Local_Sens_Temp;
     Total_Sens_Press = Local_Sens_Press;
 #endif
+  }
+
+  if ((config->GetKind_Regime() == COMPRESSIBLE) && (KindDirect_Solver == RUNTIME_FLOW_SYS) && config->GetBoolTurbomachinery()){
+    su2double Local_Sens_BPress, Local_Sens_Temperature;
+
+    Local_Sens_BPress = SU2_TYPE::GetDerivative(BPressure);
+    Local_Sens_Temperature = SU2_TYPE::GetDerivative(Temperature);
+
+#ifdef HAVE_MPI
+    SU2_MPI::Allreduce(&Local_Sens_BPress,   &Total_Sens_BPress,   1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+    SU2_MPI::Allreduce(&Local_Sens_Temperature,   &Total_Sens_Temp,   1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+
+#else
+    Total_Sens_BPress = Local_Sens_BPress;
+    Total_Sens_Temp = Local_Sens_Temperature;
+#endif
+
   }
 
   /*--- Extract here the adjoint values of everything else that is registered as input in RegisterInput. ---*/
@@ -524,15 +556,11 @@ void CDiscAdjSolver::Preprocessing(CGeometry *geometry, CSolver **solver_contain
       for (iPoint = 0; iPoint<geometry->GetnPoint(); iPoint++) {
           solution_n = node[iPoint]->GetSolution_time_n();
           solution_n1 = node[iPoint]->GetSolution_time_n1();
-
           for (iVar=0; iVar < nVar; iVar++) {
               node[iPoint]->SetDual_Time_Derivative(iVar, solution_n[iVar]+node[iPoint]->GetDual_Time_Derivative_n(iVar));
               node[iPoint]->SetDual_Time_Derivative_n(iVar, solution_n1[iVar]);
-
             }
-
         }
-
     }
 }
 
@@ -598,7 +626,7 @@ void CDiscAdjSolver::LoadRestart(CGeometry **geometry, CSolver ***solver, CConfi
       /*--- We need to store this point's data, so jump to the correct
        offset in the buffer of data from the restart file and load it. ---*/
 
-      index = counter*Restart_Vars[0] + skipVars;
+      index = counter*Restart_Vars[1] + skipVars;
       for (iVar = 0; iVar < nVar; iVar++) Solution[iVar] = Restart_Data[index+iVar];
       node[iPoint_Local]->SetSolution(Solution);
       iPoint_Global_Local++;

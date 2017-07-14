@@ -4,8 +4,8 @@
  * \author F. Palacios, T. Economon
  * \version 5.0.0 "Raven"
  *
- * SU2 Lead Developers: Dr. Francisco Palacios (Francisco.D.Palacios@boeing.com).
- *                      Dr. Thomas D. Economon (economon@stanford.edu).
+ * SU2 Original Developers: Dr. Francisco D. Palacios.
+ *                          Dr. Thomas D. Economon.
  *
  * SU2 Developers: Prof. Juan J. Alonso's group at Stanford University.
  *                 Prof. Piero Colonna's group at Delft University of Technology.
@@ -122,177 +122,177 @@ COutput::COutput(CConfig *config) {
   turbo = config->GetBoolTurbomachinery();
 
   if(turbo){
-  	/*--- Initializate quantities for turboperformace ---*/
-  	nSpanWiseSections = config->GetnSpanMaxAllZones();
-  	nMarkerTurboPerf  = config->GetnMarker_TurboPerformance();
+    /*--- Initializate quantities for turboperformace ---*/
+    nSpanWiseSections = config->GetnSpanMaxAllZones();
+    nMarkerTurboPerf  = config->GetnMarker_TurboPerformance();
 
 
-  	TotalStaticEfficiency         = new su2double*[nMarkerTurboPerf];
-  	TotalTotalEfficiency          = new su2double*[nMarkerTurboPerf];
-  	KineticEnergyLoss             = new su2double*[nMarkerTurboPerf];
-  	TRadius                       = new su2double*[nMarkerTurboPerf];
-  	TotalPressureLoss             = new su2double*[nMarkerTurboPerf];
-  	MassFlowIn                    = new su2double*[nMarkerTurboPerf];
-  	MassFlowOut                   = new su2double*[nMarkerTurboPerf];
-  	FlowAngleIn                   = new su2double*[nMarkerTurboPerf];
-  	FlowAngleIn_BC                = new su2double*[nMarkerTurboPerf];
-  	FlowAngleOut                  = new su2double*[nMarkerTurboPerf];
-  	EulerianWork                  = new su2double*[nMarkerTurboPerf];
-  	TotalEnthalpyIn               = new su2double*[nMarkerTurboPerf];
-  	TotalEnthalpyIn_BC            = new su2double*[nMarkerTurboPerf];
-  	EntropyIn                     = new su2double*[nMarkerTurboPerf];
-  	EntropyOut                    = new su2double*[nMarkerTurboPerf];
-  	EntropyIn_BC                  = new su2double*[nMarkerTurboPerf];
-  	PressureRatio                 = new su2double*[nMarkerTurboPerf];
-  	TotalTemperatureIn            = new su2double*[nMarkerTurboPerf];
-  	EnthalpyOut                   = new su2double*[nMarkerTurboPerf];
-  	MachIn                        = new su2double**[nMarkerTurboPerf];
-  	MachOut                       = new su2double**[nMarkerTurboPerf];
-  	VelocityOutIs                 = new su2double*[nMarkerTurboPerf];
-  	DensityIn                     = new su2double*[nMarkerTurboPerf];
-  	PressureIn                    = new su2double*[nMarkerTurboPerf];
-  	TurboVelocityIn               = new su2double**[nMarkerTurboPerf];
-  	DensityOut                    = new su2double*[nMarkerTurboPerf];
-  	PressureOut                   = new su2double*[nMarkerTurboPerf];
-  	TurboVelocityOut              = new su2double**[nMarkerTurboPerf];
-  	EnthalpyOutIs                 = new su2double*[nMarkerTurboPerf];
-  	EntropyGen                    = new su2double*[nMarkerTurboPerf];
-  	AbsFlowAngleIn                = new su2double*[nMarkerTurboPerf];
-  	TotalEnthalpyOut              = new su2double*[nMarkerTurboPerf];
-  	TotalEnthalpyOutIs            = new su2double*[nMarkerTurboPerf];
-  	RothalpyIn               			= new su2double*[nMarkerTurboPerf];
-  	RothalpyOut             		 	= new su2double*[nMarkerTurboPerf];
-  	AbsFlowAngleOut               = new su2double*[nMarkerTurboPerf];
-  	PressureOut_BC                = new su2double*[nMarkerTurboPerf];
-  	TemperatureIn                 = new su2double*[nMarkerTurboPerf];
-  	TemperatureOut                = new su2double*[nMarkerTurboPerf];
-  	TotalPressureIn               = new su2double*[nMarkerTurboPerf];
-  	TotalPressureOut              = new su2double*[nMarkerTurboPerf];
-  	TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
-  	EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
-  TurbIntensityIn               = new su2double*[nMarkerTurboPerf];
-  Turb2LamViscRatioIn           = new su2double*[nMarkerTurboPerf];
-  TurbIntensityOut              = new su2double*[nMarkerTurboPerf];
-  Turb2LamViscRatioOut          = new su2double*[nMarkerTurboPerf];
-  NuFactorIn                    = new su2double*[nMarkerTurboPerf];
-  NuFactorOut                   = new su2double*[nMarkerTurboPerf];
+    TotalStaticEfficiency         = new su2double*[nMarkerTurboPerf];
+    TotalTotalEfficiency          = new su2double*[nMarkerTurboPerf];
+    KineticEnergyLoss             = new su2double*[nMarkerTurboPerf];
+    TRadius                       = new su2double*[nMarkerTurboPerf];
+    TotalPressureLoss             = new su2double*[nMarkerTurboPerf];
+    MassFlowIn                    = new su2double*[nMarkerTurboPerf];
+    MassFlowOut                   = new su2double*[nMarkerTurboPerf];
+    FlowAngleIn                   = new su2double*[nMarkerTurboPerf];
+    FlowAngleIn_BC                = new su2double*[nMarkerTurboPerf];
+    FlowAngleOut                  = new su2double*[nMarkerTurboPerf];
+    EulerianWork                  = new su2double*[nMarkerTurboPerf];
+    TotalEnthalpyIn               = new su2double*[nMarkerTurboPerf];
+    TotalEnthalpyIn_BC            = new su2double*[nMarkerTurboPerf];
+    EntropyIn                     = new su2double*[nMarkerTurboPerf];
+    EntropyOut                    = new su2double*[nMarkerTurboPerf];
+    EntropyIn_BC                  = new su2double*[nMarkerTurboPerf];
+    PressureRatio                 = new su2double*[nMarkerTurboPerf];
+    TotalTemperatureIn            = new su2double*[nMarkerTurboPerf];
+    EnthalpyOut                   = new su2double*[nMarkerTurboPerf];
+    MachIn                        = new su2double**[nMarkerTurboPerf];
+    MachOut                       = new su2double**[nMarkerTurboPerf];
+    VelocityOutIs                 = new su2double*[nMarkerTurboPerf];
+    DensityIn                     = new su2double*[nMarkerTurboPerf];
+    PressureIn                    = new su2double*[nMarkerTurboPerf];
+    TurboVelocityIn               = new su2double**[nMarkerTurboPerf];
+    DensityOut                    = new su2double*[nMarkerTurboPerf];
+    PressureOut                   = new su2double*[nMarkerTurboPerf];
+    TurboVelocityOut              = new su2double**[nMarkerTurboPerf];
+    EnthalpyOutIs                 = new su2double*[nMarkerTurboPerf];
+    EntropyGen                    = new su2double*[nMarkerTurboPerf];
+    AbsFlowAngleIn                = new su2double*[nMarkerTurboPerf];
+    TotalEnthalpyOut              = new su2double*[nMarkerTurboPerf];
+    TotalEnthalpyOutIs            = new su2double*[nMarkerTurboPerf];
+    RothalpyIn                    = new su2double*[nMarkerTurboPerf];
+    RothalpyOut                   = new su2double*[nMarkerTurboPerf];
+    AbsFlowAngleOut               = new su2double*[nMarkerTurboPerf];
+    PressureOut_BC                = new su2double*[nMarkerTurboPerf];
+    TemperatureIn                 = new su2double*[nMarkerTurboPerf];
+    TemperatureOut                = new su2double*[nMarkerTurboPerf];
+    TotalPressureIn               = new su2double*[nMarkerTurboPerf];
+    TotalPressureOut              = new su2double*[nMarkerTurboPerf];
+    TotalTemperatureOut           = new su2double*[nMarkerTurboPerf];
+    EnthalpyIn                    = new su2double*[nMarkerTurboPerf];
+    TurbIntensityIn               = new su2double*[nMarkerTurboPerf];
+    Turb2LamViscRatioIn           = new su2double*[nMarkerTurboPerf];
+    TurbIntensityOut              = new su2double*[nMarkerTurboPerf];
+    Turb2LamViscRatioOut          = new su2double*[nMarkerTurboPerf];
+    NuFactorIn                    = new su2double*[nMarkerTurboPerf];
+    NuFactorOut                   = new su2double*[nMarkerTurboPerf];
 
-  	for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
-  		TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalTotalEfficiency    [iMarker] = new su2double [nSpanWiseSections + 1];
-  		KineticEnergyLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TRadius                 [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalPressureLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
-  		MassFlowIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-  		MassFlowOut             [iMarker] = new su2double [nSpanWiseSections + 1];
-  		FlowAngleIn             [iMarker] = new su2double [nSpanWiseSections + 1];
-  		FlowAngleIn_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
-  		FlowAngleOut            [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EulerianWork            [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalEnthalpyIn         [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalEnthalpyIn_BC      [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EntropyIn               [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EntropyOut              [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EntropyIn_BC            [iMarker] = new su2double [nSpanWiseSections + 1];
-  		PressureRatio           [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalTemperatureIn      [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EnthalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
-  		MachIn                  [iMarker] = new su2double*[nSpanWiseSections + 1];
-  		MachOut                 [iMarker] = new su2double*[nSpanWiseSections + 1];
-  		VelocityOutIs           [iMarker] = new su2double [nSpanWiseSections + 1];
-  		DensityIn               [iMarker] = new su2double [nSpanWiseSections + 1];
-  		PressureIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TurboVelocityIn         [iMarker] = new su2double*[nSpanWiseSections + 1];
-  		DensityOut              [iMarker] = new su2double [nSpanWiseSections + 1];
-  		PressureOut             [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TurboVelocityOut        [iMarker] = new su2double*[nSpanWiseSections + 1];
-  		EnthalpyOutIs           [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EntropyGen              [iMarker] = new su2double [nSpanWiseSections + 1];
-  		AbsFlowAngleIn          [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalEnthalpyOut        [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalEnthalpyOutIs      [iMarker] = new su2double [nSpanWiseSections + 1];
-  		RothalpyIn         			[iMarker] = new su2double [nSpanWiseSections + 1];
-  		RothalpyOut        			[iMarker] = new su2double [nSpanWiseSections + 1];
-  		AbsFlowAngleOut         [iMarker] = new su2double [nSpanWiseSections + 1];
-  		PressureOut_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TemperatureIn           [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TemperatureOut          [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalPressureIn         [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
-  		TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
-  		EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-  TurbIntensityIn         [iMarker] = new su2double [nSpanWiseSections + 1];
-  Turb2LamViscRatioIn     [iMarker] = new su2double [nSpanWiseSections + 1];
-  TurbIntensityOut        [iMarker] = new su2double [nSpanWiseSections + 1];
-  Turb2LamViscRatioOut    [iMarker] = new su2double [nSpanWiseSections + 1];
-  NuFactorIn              [iMarker] = new su2double [nSpanWiseSections + 1];
-  NuFactorOut             [iMarker] = new su2double [nSpanWiseSections + 1];
-
-
-  		for (iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
-  			TotalStaticEfficiency   [iMarker][iSpan] = 0.0;
-  			TotalTotalEfficiency    [iMarker][iSpan] = 0.0;
-  			KineticEnergyLoss       [iMarker][iSpan] = 0.0;
-  			TRadius                 [iMarker][iSpan] = 0.0;
-  			TotalPressureLoss       [iMarker][iSpan] = 0.0;
-  			MassFlowIn              [iMarker][iSpan] = 0.0;
-  			MassFlowOut             [iMarker][iSpan] = 0.0;
-  			FlowAngleIn             [iMarker][iSpan] = 0.0;
-  			FlowAngleIn_BC          [iMarker][iSpan] = config->GetFlowAngleIn_BC();
-  			FlowAngleOut            [iMarker][iSpan] = 0.0;
-  			EulerianWork            [iMarker][iSpan] = 0.0;
-  			TotalEnthalpyIn         [iMarker][iSpan] = 0.0;
-  			TotalEnthalpyIn_BC      [iMarker][iSpan] = 0.0;
-  			EntropyIn               [iMarker][iSpan] = 0.0;
-  			EntropyOut              [iMarker][iSpan] = 0.0;
-  			EntropyIn_BC            [iMarker][iSpan] = 0.0;
-  			PressureRatio           [iMarker][iSpan] = 0.0;
-  			TotalTemperatureIn      [iMarker][iSpan] = 0.0;
-  			EnthalpyOut             [iMarker][iSpan] = 0.0;
+    for (iMarker = 0; iMarker < nMarkerTurboPerf; iMarker++){
+      TotalStaticEfficiency   [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalTotalEfficiency    [iMarker] = new su2double [nSpanWiseSections + 1];
+      KineticEnergyLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
+      TRadius                 [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalPressureLoss       [iMarker] = new su2double [nSpanWiseSections + 1];
+      MassFlowIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+      MassFlowOut             [iMarker] = new su2double [nSpanWiseSections + 1];
+      FlowAngleIn             [iMarker] = new su2double [nSpanWiseSections + 1];
+      FlowAngleIn_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
+      FlowAngleOut            [iMarker] = new su2double [nSpanWiseSections + 1];
+      EulerianWork            [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalEnthalpyIn         [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalEnthalpyIn_BC      [iMarker] = new su2double [nSpanWiseSections + 1];
+      EntropyIn               [iMarker] = new su2double [nSpanWiseSections + 1];
+      EntropyOut              [iMarker] = new su2double [nSpanWiseSections + 1];
+      EntropyIn_BC            [iMarker] = new su2double [nSpanWiseSections + 1];
+      PressureRatio           [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalTemperatureIn      [iMarker] = new su2double [nSpanWiseSections + 1];
+      EnthalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
+      MachIn                  [iMarker] = new su2double*[nSpanWiseSections + 1];
+      MachOut                 [iMarker] = new su2double*[nSpanWiseSections + 1];
+      VelocityOutIs           [iMarker] = new su2double [nSpanWiseSections + 1];
+      DensityIn               [iMarker] = new su2double [nSpanWiseSections + 1];
+      PressureIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+      TurboVelocityIn         [iMarker] = new su2double*[nSpanWiseSections + 1];
+      DensityOut              [iMarker] = new su2double [nSpanWiseSections + 1];
+      PressureOut             [iMarker] = new su2double [nSpanWiseSections + 1];
+      TurboVelocityOut        [iMarker] = new su2double*[nSpanWiseSections + 1];
+      EnthalpyOutIs           [iMarker] = new su2double [nSpanWiseSections + 1];
+      EntropyGen              [iMarker] = new su2double [nSpanWiseSections + 1];
+      AbsFlowAngleIn          [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalEnthalpyOut        [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalEnthalpyOutIs      [iMarker] = new su2double [nSpanWiseSections + 1];
+      RothalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+      RothalpyOut             [iMarker] = new su2double [nSpanWiseSections + 1];
+      AbsFlowAngleOut         [iMarker] = new su2double [nSpanWiseSections + 1];
+      PressureOut_BC          [iMarker] = new su2double [nSpanWiseSections + 1];
+      TemperatureIn           [iMarker] = new su2double [nSpanWiseSections + 1];
+      TemperatureOut          [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalPressureIn         [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalPressureOut        [iMarker] = new su2double [nSpanWiseSections + 1];
+      TotalTemperatureOut     [iMarker] = new su2double [nSpanWiseSections + 1];
+      EnthalpyIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+      TurbIntensityIn         [iMarker] = new su2double [nSpanWiseSections + 1];
+      Turb2LamViscRatioIn     [iMarker] = new su2double [nSpanWiseSections + 1];
+      TurbIntensityOut        [iMarker] = new su2double [nSpanWiseSections + 1];
+      Turb2LamViscRatioOut    [iMarker] = new su2double [nSpanWiseSections + 1];
+      NuFactorIn              [iMarker] = new su2double [nSpanWiseSections + 1];
+      NuFactorOut             [iMarker] = new su2double [nSpanWiseSections + 1];
 
 
-  			VelocityOutIs           [iMarker][iSpan] = 0.0;
-  			DensityIn               [iMarker][iSpan] = 0.0;
-  			PressureIn              [iMarker][iSpan] = 0.0;
+      for (iSpan = 0; iSpan < nSpanWiseSections + 1; iSpan++){
+        TotalStaticEfficiency   [iMarker][iSpan] = 0.0;
+        TotalTotalEfficiency    [iMarker][iSpan] = 0.0;
+        KineticEnergyLoss       [iMarker][iSpan] = 0.0;
+        TRadius                 [iMarker][iSpan] = 0.0;
+        TotalPressureLoss       [iMarker][iSpan] = 0.0;
+        MassFlowIn              [iMarker][iSpan] = 0.0;
+        MassFlowOut             [iMarker][iSpan] = 0.0;
+        FlowAngleIn             [iMarker][iSpan] = 0.0;
+        FlowAngleIn_BC          [iMarker][iSpan] = config->GetFlowAngleIn_BC();
+        FlowAngleOut            [iMarker][iSpan] = 0.0;
+        EulerianWork            [iMarker][iSpan] = 0.0;
+        TotalEnthalpyIn         [iMarker][iSpan] = 0.0;
+        TotalEnthalpyIn_BC      [iMarker][iSpan] = 0.0;
+        EntropyIn               [iMarker][iSpan] = 0.0;
+        EntropyOut              [iMarker][iSpan] = 0.0;
+        EntropyIn_BC            [iMarker][iSpan] = 0.0;
+        PressureRatio           [iMarker][iSpan] = 0.0;
+        TotalTemperatureIn      [iMarker][iSpan] = 0.0;
+        EnthalpyOut             [iMarker][iSpan] = 0.0;
 
-  			DensityOut              [iMarker][iSpan] = 0.0;
-  			PressureOut             [iMarker][iSpan] = 0.0;
 
-  			EnthalpyOutIs           [iMarker][iSpan] = 0.0;
-  			EntropyGen              [iMarker][iSpan] = 0.0;
-  			AbsFlowAngleIn          [iMarker][iSpan] = 0.0;
-  			TotalEnthalpyOut        [iMarker][iSpan] = 0.0;
-  			TotalEnthalpyOutIs      [iMarker][iSpan] = 0.0;
-  			RothalpyIn         			[iMarker][iSpan] = 0.0;
-  			RothalpyOut        			[iMarker][iSpan] = 0.0;
-  			AbsFlowAngleOut         [iMarker][iSpan] = 0.0;
-  			PressureOut_BC          [iMarker][iSpan] = config->GetPressureOut_BC();
+        VelocityOutIs           [iMarker][iSpan] = 0.0;
+        DensityIn               [iMarker][iSpan] = 0.0;
+        PressureIn              [iMarker][iSpan] = 0.0;
 
-  			TemperatureIn           [iMarker][iSpan] = 0.0;
-  			TemperatureOut          [iMarker][iSpan] = 0.0;
-  			TotalPressureIn         [iMarker][iSpan] = 0.0;
-  			TotalPressureOut        [iMarker][iSpan] = 0.0;
-  			TotalTemperatureOut     [iMarker][iSpan] = 0.0;
-  			EnthalpyIn              [iMarker][iSpan] = 0.0;
-  TurbIntensityIn         [iMarker][iSpan] = 0.0;
-  Turb2LamViscRatioIn     [iMarker][iSpan] = 0.0;
-  TurbIntensityOut        [iMarker][iSpan] = 0.0;
-  Turb2LamViscRatioOut    [iMarker][iSpan] = 0.0;
-  NuFactorIn              [iMarker][iSpan] = 0.0;
-  NuFactorOut             [iMarker][iSpan] = 0.0;
-  			MachIn           [iMarker][iSpan]           = new su2double[4];
-  			MachOut          [iMarker][iSpan]           = new su2double[4];
-  			TurboVelocityIn  [iMarker][iSpan]           = new su2double[4];
-  			TurboVelocityOut [iMarker][iSpan]           = new su2double[4];
+        DensityOut              [iMarker][iSpan] = 0.0;
+        PressureOut             [iMarker][iSpan] = 0.0;
 
-  			for (iDim = 0; iDim < 4; iDim++){
-  				MachIn           [iMarker][iSpan][iDim]   = 0.0;
-  				MachOut          [iMarker][iSpan][iDim]   = 0.0;
-  				TurboVelocityIn  [iMarker][iSpan][iDim]   = 0.0;
-  				TurboVelocityOut [iMarker][iSpan][iDim]   = 0.0;
-  			}
-  		}
-  	}
+        EnthalpyOutIs           [iMarker][iSpan] = 0.0;
+        EntropyGen              [iMarker][iSpan] = 0.0;
+        AbsFlowAngleIn          [iMarker][iSpan] = 0.0;
+        TotalEnthalpyOut        [iMarker][iSpan] = 0.0;
+        TotalEnthalpyOutIs      [iMarker][iSpan] = 0.0;
+        RothalpyIn              [iMarker][iSpan] = 0.0;
+        RothalpyOut             [iMarker][iSpan] = 0.0;
+        AbsFlowAngleOut         [iMarker][iSpan] = 0.0;
+        PressureOut_BC          [iMarker][iSpan] = config->GetPressureOut_BC();
+
+        TemperatureIn           [iMarker][iSpan] = 0.0;
+        TemperatureOut          [iMarker][iSpan] = 0.0;
+        TotalPressureIn         [iMarker][iSpan] = 0.0;
+        TotalPressureOut        [iMarker][iSpan] = 0.0;
+        TotalTemperatureOut     [iMarker][iSpan] = 0.0;
+        EnthalpyIn              [iMarker][iSpan] = 0.0;
+        TurbIntensityIn         [iMarker][iSpan] = 0.0;
+        Turb2LamViscRatioIn     [iMarker][iSpan] = 0.0;
+        TurbIntensityOut        [iMarker][iSpan] = 0.0;
+        Turb2LamViscRatioOut    [iMarker][iSpan] = 0.0;
+        NuFactorIn              [iMarker][iSpan] = 0.0;
+        NuFactorOut             [iMarker][iSpan] = 0.0;
+        MachIn                  [iMarker][iSpan] = new su2double[4];
+        MachOut                 [iMarker][iSpan] = new su2double[4];
+        TurboVelocityIn         [iMarker][iSpan] = new su2double[4];
+        TurboVelocityOut        [iMarker][iSpan] = new su2double[4];
+
+        for (iDim = 0; iDim < 4; iDim++){
+          MachIn           [iMarker][iSpan][iDim]   = 0.0;
+          MachOut          [iMarker][iSpan][iDim]   = 0.0;
+          TurboVelocityIn  [iMarker][iSpan][iDim]   = 0.0;
+          TurboVelocityOut [iMarker][iSpan][iDim]   = 0.0;
+        }
+      }
+    }
   }
 }
 
@@ -302,103 +302,115 @@ COutput::~COutput(void) {
   /* Data is taken care of in DeallocateSolution function */
 
 
-	/*--- Delete turboperformance pointers initiliazed at constrction  ---*/
-	unsigned short iMarker, iSpan;
-	if(turbo){
-		for(iMarker = 0; iMarker< nMarkerTurboPerf; iMarker++){
-			for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
-				delete [] MachIn          [iMarker][iSpan];
-				delete [] MachOut         [iMarker][iSpan];
-				delete [] TurboVelocityIn [iMarker][iSpan];
-				delete [] TurboVelocityOut[iMarker][iSpan];
-			}
-		}
-		for(iMarker = 0; iMarker< nMarkerTurboPerf; iMarker++){
-			delete [] TotalStaticEfficiency[iMarker];
-			delete [] TotalTotalEfficiency [iMarker];
-			delete [] KineticEnergyLoss    [iMarker];
-			delete [] TotalPressureLoss    [iMarker];
-			delete [] MassFlowIn           [iMarker];
-			delete [] MassFlowOut          [iMarker];
-			delete [] FlowAngleIn          [iMarker];
-			delete [] FlowAngleOut         [iMarker];
-			delete [] EulerianWork         [iMarker];
-			delete [] TotalEnthalpyIn      [iMarker];
-			delete [] TotalEnthalpyOut     [iMarker];
-			delete [] TotalEnthalpyOutIs   [iMarker];
-			delete [] PressureRatio        [iMarker];
-			delete [] EnthalpyOut          [iMarker];
-			delete [] VelocityOutIs        [iMarker];
-			delete [] TotalTemperatureIn   [iMarker];
-			delete [] FlowAngleIn_BC       [iMarker];
-			delete [] EntropyIn            [iMarker];
-			delete [] EntropyIn_BC         [iMarker];
-			delete [] TotalEnthalpyIn_BC   [iMarker];
-			delete [] DensityIn            [iMarker];
-			delete [] PressureIn           [iMarker];
-			delete [] DensityOut           [iMarker];
-			delete [] PressureOut          [iMarker];
-			delete [] EnthalpyOutIs        [iMarker];
-			delete [] EntropyGen           [iMarker];
-			delete [] AbsFlowAngleIn       [iMarker];
-			delete [] RothalpyIn      		 [iMarker];
-			delete [] RothalpyOut     		 [iMarker];
-			delete [] AbsFlowAngleOut      [iMarker];
-			delete [] PressureOut_BC       [iMarker];
-			delete [] MachIn               [iMarker];
-			delete [] MachOut              [iMarker];
-			delete [] TurboVelocityIn      [iMarker];
-			delete [] TurboVelocityOut     [iMarker];
-			delete [] TemperatureIn        [iMarker];
-			delete [] TemperatureOut       [iMarker];
-			delete [] TotalPressureIn      [iMarker];
-			delete [] TotalPressureOut     [iMarker];
-			delete [] TotalTemperatureOut  [iMarker];
-			delete [] EnthalpyIn           [iMarker];
+  /*--- Delete turboperformance pointers initiliazed at constrction  ---*/
+  unsigned short iMarker, iSpan;
+  if(turbo){
+    for(iMarker = 0; iMarker< nMarkerTurboPerf; iMarker++){
+      for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
+        delete [] MachIn          [iMarker][iSpan];
+        delete [] MachOut         [iMarker][iSpan];
+        delete [] TurboVelocityIn [iMarker][iSpan];
+        delete [] TurboVelocityOut[iMarker][iSpan];
+      }
+    }
+    for(iMarker = 0; iMarker< nMarkerTurboPerf; iMarker++){
+      delete [] TotalStaticEfficiency[iMarker];
+      delete [] TotalTotalEfficiency [iMarker];
+      delete [] KineticEnergyLoss    [iMarker];
+      delete [] TotalPressureLoss    [iMarker];
+      delete [] MassFlowIn           [iMarker];
+      delete [] MassFlowOut          [iMarker];
+      delete [] FlowAngleIn          [iMarker];
+      delete [] FlowAngleOut         [iMarker];
+      delete [] EulerianWork         [iMarker];
+      delete [] TotalEnthalpyIn      [iMarker];
+      delete [] TotalEnthalpyOut     [iMarker];
+      delete [] TotalEnthalpyOutIs   [iMarker];
+      delete [] PressureRatio        [iMarker];
+      delete [] EnthalpyOut          [iMarker];
+      delete [] VelocityOutIs        [iMarker];
+      delete [] TotalTemperatureIn   [iMarker];
+      delete [] FlowAngleIn_BC       [iMarker];
+      delete [] EntropyIn            [iMarker];
+      delete [] EntropyIn_BC         [iMarker];
+      delete [] TotalEnthalpyIn_BC   [iMarker];
+      delete [] DensityIn            [iMarker];
+      delete [] PressureIn           [iMarker];
+      delete [] DensityOut           [iMarker];
+      delete [] PressureOut          [iMarker];
+      delete [] EnthalpyOutIs        [iMarker];
+      delete [] EntropyGen           [iMarker];
+      delete [] AbsFlowAngleIn       [iMarker];
+      delete [] RothalpyIn           [iMarker];
+      delete [] RothalpyOut          [iMarker];
+      delete [] AbsFlowAngleOut      [iMarker];
+      delete [] PressureOut_BC       [iMarker];
+      delete [] MachIn               [iMarker];
+      delete [] MachOut              [iMarker];
+      delete [] TurboVelocityIn      [iMarker];
+      delete [] TurboVelocityOut     [iMarker];
+      delete [] TemperatureIn        [iMarker];
+      delete [] TemperatureOut       [iMarker];
+      delete [] TotalPressureIn      [iMarker];
+      delete [] TotalPressureOut     [iMarker];
+      delete [] TotalTemperatureOut  [iMarker];
+      delete [] EnthalpyIn           [iMarker];
+      delete [] TurbIntensityIn      [iMarker];
+      delete [] Turb2LamViscRatioIn  [iMarker];
+      delete [] TurbIntensityOut     [iMarker];
+      delete [] Turb2LamViscRatioOut [iMarker];
+      delete [] NuFactorIn           [iMarker];
+      delete [] NuFactorOut          [iMarker];
 
 
-		}
-		delete [] TotalStaticEfficiency;
-		delete [] TotalTotalEfficiency;
-		delete [] KineticEnergyLoss;
-		delete [] TotalPressureLoss;
-		delete [] MassFlowIn;
-		delete [] MassFlowOut;
-		delete [] FlowAngleIn;
-		delete [] FlowAngleOut;
-		delete [] EulerianWork;
-		delete [] TotalEnthalpyIn;
-		delete [] TotalEnthalpyOut;
-		delete [] TotalEnthalpyOutIs;
-		delete [] PressureRatio;
-		delete [] EnthalpyOut;
-		delete [] VelocityOutIs;
-		delete [] TotalTemperatureIn;
-		delete [] FlowAngleIn_BC;
-		delete [] EntropyIn;
-		delete [] EntropyIn_BC;
-		delete [] TotalEnthalpyIn_BC;
-		delete [] DensityIn;
-		delete [] PressureIn;
-		delete [] DensityOut;
-		delete [] PressureOut;
-		delete [] EnthalpyOutIs;
-		delete [] EntropyGen;
-		delete [] AbsFlowAngleIn;
-		delete [] RothalpyIn;
-		delete [] RothalpyOut;
-		delete [] AbsFlowAngleOut;
-		delete [] PressureOut_BC;
-		delete [] MachIn;
-		delete [] MachOut;
-		delete [] TurboVelocityIn;
-		delete [] TurboVelocityOut;
-		delete [] TemperatureOut;
-		delete [] TotalPressureIn;
-		delete [] TotalPressureOut;
-		delete [] TotalTemperatureOut;
-		delete [] EnthalpyIn;
-	}
+    }
+    delete [] TotalStaticEfficiency;
+    delete [] TotalTotalEfficiency;
+    delete [] KineticEnergyLoss;
+    delete [] TotalPressureLoss;
+    delete [] MassFlowIn;
+    delete [] MassFlowOut;
+    delete [] FlowAngleIn;
+    delete [] FlowAngleOut;
+    delete [] EulerianWork;
+    delete [] TotalEnthalpyIn;
+    delete [] TotalEnthalpyOut;
+    delete [] TotalEnthalpyOutIs;
+    delete [] PressureRatio;
+    delete [] EnthalpyOut;
+    delete [] VelocityOutIs;
+    delete [] TotalTemperatureIn;
+    delete [] FlowAngleIn_BC;
+    delete [] EntropyIn;
+    delete [] EntropyIn_BC;
+    delete [] TotalEnthalpyIn_BC;
+    delete [] DensityIn;
+    delete [] PressureIn;
+    delete [] DensityOut;
+    delete [] PressureOut;
+    delete [] EnthalpyOutIs;
+    delete [] EntropyGen;
+    delete [] AbsFlowAngleIn;
+    delete [] RothalpyIn;
+    delete [] RothalpyOut;
+    delete [] AbsFlowAngleOut;
+    delete [] PressureOut_BC;
+    delete [] MachIn;
+    delete [] MachOut;
+    delete [] TurboVelocityIn;
+    delete [] TurboVelocityOut;
+    delete [] TemperatureOut;
+    delete [] TotalPressureIn;
+    delete [] TotalPressureOut;
+    delete [] TotalTemperatureOut;
+    delete [] EnthalpyIn;
+    delete [] TurbIntensityIn;
+    delete [] Turb2LamViscRatioIn;
+    delete [] TurbIntensityOut;
+    delete [] Turb2LamViscRatioOut;
+    delete [] NuFactorIn;
+    delete [] NuFactorOut;
+  }
 }
 
 void COutput::SetSurfaceCSV_Flow(CConfig *config, CGeometry *geometry,
@@ -2345,9 +2357,9 @@ void COutput::MergeSolution(CConfig *config, CGeometry *geometry, CSolver **solv
     case HEAT_EQUATION: FirstIndex = HEAT_SOL; SecondIndex = NONE; ThirdIndex = NONE; break;
     case FEM_ELASTICITY: FirstIndex = FEA_SOL; SecondIndex = NONE; ThirdIndex = NONE; break;
     case ADJ_EULER : case ADJ_NAVIER_STOKES : FirstIndex = ADJFLOW_SOL; SecondIndex = NONE; ThirdIndex = NONE; break;
-    case ADJ_RANS : FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL; ThirdIndex = NONE; break;
+    case ADJ_RANS : FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc_Cont()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL; ThirdIndex = NONE; break;
     case DISC_ADJ_EULER: case DISC_ADJ_NAVIER_STOKES: FirstIndex = ADJFLOW_SOL; SecondIndex = NONE; ThirdIndex = NONE; break;
-    case DISC_ADJ_RANS: FirstIndex = ADJFLOW_SOL; SecondIndex = ADJTURB_SOL; ThirdIndex = NONE; break;
+    case DISC_ADJ_RANS: FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc_Disc()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL; ThirdIndex = NONE; break;
     default: SecondIndex = NONE; ThirdIndex = NONE; break;
   }
   
@@ -2417,6 +2429,7 @@ void COutput::MergeSolution(CConfig *config, CGeometry *geometry, CSolver **solv
         ( Kind_Solver == ADJ_RANS               )) {
       iVar_Sens   = nVar_Total; nVar_Total += 2;
     }
+    
     if (Kind_Solver == FEM_ELASTICITY)  {
       /*--- If the analysis is dynamic... ---*/
       if (config->GetDynamic_Analysis() == DYNAMIC) {
@@ -2430,7 +2443,6 @@ void COutput::MergeSolution(CConfig *config, CGeometry *geometry, CSolver **solv
         else if (geometry->GetnDim() == 3) nVar_Total += 3;
       }
       iVar_FEA_Stress  = nVar_Total; nVar_Total += 3;
-
       if (geometry->GetnDim() == 3) {iVar_FEA_Stress_3D = nVar_Total; nVar_Total += 3;}
       iVar_FEA_Extra = nVar_Total; nVar_Total += 1;
     }
@@ -3339,7 +3351,7 @@ void COutput::MergeSolution(CConfig *config, CGeometry *geometry, CSolver **solv
     /*--- Communicate the Velocities for dynamic FEM problem ---*/
     
     if ((Kind_Solver == FEM_ELASTICITY) && (config->GetDynamic_Analysis() == DYNAMIC)) {
-
+      
       /*--- Loop over this partition to collect the current variable ---*/
       
       jPoint = 0; su2double *Node_Vel;
@@ -4102,6 +4114,7 @@ void COutput::SetRestart(CConfig *config, CGeometry *geometry, CSolver **solver,
       }
     }
     
+    
     if (config->GetExtraOutput()) {
       string *headings = NULL;
       //if (Kind_Solver == RANS) {
@@ -4239,28 +4252,27 @@ void COutput::SetConvHistory_Header(ofstream *ConvHist_file, CConfig *config, un
   bool actuator_disk = ((config->GetnMarker_ActDiskInlet() != 0) || (config->GetnMarker_ActDiskOutlet() != 0));
   bool turbulent = ((config->GetKind_Solver() == RANS) || (config->GetKind_Solver() == ADJ_RANS) ||
                     (config->GetKind_Solver() == DISC_ADJ_RANS));
-  bool frozen_turb = config->GetFrozen_Visc();
+  bool cont_adj = config->GetContinuous_Adjoint();
+  bool disc_adj = config->GetDiscrete_Adjoint();
+  bool frozen_visc = (cont_adj && config->GetFrozen_Visc_Cont()) ||( disc_adj && config->GetFrozen_Visc_Disc());
   bool inv_design = (config->GetInvDesign_Cp() || config->GetInvDesign_HeatFlux());
   bool output_1d = config->GetWrt_1D_Output();
   bool output_massflow = (config->GetKind_ObjFunc() == MASS_FLOW_RATE);
   bool output_comboObj = (config->GetnObj() > 1);
-  bool output_per_surface = false;
-  //if ((config->GetnMarker_Monitoring() > 1) && (!output_comboObj)) output_per_surface = true;
+  bool output_per_surface = (config->GetnMarker_Monitoring() > 1);
   bool turbo = config->GetBoolTurbomachinery();
   unsigned short direct_diff = config->GetDirectDiff();
+  /* Flag for whether to print heat flux values */
+  bool thermal = (config->GetKind_Solver() == RANS or config->GetKind_Solver()  == NAVIER_STOKES);
 
-  bool thermal = false; /* Flag for whether to print heat flux values */
-
-  if (config->GetKind_Solver() == RANS or config->GetKind_Solver()  == NAVIER_STOKES) {
-    thermal = true;
-  }
+  
   /*--- Write file name with extension ---*/
   string filename = config->GetConv_FileName();
   if(config->GetnZone() > 1){
     filename = config->GetMultizone_HistoryFileName(filename, val_iZone);
   }
   strcpy (cstr, filename.data());
-
+  
   if (config->GetWrt_Unsteady() && config->GetRestart()) {
     long iExtIter = config->GetUnst_RestartIter();
     if (SU2_TYPE::Int(iExtIter) < 10) SPRINTF (buffer, "_0000%d", SU2_TYPE::Int(iExtIter));
@@ -4270,24 +4282,24 @@ void COutput::SetConvHistory_Header(ofstream *ConvHist_file, CConfig *config, un
     if (SU2_TYPE::Int(iExtIter) >= 10000) SPRINTF (buffer, "_%d", SU2_TYPE::Int(iExtIter));
     strcat(cstr, buffer);
   }
-
+  
   if ((config->GetOutput_FileFormat() == TECPLOT) ||
       (config->GetOutput_FileFormat() == FIELDVIEW)) SPRINTF (buffer, ".dat");
   else if ((config->GetOutput_FileFormat() == TECPLOT_BINARY) ||
-      (config->GetOutput_FileFormat() == FIELDVIEW_BINARY))  SPRINTF (buffer, ".plt");
+           (config->GetOutput_FileFormat() == FIELDVIEW_BINARY))  SPRINTF (buffer, ".plt");
   else if (config->GetOutput_FileFormat() == PARAVIEW)  SPRINTF (buffer, ".vtk");
   strcat(cstr, buffer);
-
+  
   ConvHist_file->open(cstr, ios::out);
   ConvHist_file->precision(15);
-
+  
   /*--- Begin of the header ---*/
-
+  
   char begin[]= "\"Iteration\"";
-
+  
   /*--- Header for the coefficients ---*/
-
-  char flow_coeff[]= ",\"CLift\",\"CDrag\",\"CSideForce\",\"CMx\",\"CMy\",\"CMz\",\"CFx\",\"CFy\",\"CFz\",\"CL/CD\"";
+  
+  char flow_coeff[]= ",\"CL\",\"CD\",\"CSF\",\"CMx\",\"CMy\",\"CMz\",\"CFx\",\"CFy\",\"CFz\",\"CL/CD\",\"Custom_ObjFunc\"";
   char heat_coeff[]= ",\"HeatFlux_Total\",\"HeatFlux_Maximum\"";
   char equivalent_area_coeff[]= ",\"CEquivArea\",\"CNearFieldOF\"";
   char engine_coeff[]= ",\"AeroCDrag\",\"Radial_Distortion\",\"Radial_Distortion(average)\",\"Circumferential_Distortion\",\"Circumferential_Distortion(average)\"";
@@ -4295,21 +4307,22 @@ void COutput::SetConvHistory_Header(ofstream *ConvHist_file, CConfig *config, un
   char wave_coeff[]= ",\"CWave\"";
   char fem_coeff[]= ",\"VM_Stress\"";
   char adj_coeff[]= ",\"Sens_Geo\",\"Sens_Mach\",\"Sens_AoA\",\"Sens_Press\",\"Sens_Temp\",\"Sens_AoS\"";
-  char oneD_outputs[]= ",\"Avg_TotalPress\",\"Avg_Mach\",\"Avg_Temperature\",\"MassFlowRate\",\"FluxAvg_Pressure\",\"FluxAvg_Density\",\"FluxAvg_Velocity\",\"FluxAvg_Enthalpy\"";
+  char adj_turbo_coeff[]=",\"Sens_Geo\",\"Sens_PressOut\",\"Sens_TotTempIn\"";
+  char oneD_outputs[]= ",\"AreaAvg_TotalPress\",\"AreaAvg_Mach\",\"AreaAvg_Temperature\",\"MassFlowRate\",\"Avg_Pressure\",\"Avg_Density\",\"Avg_Velocity\",\"Avg_Enthalpy\"";
   char Cp_inverse_design[]= ",\"Cp_Diff\"";
   char Heat_inverse_design[]= ",\"HeatFlux_Diff\"";
   char mass_flow_rate[] = ",\"MassFlowRate\"";
-  char d_flow_coeff[] = ",\"D(CLift)\",\"D(CDrag)\",\"D(CSideForce)\",\"D(CMx)\",\"D(CMy)\",\"D(CMz)\",\"D(CFx)\",\"D(CFy)\",\"D(CFz)\",\"D(CL/CD)\"";
+  char d_flow_coeff[] = ",\"D(CL)\",\"D(CD)\",\"D(CSF)\",\"D(CMx)\",\"D(CMy)\",\"D(CMz)\",\"D(CFx)\",\"D(CFy)\",\"D(CFz)\",\"D(CL/CD)\",\"D(Custom_ObjFunc)\"";
   char d_engine[] = ",\"D(AeroCDrag)\",\"D(Radial_Distortion)\",\"D(Circumferential_Distortion)\"";
   char d_turbo_coeff[] = ",\"D(TotalPressureLoss_0)\",\"D(FlowAngleOut_0)\",\"D(TotalEfficency)\",\"D(TotalStaticEfficiency)\", \"D(EntropyGen)\"";
 
   /*--- Find the markers being monitored and create a header for them ---*/
-
+  
   for (iMarker_Monitoring = 0; iMarker_Monitoring < config->GetnMarker_Monitoring(); iMarker_Monitoring++) {
     Monitoring_Tag = config->GetMarker_Monitoring_TagBound(iMarker_Monitoring);
-    monitoring_coeff += ",\"CLift_"  + Monitoring_Tag + "\"";
-    monitoring_coeff += ",\"CDrag_"  + Monitoring_Tag + "\"";
-    monitoring_coeff += ",\"CSideForce_" + Monitoring_Tag + "\"";
+    monitoring_coeff += ",\"CL_"  + Monitoring_Tag + "\"";
+    monitoring_coeff += ",\"CD_"  + Monitoring_Tag + "\"";
+    monitoring_coeff += ",\"CSF_" + Monitoring_Tag + "\"";
     monitoring_coeff += ",\"CL/CD_" + Monitoring_Tag + "\"";
     monitoring_coeff += ",\"CFx_"    + Monitoring_Tag + "\"";
     monitoring_coeff += ",\"CFy_"    + Monitoring_Tag + "\"";
@@ -4348,25 +4361,25 @@ void COutput::SetConvHistory_Header(ofstream *ConvHist_file, CConfig *config, un
   }
 
   char combo_obj[] = ",\"ComboObj\"";
-
+  
   /*--- Header for the residuals ---*/
-
+  
   char flow_resid[]= ",\"Res_Flow[0]\",\"Res_Flow[1]\",\"Res_Flow[2]\",\"Res_Flow[3]\",\"Res_Flow[4]\"";
   char adj_flow_resid[]= ",\"Res_AdjFlow[0]\",\"Res_AdjFlow[1]\",\"Res_AdjFlow[2]\",\"Res_AdjFlow[3]\",\"Res_AdjFlow[4]\"";
   switch (config->GetKind_Turb_Model()) {
-  case SA:     SPRINTF (turb_resid, ",\"Res_Turb[0]\""); break;
-  case SA_NEG: SPRINTF (turb_resid, ",\"Res_Turb[0]\""); break;
-  case SST:     SPRINTF (turb_resid, ",\"Res_Turb[0]\",\"Res_Turb[1]\""); break;
+    case SA:     SPRINTF (turb_resid, ",\"Res_Turb[0]\""); break;
+    case SA_NEG: SPRINTF (turb_resid, ",\"Res_Turb[0]\""); break;
+    case SST:     SPRINTF (turb_resid, ",\"Res_Turb[0]\",\"Res_Turb[1]\""); break;
   }
   char adj_turb_resid[]= ",\"Res_AdjTurb[0]\"";
   char wave_resid[]= ",\"Res_Wave[0]\",\"Res_Wave[1]\"";
   char fem_resid[]= ",\"Res_FEM[0]\",\"Res_FEM[1]\",\"Res_FEM[2]\"";
   char heat_resid[]= ",\"Res_Heat\"";
-
+  
   /*--- End of the header ---*/
-
+  
   char end[]= ",\"Linear_Solver_Iterations\",\"CFL_Number\",\"Time(min)\"\n";
-
+  
   if ((config->GetOutput_FileFormat() == TECPLOT) ||
       (config->GetOutput_FileFormat() == TECPLOT_BINARY) ||
       (config->GetOutput_FileFormat() == FIELDVIEW) ||
@@ -4374,71 +4387,72 @@ void COutput::SetConvHistory_Header(ofstream *ConvHist_file, CConfig *config, un
     ConvHist_file[0] << "TITLE = \"SU2 Simulation\"" << endl;
     ConvHist_file[0] << "VARIABLES = ";
   }
-
+  
   /*--- Write the header, case depending ---*/
-
+  
   switch (config->GetKind_Solver()) {
-
-  case EULER : case NAVIER_STOKES: case RANS :
+      
+    case EULER : case NAVIER_STOKES: case RANS :
     ConvHist_file[0] << begin;
     if (!turbo) ConvHist_file[0] << flow_coeff;
     if (turbo) ConvHist_file[0] << turbo_coeff;
     if (thermal && !turbo) ConvHist_file[0] << heat_coeff;
-    if (equiv_area) ConvHist_file[0] << equivalent_area_coeff;
-    if (engine || actuator_disk) ConvHist_file[0] << engine_coeff;
-    if (inv_design) {
-      ConvHist_file[0] << Cp_inverse_design;
+      if (equiv_area) ConvHist_file[0] << equivalent_area_coeff;
+      if (engine || actuator_disk) ConvHist_file[0] << engine_coeff;
+      if (inv_design) {
+        ConvHist_file[0] << Cp_inverse_design;
       if (thermal && !turbo) ConvHist_file[0] << Heat_inverse_design;
-    }
+      }
     if (rotating_frame && !turbo) ConvHist_file[0] << rotating_frame_coeff;
-    ConvHist_file[0] << flow_resid;
-    if (turbulent) ConvHist_file[0] << turb_resid;
-    if (aeroelastic) ConvHist_file[0] << aeroelastic_coeff;
-    if (output_per_surface) ConvHist_file[0] << monitoring_coeff;
-    if (output_1d) ConvHist_file[0] << oneD_outputs;
-    if (output_massflow && !output_1d)  ConvHist_file[0]<< mass_flow_rate;
-    if (direct_diff != NO_DERIVATIVE) {
+      ConvHist_file[0] << flow_resid;
+      if (turbulent) ConvHist_file[0] << turb_resid;
+      if (aeroelastic) ConvHist_file[0] << aeroelastic_coeff;
+      if (output_per_surface) ConvHist_file[0] << monitoring_coeff;
+      if (output_1d) ConvHist_file[0] << oneD_outputs;
+      if (output_massflow && !output_1d)  ConvHist_file[0]<< mass_flow_rate;
+      if (direct_diff != NO_DERIVATIVE) {
       if (!turbo) ConvHist_file[0] << d_flow_coeff;
       else
         ConvHist_file[0] << d_turbo_coeff;
-      if (engine || actuator_disk) ConvHist_file[0] << d_engine;
-    }
-    if (output_comboObj) ConvHist_file[0] << combo_obj;
-    ConvHist_file[0] << end;
-
-    break;
-
-  case ADJ_EULER      : case ADJ_NAVIER_STOKES      : case ADJ_RANS:
-  case DISC_ADJ_EULER: case DISC_ADJ_NAVIER_STOKES: case DISC_ADJ_RANS:
-    ConvHist_file[0] << begin << adj_coeff << adj_flow_resid;
-    if ((turbulent) && (!frozen_turb)) ConvHist_file[0] << adj_turb_resid;
-    ConvHist_file[0] << end;
-    break;
-
-  case WAVE_EQUATION:
-    ConvHist_file[0] << begin << wave_coeff;
-    ConvHist_file[0] << wave_resid << end;
-    break;
-
-  case HEAT_EQUATION:
-    ConvHist_file[0] << begin << heat_coeff;
-    ConvHist_file[0] << heat_resid << end;
-    break;
-
-  case FEM_ELASTICITY:
-    ConvHist_file[0] << begin << fem_coeff;
-    ConvHist_file[0] << fem_resid << end;
-    break;
-
+        if (engine || actuator_disk) ConvHist_file[0] << d_engine;
+      }
+      if (output_comboObj) ConvHist_file[0] << combo_obj;
+      ConvHist_file[0] << end;
+      
+      break;
+      
+    case ADJ_EULER      : case ADJ_NAVIER_STOKES      : case ADJ_RANS:
+    case DISC_ADJ_EULER: case DISC_ADJ_NAVIER_STOKES: case DISC_ADJ_RANS:
+      if (!turbo) ConvHist_file[0] << begin << adj_coeff << adj_flow_resid;
+      else ConvHist_file[0] << begin << adj_turbo_coeff << adj_flow_resid;
+      if ((turbulent) && (!frozen_visc)) ConvHist_file[0] << adj_turb_resid;
+      ConvHist_file[0] << end;
+      break;
+      
+    case WAVE_EQUATION:
+      ConvHist_file[0] << begin << wave_coeff;
+      ConvHist_file[0] << wave_resid << end;
+      break;
+      
+    case HEAT_EQUATION:
+      ConvHist_file[0] << begin << heat_coeff;
+      ConvHist_file[0] << heat_resid << end;
+      break;
+      
+    case FEM_ELASTICITY:
+      ConvHist_file[0] << begin << fem_coeff;
+      ConvHist_file[0] << fem_resid << end;
+      break;
+      
   }
-
+  
   if (config->GetOutput_FileFormat() == TECPLOT ||
       config->GetOutput_FileFormat() == TECPLOT_BINARY ||
       config->GetOutput_FileFormat() == FIELDVIEW ||
       config->GetOutput_FileFormat() == FIELDVIEW_BINARY) {
     ConvHist_file[0] << "ZONE T= \"Convergence history\"" << endl;
   }
-
+  
 }
 
 
@@ -4490,7 +4504,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
       solver_container[val_iZone][FinestMesh][FLOW_SOL]->SetTotal_ComboObj(0.0);
       switch (config[val_iZone]->GetKind_Solver()) {
       case EULER:                   case NAVIER_STOKES:                   case RANS:
-        solver_container[val_iZone][FinestMesh][FLOW_SOL]->Compute_ComboObj(config[val_iZone]);
+        solver_container[val_iZone][FinestMesh][FLOW_SOL]->Evaluate_ObjFunc(config[val_iZone]);
         break;
       }
     }
@@ -4528,14 +4542,14 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     bool actuator_disk = ((config[val_iZone]->GetnMarker_ActDiskInlet() != 0) || (config[val_iZone]->GetnMarker_ActDiskOutlet() != 0));
     bool inv_design = (config[val_iZone]->GetInvDesign_Cp() || config[val_iZone]->GetInvDesign_HeatFlux());
     bool transition = (config[val_iZone]->GetKind_Trans_Model() == LM);
-    bool thermal = false; /* flag for whether to print heat flux values */
-    if (config[val_iZone]->GetKind_Solver() == RANS or config[val_iZone]->GetKind_Solver()  == NAVIER_STOKES) {
-      thermal = true;
-    }
+    /* Flag for whether to print heat flux values */
+    bool thermal = (config[val_iZone]->GetKind_Solver() == RANS or config[val_iZone]->GetKind_Solver()  == NAVIER_STOKES);
     bool turbulent = ((config[val_iZone]->GetKind_Solver() == RANS) || (config[val_iZone]->GetKind_Solver() == ADJ_RANS) ||
                       (config[val_iZone]->GetKind_Solver() == DISC_ADJ_RANS));
-    bool adjoint = config[val_iZone]->GetContinuous_Adjoint() || config[val_iZone]->GetDiscrete_Adjoint();
+    bool cont_adj = config[val_iZone]->GetContinuous_Adjoint();
     bool disc_adj = config[val_iZone]->GetDiscrete_Adjoint();
+    bool adjoint =  cont_adj || disc_adj;
+    bool frozen_visc = (cont_adj && config[val_iZone]->GetFrozen_Visc_Cont()) ||( disc_adj && config[val_iZone]->GetFrozen_Visc_Disc());
     bool wave = (config[val_iZone]->GetKind_Solver() == WAVE_EQUATION);
     bool heat = (config[val_iZone]->GetKind_Solver() == HEAT_EQUATION);
     bool flow = (config[val_iZone]->GetKind_Solver() == EULER) || (config[val_iZone]->GetKind_Solver() == NAVIER_STOKES) ||
@@ -4548,15 +4562,14 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     
     bool fsi = (config[val_iZone]->GetFSI_Simulation());          // FEM structural solver.
     
-
     bool turbo = config[val_iZone]->GetBoolTurbomachinery();
 
     unsigned short nTurboPerf  = config[val_iZone]->GetnMarker_TurboPerformance();
 
-    bool output_per_surface = false;
- //   if ((config[val_iZone]->GetnMarker_Monitoring() > 1) && (config[val_iZone]->GetnObj() <= 1)) output_per_surface = true;
-
     
+    bool output_per_surface = (config[val_iZone]->GetnMarker_Monitoring() > 1);
+    
+
     unsigned short direct_diff = config[val_iZone]->GetDirectDiff();
     
     
@@ -4565,9 +4578,9 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     su2double Total_CL = 0.0, Total_CD = 0.0, Total_CSF = 0.0, Total_CMx = 0.0, Total_CMy = 0.0, Total_CMz = 0.0, Total_CEff = 0.0,
     Total_CEquivArea = 0.0, Total_CNearFieldOF = 0.0, Total_CFx = 0.0, Total_CFy = 0.0, Total_CFz = 0.0, Total_CMerit = 0.0,
     Total_CT = 0.0, Total_CQ = 0.0, Total_CWave = 0.0, Total_CHeat = 0.0, Total_CpDiff = 0.0, Total_HeatFluxDiff = 0.0,
-    Total_Heat = 0.0, Total_MaxHeat = 0.0, Total_Mdot = 0.0, Total_CFEM = 0.0;
+    Total_Heat = 0.0, Total_MaxHeat = 0.0, Total_Mdot = 0.0, Total_CFEM = 0.0, Total_Custom_ObjFunc = 0.0;
     su2double OneD_AvgStagPress = 0.0, OneD_AvgMach = 0.0, OneD_AvgTemp = 0.0, OneD_MassFlowRate = 0.0,
-    OneD_FluxAvgPress = 0.0, OneD_FluxAvgDensity = 0.0, OneD_FluxAvgVelocity = 0.0, OneD_FluxAvgEntalpy = 0.0,
+    OneD_AvgPress = 0.0, OneD_AvgDensity = 0.0, OneD_AvgVelocity = 0.0,OneD_AvgEnthalpy,
     Total_ComboObj=0.0, Total_AeroCD = 0.0, Total_RadialDistortion = 0.0, Total_CircumferentialDistortion = 0.0,
     Ave_Total_RadialDistortion = 0.0, Ave_Total_CircumferentialDistortion = 0.0;
 
@@ -4576,11 +4589,14 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     /*--- Initialize variables to store information from all domains (adjoint solution) ---*/
     su2double Total_Sens_Geo = 0.0, Total_Sens_Mach = 0.0, Total_Sens_AoA = 0.0;
     su2double Total_Sens_Press = 0.0, Total_Sens_Temp = 0.0;
+
+    su2double Total_Sens_BPressure = 0.0;
     
     /*--- Initialize variables to store information from all domains (direct differentiation) ---*/
-    su2double D_Total_CL = 0.0, D_Total_CD = 0.0, D_Total_CSF = 0.0, D_Total_CMx = 0.0, D_Total_CMy = 0.0, D_Total_CMz = 0.0, D_Total_CEff = 0.0, D_Total_CFx = 0.0, D_Total_CFy = 0.0, D_Total_CFz = 0.0,
-              D_Total_AeroCD = 0.0, D_Total_RadialDistortion = 0.0, D_Total_CircumferentialDistortion = 0.0, D_TotalPressure_Loss = 0.0, D_FlowAngle_Out = 0.0, D_TotalStaticEfficiency = 0.0,
-              D_TotalTotalEfficiency = 0.0, D_EntropyGen = 0.0;
+    su2double D_Total_CL = 0.0, D_Total_CD = 0.0, D_Total_CSF = 0.0, D_Total_CMx = 0.0, D_Total_CMy = 0.0, D_Total_CMz = 0.0, D_Total_CEff = 0.0, D_Total_CFx = 0.0,
+        D_Total_CFy = 0.0, D_Total_CFz = 0.0, D_Total_AeroCD = 0.0, D_Total_RadialDistortion = 0.0, D_Total_CircumferentialDistortion = 0.0, D_Total_Custom_ObjFunc = 0.0,
+        D_TotalPressure_Loss = 0.0, D_FlowAngle_Out = 0.0, D_TotalStaticEfficiency = 0.0,
+        D_TotalTotalEfficiency = 0.0, D_EntropyGen = 0.0;
     
     /*--- Residual arrays ---*/
     su2double *residual_flow         = NULL,
@@ -4674,30 +4690,32 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
       case DISC_ADJ_EULER:          case DISC_ADJ_NAVIER_STOKES:          case DISC_ADJ_RANS:
         
         /*--- Flow solution coefficients ---*/
-        Total_CL       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CL();
-        Total_CD       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CD();
-        Total_CSF      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CSF();
-        Total_CEff     = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CEff();
-        Total_CMx      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMx();
-        Total_CMy      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMy();
-        Total_CMz      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMz();
-        Total_CFx      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFx();
-        Total_CFy      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFy();
-        Total_CFz      = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFz();
-        Total_ComboObj = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_ComboObj();
+        Total_CL             = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CL();
+        Total_CD             = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CD();
+        Total_CSF            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CSF();
+        Total_CEff           = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CEff();
+        Total_CMx            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMx();
+        Total_CMy            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMy();
+        Total_CMz            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CMz();
+        Total_CFx            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFx();
+        Total_CFy            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFy();
+        Total_CFz            = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CFz();
+        Total_ComboObj       = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_ComboObj();
+        Total_Custom_ObjFunc = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_Custom_ObjFunc();
 
         if (direct_diff != NO_DERIVATIVE) {
-          D_Total_CL       = SU2_TYPE::GetDerivative(Total_CL);
-          D_Total_CD       = SU2_TYPE::GetDerivative(Total_CD);
-          D_Total_CSF      = SU2_TYPE::GetDerivative(Total_CSF);
-          D_Total_CEff     = SU2_TYPE::GetDerivative(Total_CEff);
-          D_Total_CMx      = SU2_TYPE::GetDerivative(Total_CMx);
-          D_Total_CMy      = SU2_TYPE::GetDerivative(Total_CMy);
-          D_Total_CMz      = SU2_TYPE::GetDerivative(Total_CMz);
-          D_Total_CFx      = SU2_TYPE::GetDerivative(Total_CFx);
-          D_Total_CFy      = SU2_TYPE::GetDerivative(Total_CFy);
-          D_Total_CFz      = SU2_TYPE::GetDerivative(Total_CFz);
-          
+          D_Total_CL             = SU2_TYPE::GetDerivative(Total_CL);
+          D_Total_CD             = SU2_TYPE::GetDerivative(Total_CD);
+          D_Total_CSF            = SU2_TYPE::GetDerivative(Total_CSF);
+          D_Total_CEff           = SU2_TYPE::GetDerivative(Total_CEff);
+          D_Total_CMx            = SU2_TYPE::GetDerivative(Total_CMx);
+          D_Total_CMy            = SU2_TYPE::GetDerivative(Total_CMy);
+          D_Total_CMz            = SU2_TYPE::GetDerivative(Total_CMz);
+          D_Total_CFx            = SU2_TYPE::GetDerivative(Total_CFx);
+          D_Total_CFy            = SU2_TYPE::GetDerivative(Total_CFy);
+          D_Total_CFz            = SU2_TYPE::GetDerivative(Total_CFz);
+          D_Total_Custom_ObjFunc = SU2_TYPE::GetDerivative(Total_Custom_ObjFunc);
+
           if (engine || actuator_disk) {
             D_Total_AeroCD  = SU2_TYPE::GetDerivative(Total_AeroCD);
             D_Total_RadialDistortion    = SU2_TYPE::GetDerivative(Total_RadialDistortion);
@@ -4771,18 +4789,18 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
         
         if (turbo) {
           /*--- Loop over the nMarker of turboperformance and get the desired values ---*/
-        	for (iMarker_Monitoring = 0; iMarker_Monitoring < nTurboPerf; iMarker_Monitoring++) {
-        		for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
-        			if ((iMarker_Monitoring == 0) && (direct_diff != NO_DERIVATIVE)){
-        				D_TotalPressure_Loss = SU2_TYPE::GetDerivative(TotalPressureLoss[iMarker_Monitoring][iSpan]);
-        				D_FlowAngle_Out      = 180.0/PI_NUMBER*SU2_TYPE::GetDerivative(FlowAngleOut[iMarker_Monitoring][iSpan]);
-        			}
-        		}
-        	}
-        	if (direct_diff != NO_DERIVATIVE){
+          for (iMarker_Monitoring = 0; iMarker_Monitoring < nTurboPerf; iMarker_Monitoring++) {
+            for(iSpan=0; iSpan<nSpanWiseSections+1; iSpan++){
+              if ((iMarker_Monitoring == 0) && (direct_diff != NO_DERIVATIVE)){
+                D_TotalPressure_Loss = SU2_TYPE::GetDerivative(TotalPressureLoss[iMarker_Monitoring][iSpan]);
+                D_FlowAngle_Out      = 180.0/PI_NUMBER*SU2_TYPE::GetDerivative(FlowAngleOut[iMarker_Monitoring][iSpan]);
+              }
+            }
+          }
+          if (direct_diff != NO_DERIVATIVE){
             D_TotalStaticEfficiency = SU2_TYPE::GetDerivative(TotalStaticEfficiency[nTurboPerf-1][nSpanWiseSections]);
             D_TotalTotalEfficiency  = SU2_TYPE::GetDerivative(TotalTotalEfficiency[nTurboPerf-1][nSpanWiseSections]);
-        		D_EntropyGen            = SU2_TYPE::GetDerivative(EntropyGen[nTurboPerf-1][nSpanWiseSections]);
+            D_EntropyGen            = SU2_TYPE::GetDerivative(EntropyGen[nTurboPerf-1][nSpanWiseSections]);
           }
         }
         
@@ -4800,11 +4818,10 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
           OneD_AvgTemp = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_Temp();
           OneD_MassFlowRate = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_MassFlowRate();
           
-          OneD_FluxAvgPress = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_FluxAvgPress();
-          OneD_FluxAvgDensity = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_FluxAvgDensity();
-          OneD_FluxAvgVelocity = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_FluxAvgVelocity();
-          OneD_FluxAvgEntalpy = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_FluxAvgEntalpy();
-          
+          OneD_AvgPress = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_AvgPress();
+          OneD_AvgDensity = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_AvgDensity();
+          OneD_AvgVelocity = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_AvgVelocity();
+          OneD_AvgEnthalpy = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetOneD_AvgEnthalpy();
         }
         /*--- Get Mass Flow at the Monitored Markers ---*/
         
@@ -4854,6 +4871,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
           Total_Sens_AoA   = solver_container[val_iZone][FinestMesh][ADJFLOW_SOL]->GetTotal_Sens_AoA() * PI_NUMBER / 180.0;
           Total_Sens_Press = solver_container[val_iZone][FinestMesh][ADJFLOW_SOL]->GetTotal_Sens_Press();
           Total_Sens_Temp  = solver_container[val_iZone][FinestMesh][ADJFLOW_SOL]->GetTotal_Sens_Temp();
+          Total_Sens_BPressure = solver_container[val_iZone][FinestMesh][ADJFLOW_SOL]->GetTotal_Sens_BPress();
           
           /*--- Adjoint flow residuals ---*/
           
@@ -4864,7 +4882,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
           /*--- Adjoint turbulent residuals ---*/
           
           if (turbulent) {
-            if (!config[val_iZone]->GetFrozen_Visc()) {
+            if (!frozen_visc) {
               for (iVar = 0; iVar < nVar_AdjTurb; iVar++)
                 residual_adjturbulent[iVar] = solver_container[val_iZone][FinestMesh][ADJTURB_SOL]->GetRes_RMS(iVar);
             }
@@ -4936,7 +4954,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     bool In_DualTime_1 = (!DualTime_Iteration && Unsteady);
     bool In_DualTime_2 = (Unsteady && DualTime_Iteration && (iExtIter % config[val_iZone]->GetWrt_Con_Freq() == 0));
     bool In_DualTime_3 = (Unsteady && !DualTime_Iteration && (iExtIter % config[val_iZone]->GetWrt_Con_Freq() == 0));
-
+    
     /*--- Header frequency: analogy for dynamic structural analysis ---*/
     /*--- DualTime_Iteration is a bool we receive, which is true if it comes from FEM_StructuralIteration and false from SU2_CFD ---*/
     /*--- We maintain the name, as it is an input of the function ---*/
@@ -4984,54 +5002,54 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
           case DISC_ADJ_NAVIER_STOKES: case DISC_ADJ_RANS:
             
             /*--- Direct coefficients ---*/
-            SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
+            SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
                      Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy,
-                     Total_CFz, Total_CEff);
+                     Total_CFz, Total_CEff, Total_Custom_ObjFunc);
             if (engine || actuator_disk)
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx,
-                  Total_CFy, Total_CFz, Total_CEff, Total_AeroCD, Total_RadialDistortion, Ave_Total_RadialDistortion, Total_CircumferentialDistortion, Ave_Total_CircumferentialDistortion);
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx,
+                  Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_AeroCD, Total_RadialDistortion, Ave_Total_RadialDistortion, Total_CircumferentialDistortion, Ave_Total_CircumferentialDistortion);
             if (equiv_area)
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz,
-                  Total_CEff, Total_CEquivArea, Total_CNearFieldOF);
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz,
+                  Total_CEff, Total_Custom_ObjFunc, Total_CEquivArea, Total_CNearFieldOF);
             if (rotating_frame)
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx,
-                       Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_CMerit, Total_CT, Total_CQ);
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx,
+                       Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_CMerit, Total_CT, Total_CQ);
             if (inv_design) {
               Total_CpDiff  = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CpDiff();
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_CpDiff);
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_CpDiff);
             }
 
 
             if (thermal) {
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy,
-                       Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Heat, Total_MaxHeat);
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy,
+                       Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_Heat, Total_MaxHeat);
               if (engine || actuator_disk)
-              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy,
-                        Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Heat, Total_MaxHeat, Total_AeroCD, Total_RadialDistortion, Ave_Total_RadialDistortion, Total_CircumferentialDistortion,
+              SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy,
+                        Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_Heat, Total_MaxHeat, Total_AeroCD, Total_RadialDistortion, Ave_Total_RadialDistortion, Total_CircumferentialDistortion,
                         Ave_Total_CircumferentialDistortion);
               if (equiv_area)
-                SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Heat, Total_MaxHeat, Total_CEquivArea, Total_CNearFieldOF);
+                SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_Heat, Total_MaxHeat, Total_CEquivArea, Total_CNearFieldOF);
               if (rotating_frame)
-                 SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx,
-                          Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Heat, Total_MaxHeat, Total_CMerit, Total_CT, Total_CQ);
+                 SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx,
+                          Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_Heat, Total_MaxHeat, Total_CMerit, Total_CT, Total_CQ);
               if (inv_design) {
                 Total_CpDiff  = solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetTotal_CpDiff();
-                SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Heat, Total_MaxHeat, Total_CpDiff, Total_HeatFluxDiff);
+                SPRINTF (direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", Total_CL, Total_CD, Total_CSF, Total_CMx, Total_CMy, Total_CMz, Total_CFx, Total_CFy, Total_CFz, Total_CEff, Total_Custom_ObjFunc, Total_Heat, Total_MaxHeat, Total_CpDiff, Total_HeatFluxDiff);
               }
             }
             
             if (direct_diff != NO_DERIVATIVE) {
               if (!turbo)
-                SPRINTF (d_direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
+                SPRINTF (d_direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
                          D_Total_CL, D_Total_CD, D_Total_CSF, D_Total_CMx, D_Total_CMy, D_Total_CMz, D_Total_CFx, D_Total_CFy,
-                         D_Total_CFz, D_Total_CEff);
-              else 
+                         D_Total_CFz, D_Total_CEff, D_Total_Custom_ObjFunc);
+              else
                 SPRINTF (d_direct_coeff, ", %12.10f, %12.10f, %12.10f, %12.10f, %12.10f", D_TotalPressure_Loss, D_FlowAngle_Out,
                          D_TotalTotalEfficiency, D_TotalStaticEfficiency, D_EntropyGen);
               if (engine || actuator_disk)
-              SPRINTF (d_direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
+              SPRINTF (d_direct_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e",
                        D_Total_CL, D_Total_CD, D_Total_CSF, D_Total_CMx, D_Total_CMy, D_Total_CMz, D_Total_CFx, D_Total_CFy,
-                       D_Total_CFz, D_Total_CEff, D_Total_AeroCD, D_Total_RadialDistortion, D_Total_CircumferentialDistortion);
+                       D_Total_CFz, D_Total_CEff, D_Total_Custom_ObjFunc, D_Total_AeroCD, D_Total_RadialDistortion, D_Total_CircumferentialDistortion);
             }
             
             if (aeroelastic) {
@@ -5141,7 +5159,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
             }
             /*---- Averaged stagnation pressure at an exit ----*/
             if (output_1d) {
-              SPRINTF( oneD_outputs, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", OneD_AvgStagPress, OneD_AvgMach, OneD_AvgTemp, OneD_MassFlowRate, OneD_FluxAvgPress, OneD_FluxAvgDensity, OneD_FluxAvgVelocity, OneD_FluxAvgEntalpy);
+              SPRINTF( oneD_outputs, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, %14.8e", OneD_AvgStagPress, OneD_AvgMach, OneD_AvgTemp, OneD_MassFlowRate, OneD_AvgPress, OneD_AvgDensity, OneD_AvgVelocity, OneD_AvgEnthalpy);
             }
             if (output_massflow && !output_1d) {
               SPRINTF(massflow_outputs,", %12.10f", Total_Mdot);
@@ -5167,9 +5185,11 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
             if (adjoint) {
               
               /*--- Adjoint coefficients ---*/
-              
-              SPRINTF (adjoint_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, 0.0", Total_Sens_Geo, Total_Sens_Mach, Total_Sens_AoA, Total_Sens_Press, Total_Sens_Temp);
-              
+              if (!turbo)
+                SPRINTF (adjoint_coeff, ", %14.8e, %14.8e, %14.8e, %14.8e, %14.8e, 0.0", Total_Sens_Geo, Total_Sens_Mach, Total_Sens_AoA, Total_Sens_Press, Total_Sens_Temp);
+              else
+                SPRINTF (adjoint_coeff, ", %14.8e, %14.8e, %14.8e", Total_Sens_Geo, Total_Sens_BPressure, Total_Sens_Temp);
+
               /*--- Adjoint flow residuals ---*/
               if (nDim == 2) {
                 if (compressible) SPRINTF (adj_flow_resid, ", %14.8e, %14.8e, %14.8e, %14.8e, 0.0", log10 (residual_adjflow[0]), log10 (residual_adjflow[1]), log10 (residual_adjflow[2]), log10 (residual_adjflow[3]) );
@@ -5182,7 +5202,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
               
               /*--- Adjoint turbulent residuals ---*/
               if (turbulent)
-                if (!config[val_iZone]->GetFrozen_Visc())
+                if (!frozen_visc)
                   SPRINTF (adj_turb_resid, ", %12.10f", log10 (residual_adjturbulent[0]));
 
             }
@@ -5287,7 +5307,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                   cout << endl;
                 }
                 if (turbo && write_turbo && val_iZone== 0){
-                  WriteTutboPerfConvHistory(config[val_iZone]);
+                  WriteTurboPerfConvHistory(config[val_iZone]);
                 }
                 break;
 
@@ -5434,7 +5454,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 /*--- multi zone output ---*/
                 cout << " TTEfficiency(%)" << " Entropy Gen.(%)" << endl;
 
-              }
+            }
             }
             else cout << "   CLift(Total)"   << "   CDrag(Total)"   << endl;
 
@@ -5495,7 +5515,11 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
               if (incompressible) cout << "   Res[Psi_Press]" << "   Res[Psi_Velx]";
               else cout << "   Res[Psi_Rho]" << "     Res[Psi_E]";
               if (disc_adj) {
-                cout << "    Sens_Press" << "      Sens_AoA" << endl;
+                if (!turbo){
+                  cout << "    Sens_Press" << "      Sens_AoA" << endl;
+                } else {
+                  cout << " Sens_PressOut" << " Sens_TotTempIn" << endl;
+                }
               } else {
                 cout << "      Sens_Geo" << "      Sens_AoA" << endl;
               }
@@ -5528,7 +5552,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
               if (incompressible) cout << "     Res[Psi_Press]";
               else cout << "     Res[Psi_Rho]";
 
-              if (!config[val_iZone]->GetFrozen_Visc()) {
+              if (!frozen_visc) {
                 cout << "      Res[Psi_nu]";
               }
               else {
@@ -5536,7 +5560,10 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 else cout << "     Res[Psi_E]";
               }
               if (disc_adj) {
-                cout << "    Sens_Press" << "      Sens_AoA" << endl;
+                if (!turbo){
+                  cout << "    Sens_Press" << "      Sens_AoA" << endl;
+                } else {
+                  cout << " Sens_PressOut" << " Sens_TotTempIn" << endl;                }
               } else {
                 cout << "      Sens_Geo" << "      Sens_AoA" << endl;
               }
@@ -5798,8 +5825,13 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
               if (disc_adj) {
                 cout.precision(4);
                 cout.setf(ios::scientific, ios::floatfield);
-                cout.width(14); cout << Total_Sens_Press;
-                cout.width(14); cout << Total_Sens_AoA;
+                if (!turbo){
+                  cout.width(14); cout << Total_Sens_Press;
+                  cout.width(14); cout << Total_Sens_AoA;
+                } else {
+                  cout.width(14); cout << Total_Sens_BPressure;
+                  cout.width(15); cout << Total_Sens_Temp;
+                }
               }else {
                 cout.precision(4);
                 cout.setf(ios::scientific, ios::floatfield);
@@ -5816,7 +5848,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
           
           if (!DualTime_Iteration) {
             ConvHist_file[0] << begin << adjoint_coeff << adj_flow_resid;
-            if (!config[val_iZone]->GetFrozen_Visc())
+            if (!frozen_visc)
               ConvHist_file[0] << adj_turb_resid;
             ConvHist_file[0] << end;
             ConvHist_file[0].flush();
@@ -5826,7 +5858,7 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
               cout.precision(6);
               cout.setf(ios::fixed, ios::floatfield);
               cout.width(17); cout << log10(residual_adjflow[0]);
-              if (!config[val_iZone]->GetFrozen_Visc()) {
+            if (!frozen_visc) {
                 cout.width(17); cout << log10(residual_adjturbulent[0]);
               }
               else {
@@ -5839,10 +5871,13 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
                 }
               }
               if (disc_adj) {
-                cout.precision(4);
-                cout.setf(ios::scientific, ios::floatfield);
-                cout.width(14); cout << Total_Sens_Press;
-                cout.width(14); cout << Total_Sens_AoA;
+                if (!turbo){
+                  cout.width(14); cout << Total_Sens_Press;
+                  cout.width(14); cout << Total_Sens_AoA;
+                } else {
+                  cout.width(14); cout << Total_Sens_BPressure;
+                  cout.width(15); cout << Total_Sens_Temp;
+                }
               }else {
                 cout.precision(4);
                 cout.setf(ios::scientific, ios::floatfield);
@@ -5861,29 +5896,29 @@ void COutput::SetConvHistory_Body(ofstream *ConvHist_file,
     }
     
       
-		delete [] residual_flow;
-		delete [] residual_turbulent;
-		delete [] residual_transition;
-		delete [] residual_wave;
-		delete [] residual_fea;
-		delete [] residual_fem;
-		delete [] residual_heat;
+    delete [] residual_flow;
+    delete [] residual_turbulent;
+    delete [] residual_transition;
+    delete [] residual_wave;
+    delete [] residual_fea;
+    delete [] residual_fem;
+    delete [] residual_heat;
 
-		delete [] residual_adjflow;
-		delete [] residual_adjturbulent;
+    delete [] residual_adjflow;
+    delete [] residual_adjturbulent;
 
     delete [] Surface_CL;
     delete [] Surface_CD;
     delete [] Surface_CSF;
-		delete [] Surface_CEff;
-		delete [] Surface_CFx;
-		delete [] Surface_CFy;
-		delete [] Surface_CFz;
-		delete [] Surface_CMx;
-		delete [] Surface_CMy;
-		delete [] Surface_CMz;
-		delete [] aeroelastic_pitch;
-		delete [] aeroelastic_plunge;
+    delete [] Surface_CEff;
+    delete [] Surface_CFx;
+    delete [] Surface_CFy;
+    delete [] Surface_CFz;
+    delete [] Surface_CMx;
+    delete [] Surface_CMy;
+    delete [] Surface_CMz;
+    delete [] aeroelastic_pitch;
+    delete [] aeroelastic_plunge;
     
   }
 }
@@ -5996,14 +6031,14 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
     
     su2double Total_CL = 0.0, Total_CD = 0.0, Total_CSF = 0.0,
         Total_CMx = 0.0, Total_CMy = 0.0, Total_CMz = 0.0, Total_CEff = 0.0,
-        Total_CFx = 0.0, Total_CFy = 0.0, Total_CFz = 0.0, Inv_CLift = 0.0,
-        Inv_CDrag = 0.0, Inv_CSideForce = 0.0, Inv_CMx = 0.0, Inv_CMy = 0.0,
+        Total_CFx = 0.0, Total_CFy = 0.0, Total_CFz = 0.0, Inv_CL = 0.0,
+        Inv_CD = 0.0, Inv_CSF = 0.0, Inv_CMx = 0.0, Inv_CMy = 0.0,
         Inv_CMz = 0.0, Inv_CEff = 0.0, Inv_CFx = 0.0, Inv_CFy = 0.0, Inv_CFz =
-    0.0,      Mnt_CLift = 0.0,
-    Mnt_CDrag = 0.0, Mnt_CSideForce = 0.0, Mnt_CMx = 0.0, Mnt_CMy = 0.0,
+    0.0,      Mnt_CL = 0.0,
+    Mnt_CD = 0.0, Mnt_CSF = 0.0, Mnt_CMx = 0.0, Mnt_CMy = 0.0,
     Mnt_CMz = 0.0, Mnt_CEff = 0.0, Mnt_CFx = 0.0, Mnt_CFy = 0.0, Mnt_CFz =
-    0.0, Visc_CLift = 0.0,
-    Visc_CDrag = 0.0, Visc_CSideForce = 0.0, Visc_CMx = 0.0, Visc_CMy = 0.0,
+    0.0, Visc_CL = 0.0,
+    Visc_CD = 0.0, Visc_CSF = 0.0, Visc_CMx = 0.0, Visc_CMy = 0.0,
     Visc_CMz = 0.0, Visc_CEff = 0.0, Visc_CFx = 0.0, Visc_CFy = 0.0, Visc_CFz =
     0.0, *Surface_CL = NULL, *Surface_CD = NULL,
         *Surface_CSF = NULL, *Surface_CEff = NULL, *Surface_CFx = NULL,
@@ -6094,11 +6129,11 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
     
     /*--- Flow inviscid solution coefficients ---*/
     
-    Inv_CLift =
+    Inv_CL =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CL_Inv();
-    Inv_CDrag =
+    Inv_CD =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CD_Inv();
-    Inv_CSideForce =
+    Inv_CSF =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CSF_Inv();
     Inv_CEff =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CEff_Inv();
@@ -6117,11 +6152,11 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
 
     /*--- Flow viscous solution coefficients ---*/
     
-    Visc_CLift =
+    Visc_CL =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CL_Visc();
-    Visc_CDrag =
+    Visc_CD =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CD_Visc();
-    Visc_CSideForce =
+    Visc_CSF =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CSF_Visc();
     Visc_CEff =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CEff_Visc();
@@ -6140,11 +6175,11 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
     
     /*--- Flow momentum solution coefficients ---*/
     
-    Mnt_CLift =
+    Mnt_CL =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CL_Mnt();
-    Mnt_CDrag =
+    Mnt_CD =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CD_Mnt();
-    Mnt_CSideForce =
+    Mnt_CSF =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CSF_Mnt();
     Mnt_CEff =
         solver_container[val_iZone][FinestMesh][FLOW_SOL]->GetAllBound_CEff_Mnt();
@@ -6309,8 +6344,8 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
     Breakdown_file << "|                                                                       |" << "\n";
     //Breakdown_file << "|   Local date and time: " << dt << "                      |" << "\n";
     Breakdown_file <<"-------------------------------------------------------------------------" << "\n";
-    Breakdown_file << "| SU2 Lead Dev.: Dr. Francisco Palacios, Francisco.D.Palacios@boeing.com|" << "\n";
-    Breakdown_file << "|                Dr. Thomas D. Economon, economon@stanford.edu          |" << "\n";
+    Breakdown_file << "| SU2 Original Developers: Dr. Francisco D. Palacios.                   |" << "\n";
+    Breakdown_file << "|                          Dr. Thomas D. Economon.                      |" << "\n";
     Breakdown_file <<"-------------------------------------------------------------------------" << "\n";
     Breakdown_file << "| SU2 Developers:                                                       |" << "\n";
     Breakdown_file << "| - Prof. Juan J. Alonso's group at Stanford University.                |" << "\n";
@@ -6642,41 +6677,41 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
     Breakdown_file << Total_CL;
     Breakdown_file << " | Pressure (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Inv_CLift * 100.0) / (Total_CL + EPS));
+    Breakdown_file << SU2_TYPE::Int((Inv_CL * 100.0) / (Total_CL + EPS));
     Breakdown_file << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Inv_CLift;
+    Breakdown_file << Inv_CL;
     Breakdown_file << " | Friction (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Visc_CLift * 100.0) / (Total_CL + EPS));
+    Breakdown_file << SU2_TYPE::Int((Visc_CL * 100.0) / (Total_CL + EPS));
     Breakdown_file << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Visc_CLift;
+    Breakdown_file << Visc_CL;
     Breakdown_file << " | Momentum (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Mnt_CLift * 100.0) / (Total_CL + EPS));
+    Breakdown_file << SU2_TYPE::Int((Mnt_CL * 100.0) / (Total_CL + EPS));
     Breakdown_file << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Mnt_CLift << "\n";
+    Breakdown_file << Mnt_CL << "\n";
     
     Breakdown_file << "Total CD:    ";
     Breakdown_file.width(11);
     Breakdown_file << Total_CD;
     Breakdown_file << " | Pressure (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Inv_CDrag * 100.0) / (Total_CD + EPS)) << "%): ";
+    Breakdown_file << SU2_TYPE::Int((Inv_CD * 100.0) / (Total_CD + EPS)) << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Inv_CDrag;
+    Breakdown_file << Inv_CD;
     Breakdown_file << " | Friction (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Visc_CDrag * 100.0) / (Total_CD + EPS)) << "%): ";
+    Breakdown_file << SU2_TYPE::Int((Visc_CD * 100.0) / (Total_CD + EPS)) << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Visc_CDrag;
+    Breakdown_file << Visc_CD;
     Breakdown_file << " | Momentum (";
     Breakdown_file.width(5);
-    Breakdown_file << SU2_TYPE::Int((Mnt_CDrag * 100.0) / (Total_CD + EPS)) << "%): ";
+    Breakdown_file << SU2_TYPE::Int((Mnt_CD * 100.0) / (Total_CD + EPS)) << "%): ";
     Breakdown_file.width(11);
-    Breakdown_file << Mnt_CDrag << "\n";
+    Breakdown_file << Mnt_CD << "\n";
     
     if (nDim == 3) {
       Breakdown_file << "Total CSF:   ";
@@ -6684,22 +6719,22 @@ void COutput::SetForces_Breakdown(CGeometry ***geometry,
       Breakdown_file << Total_CSF;
       Breakdown_file << " | Pressure (";
       Breakdown_file.width(5);
-      Breakdown_file << SU2_TYPE::Int((Inv_CSideForce * 100.0) / (Total_CSF + EPS));
+      Breakdown_file << SU2_TYPE::Int((Inv_CSF * 100.0) / (Total_CSF + EPS));
       Breakdown_file << "%): ";
       Breakdown_file.width(11);
-      Breakdown_file << Inv_CSideForce;
+      Breakdown_file << Inv_CSF;
       Breakdown_file << " | Friction (";
       Breakdown_file.width(5);
-      Breakdown_file <<  SU2_TYPE::Int((Visc_CSideForce * 100.0) / (Total_CSF + EPS));
+      Breakdown_file <<  SU2_TYPE::Int((Visc_CSF * 100.0) / (Total_CSF + EPS));
       Breakdown_file << "%): ";
       Breakdown_file.width(11);
-      Breakdown_file << Visc_CSideForce;
+      Breakdown_file << Visc_CSF;
       Breakdown_file << " | Momentum (";
       Breakdown_file.width(5);
-      Breakdown_file << SU2_TYPE::Int((Mnt_CSideForce * 100.0) / (Total_CSF + EPS));
+      Breakdown_file << SU2_TYPE::Int((Mnt_CSF * 100.0) / (Total_CSF + EPS));
       Breakdown_file << "%): ";
       Breakdown_file.width(11);
-      Breakdown_file << Mnt_CSideForce << "\n";
+      Breakdown_file << Mnt_CSF << "\n";
     }
     
     Breakdown_file << "Total CL/CD: ";
@@ -7528,7 +7563,6 @@ void COutput::SetBaselineResult_Files(CSolver **solver, CGeometry **geometry, CC
     
     /*--- Flags identifying the types of files to be written. ---*/
     
-    bool Low_MemoryOutput = config[iZone]->GetLow_MemoryOutput();
     bool Wrt_Vol = config[iZone]->GetWrt_Vol_Sol();
     bool Wrt_Srf = config[iZone]->GetWrt_Srf_Sol();
     
@@ -7540,14 +7574,14 @@ void COutput::SetBaselineResult_Files(CSolver **solver, CGeometry **geometry, CC
      is only performed if a volume solution file is requested, and it
      is active by default. ---*/
     
-    if ((Wrt_Vol || Wrt_Srf) && (!Low_MemoryOutput)) {
+    if ((Wrt_Vol || Wrt_Srf)) {
       if (rank == MASTER_NODE) cout << "Merging connectivities in the Master node." << endl;
       MergeConnectivity(config[iZone], geometry[iZone], iZone);
     }
     
     /*--- Merge the solution data needed for volume solutions and restarts ---*/
     
-    if ((Wrt_Vol || Wrt_Srf) && (!Low_MemoryOutput)) {
+    if ((Wrt_Vol || Wrt_Srf)) {
       if (rank == MASTER_NODE) cout << "Merging solution in the Master node." << endl;
       MergeBaselineSolution(config[iZone], geometry[iZone], solver[iZone], iZone);
     }
@@ -7556,155 +7590,112 @@ void COutput::SetBaselineResult_Files(CSolver **solver, CGeometry **geometry, CC
      This data lives only on the master, and these routines are currently
      executed by the master proc alone (as if in serial). ---*/
     
-    if (!Low_MemoryOutput) {
-      
-      if (rank == MASTER_NODE) {
-        
-        if (Wrt_Vol) {
-          
-          switch (FileFormat) {
-              
-            case TECPLOT:
-              
-              /*--- Write a Tecplot ASCII file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (volume grid)." << endl;
-              SetTecplotASCII(config[iZone], geometry[iZone], solver, iZone, val_nZone, false);
-              DeallocateConnectivity(config[iZone], geometry[iZone], false);
-              break;
-              
-            case FIELDVIEW:
-              
-              /*--- Write a FieldView ASCII file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing FieldView ASCII file (volume grid)." << endl;
-              SetFieldViewASCII(config[iZone], geometry[iZone], iZone, val_nZone);
-              DeallocateConnectivity(config[iZone], geometry[iZone], false);
-              break;
-              
-            case TECPLOT_BINARY:
-              
-              /*--- Write a Tecplot binary solution file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Tecplot Binary file (volume grid)." << endl;
-              SetTecplotBinary_DomainMesh(config[iZone], geometry[iZone], iZone);
-              SetTecplotBinary_DomainSolution(config[iZone], geometry[iZone], iZone);
-              break;
-              
-            case FIELDVIEW_BINARY:
-              
-              /*--- Write a binary binary file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing FieldView ASCII file (volume grid)." << endl;
-              SetFieldViewBinary(config[iZone], geometry[iZone], iZone, val_nZone);
-              DeallocateConnectivity(config[iZone], geometry[iZone], false);
-              break;
-              
-            case PARAVIEW:
-              
-              /*--- Write a Paraview ASCII file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Paraview ASCII file (volume grid)." << endl;
-              SetParaview_ASCII(config[iZone], geometry[iZone], iZone, val_nZone, false);
-              DeallocateConnectivity(config[iZone], geometry[iZone], false);
-              break;
-              
-            default:
-              break;
-          }
-          
-        }
-        
-        if (Wrt_Srf) {
-          
-          switch (FileFormat) {
-              
-            case TECPLOT:
-              
-              /*--- Write a Tecplot ASCII file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (surface grid)." << endl;
-              SetTecplotASCII(config[iZone], geometry[iZone], solver, iZone, val_nZone, true);
-              DeallocateConnectivity(config[iZone], geometry[iZone], true);
-              break;
-              
-            case TECPLOT_BINARY:
-              
-              /*--- Write a Tecplot binary solution file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Tecplot Binary file (surface grid)." << endl;
-              SetTecplotBinary_SurfaceMesh(config[iZone], geometry[iZone], iZone);
-              SetTecplotBinary_SurfaceSolution(config[iZone], geometry[iZone], iZone);
-              break;
-              
-            case PARAVIEW:
-              
-              /*--- Write a Paraview ASCII file ---*/
-              
-              if (rank == MASTER_NODE) cout << "Writing Paraview ASCII file (surface grid)." << endl;
-              SetParaview_ASCII(config[iZone], geometry[iZone], iZone, val_nZone, true);
-              DeallocateConnectivity(config[iZone], geometry[iZone], true);
-              break;
-              
-            default:
-              break;
-          }
-        }
-        
-        if (FileFormat == TECPLOT_BINARY) {
-          if (!wrote_base_file)
-            DeallocateConnectivity(config[iZone], geometry[iZone], false);
-          if (!wrote_surf_file)
-            DeallocateConnectivity(config[iZone], geometry[iZone], wrote_surf_file);
-        }
-        
-        if (Wrt_Vol || Wrt_Srf)
-          DeallocateSolution(config[iZone], geometry[iZone]);
-      }
-      
-    }
-    
-    else {
-      
+
+    if (rank == MASTER_NODE) {
+
       if (Wrt_Vol) {
-        
-        if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (volume grid)." << endl;
-        char buffer_char[50], out_file[MAX_STRING_SIZE];
-        
-        string filename;
-        if (!config[iZone]->GetContinuous_Adjoint()) filename = config[iZone]->GetFlow_FileName();
-        else filename = config[iZone]->GetAdj_FileName();
-        
-        if (size > 1) {
-          SPRINTF (buffer_char, "_%d", SU2_TYPE::Int(rank+1));
-          filename = filename + buffer_char;
+
+        switch (FileFormat) {
+
+          case TECPLOT:
+
+            /*--- Write a Tecplot ASCII file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (volume grid)." << endl;
+            SetTecplotASCII(config[iZone], geometry[iZone], solver, iZone, val_nZone, false);
+            DeallocateConnectivity(config[iZone], geometry[iZone], false);
+            break;
+
+          case FIELDVIEW:
+
+            /*--- Write a FieldView ASCII file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing FieldView ASCII file (volume grid)." << endl;
+            SetFieldViewASCII(config[iZone], geometry[iZone], iZone, val_nZone);
+            DeallocateConnectivity(config[iZone], geometry[iZone], false);
+            break;
+
+          case TECPLOT_BINARY:
+
+            /*--- Write a Tecplot binary solution file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Tecplot Binary file (volume grid)." << endl;
+            SetTecplotBinary_DomainMesh(config[iZone], geometry[iZone], iZone);
+            SetTecplotBinary_DomainSolution(config[iZone], geometry[iZone], iZone);
+            break;
+
+          case FIELDVIEW_BINARY:
+
+            /*--- Write a binary binary file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing FieldView ASCII file (volume grid)." << endl;
+            SetFieldViewBinary(config[iZone], geometry[iZone], iZone, val_nZone);
+            DeallocateConnectivity(config[iZone], geometry[iZone], false);
+            break;
+
+          case PARAVIEW:
+
+            /*--- Write a Paraview ASCII file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Paraview ASCII file (volume grid)." << endl;
+            SetParaview_ASCII(config[iZone], geometry[iZone], iZone, val_nZone, false);
+            DeallocateConnectivity(config[iZone], geometry[iZone], false);
+            break;
+
+          default:
+            break;
         }
-        
-        SPRINTF (buffer_char, ".dat");
-        strcpy(out_file, filename.c_str()); strcat(out_file, buffer_char);
-        SetTecplotASCII_LowMemory(config[iZone], geometry[iZone], solver, out_file, false);
+
       }
-      
+
       if (Wrt_Srf) {
-        
-        if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (surface grid)." << endl;
-        char buffer_char[50], out_file[MAX_STRING_SIZE];
-        
-        string filename;
-        if (!config[iZone]->GetContinuous_Adjoint()) filename = config[iZone]->GetSurfFlowCoeff_FileName();
-        else filename = config[iZone]->GetSurfAdjCoeff_FileName();
-        
-        if (size > 1) {
-          SPRINTF (buffer_char, "_%d", SU2_TYPE::Int(rank+1));
-          filename = filename + buffer_char;
+
+        switch (FileFormat) {
+
+          case TECPLOT:
+
+            /*--- Write a Tecplot ASCII file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Tecplot ASCII file (surface grid)." << endl;
+            SetTecplotASCII(config[iZone], geometry[iZone], solver, iZone, val_nZone, true);
+            DeallocateConnectivity(config[iZone], geometry[iZone], true);
+            break;
+
+          case TECPLOT_BINARY:
+
+            /*--- Write a Tecplot binary solution file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Tecplot Binary file (surface grid)." << endl;
+            SetTecplotBinary_SurfaceMesh(config[iZone], geometry[iZone], iZone);
+            SetTecplotBinary_SurfaceSolution(config[iZone], geometry[iZone], iZone);
+            break;
+
+          case PARAVIEW:
+
+            /*--- Write a Paraview ASCII file ---*/
+
+            if (rank == MASTER_NODE) cout << "Writing Paraview ASCII file (surface grid)." << endl;
+            SetParaview_ASCII(config[iZone], geometry[iZone], iZone, val_nZone, true);
+            DeallocateConnectivity(config[iZone], geometry[iZone], true);
+            break;
+
+          default:
+            break;
         }
-        
-        SPRINTF (buffer_char, ".dat");
-        strcpy(out_file, filename.c_str()); strcat(out_file, buffer_char);
-        SetTecplotASCII_LowMemory(config[iZone], geometry[iZone], solver, out_file, true);
       }
-      
+
+      if (FileFormat == TECPLOT_BINARY) {
+        if (!wrote_base_file)
+          DeallocateConnectivity(config[iZone], geometry[iZone], false);
+        if (!wrote_surf_file)
+          DeallocateConnectivity(config[iZone], geometry[iZone], wrote_surf_file);
+      }
+
+      if (Wrt_Vol || Wrt_Srf)
+        DeallocateSolution(config[iZone], geometry[iZone]);
     }
+
+
     
     /*--- Final broadcast (informing other procs that the base output
      file was written). ---*/
@@ -7857,14 +7848,15 @@ void COutput::OneDimensionalOutput(CSolver *solver_container, CGeometry *geometr
   unsigned long iVertex, iPoint;
   unsigned short iDim, iMarker, Out1D;
   su2double *Normal = NULL, Area = 0.0, UnitNormal[3],
-  Tot_Pressure, Mach, Temperature, Pressure = 0.0, Velocity2, Enthalpy, RhoUA, U,// local values at each node (Velocity2 = V^2). U = normal velocity
-  AveragePt = 0.0, AverageMach = 0.0, AverageTemperature = 0.0, MassFlowRate = 0.0, // Area Averaged value ( sum / A )
-  VelocityRef = 0.0, EnthalpyRef = 0.0, DensityRef = 0.0, PressureRef = 0.0; // Flux conserved values. TemperatureRef follows ideal gas
-  su2double TotalArea=0.0;
+  Tot_Pressure, Mach, Temperature, Pressure = 0.0, Velocity2, Enthalpy, RhoUA, Vn, Density,// local values at each node (Velocity2 = V^2). U = normal velocity
+  AveragePt = 0.0, AverageMach = 0.0, AverageTemperature = 0.0,  // Area Averaged values
+  Velocity1D = 0.0, Enthalpy1D = 0.0, Density1D = 0.0, Pressure1D = 0.0; // Averaging depends on choices.
+  su2double MassFlowRate = 0.0, TotalArea=0.0; // Reference values
   
   bool incompressible = (config->GetKind_Regime() == INCOMPRESSIBLE);
   su2double Gamma = config->GetGamma();
   unsigned short nDim = geometry->GetnDim();
+  unsigned short OneD_Type = config->GetKind_OneD();
   
   /*--- Loop over the markers ---*/
   
@@ -7895,31 +7887,44 @@ void COutput::OneDimensionalOutput(CSolver *solver_container, CGeometry *geometr
           
           /*-- Find velocity normal to the marked surface/opening --*/
           
-          U = 0.0; RhoUA = 0.0;
+          Vn = 0.0; RhoUA = 0.0;
           for (iDim = 0; iDim < geometry->GetnDim(); iDim++) {
-            U += UnitNormal[iDim]*solver_container->node[iPoint]->GetVelocity(iDim);
+            Vn += UnitNormal[iDim]*solver_container->node[iPoint]->GetVelocity(iDim);
             RhoUA -=Normal[iDim]*solver_container->node[iPoint]->GetSolution(iDim+1);
           }
-          
+          Density = solver_container->node[iPoint]->GetDensity();
           Enthalpy = solver_container->node[iPoint]->GetEnthalpy();
           Velocity2 = solver_container->node[iPoint]->GetVelocity2();
           Temperature = solver_container->node[iPoint]->GetTemperature();
           
           Mach = (sqrt(Velocity2))/ solver_container->node[iPoint]->GetSoundSpeed();
-
           if (incompressible)
-          Tot_Pressure = Pressure + 0.5*solver_container->node[iPoint]->GetDensity()*Velocity2;
+          Tot_Pressure = Pressure + 0.5*Density*Velocity2;
           else
             Tot_Pressure = Pressure*pow((1.0+((Gamma-1.0)/2.0)*pow(Mach, 2.0)),( Gamma/(Gamma-1.0) ) );
-          AveragePt += Tot_Pressure * Area;
-          TotalArea += Area;
-          AverageMach += Mach*Area;
-          PressureRef += Pressure * Area;
-          AverageTemperature += Temperature*Area;
-          MassFlowRate += RhoUA; // RhoU is rho * vn * Area
-          VelocityRef+=RhoUA*U*U; // rho u A
-          EnthalpyRef+=RhoUA*Enthalpy;
           
+          switch (OneD_Type){
+          case ONED_MFLUX:
+            Pressure1D += RhoUA*Pressure;
+            Velocity1D+=RhoUA*Vn*Vn; // V.n Magnitude
+            Enthalpy1D+=RhoUA*Enthalpy;
+            Density1D+=RhoUA*Density;
+            break;
+          case ONED_AREA:
+            Pressure1D += Pressure * Area;
+            Velocity1D+=Vn*Vn*Area; // V.n magnitude
+            Enthalpy1D+=Enthalpy*Area;
+            Density1D+=Density*Area;
+            break;
+
+          }
+          /* Always area-averaged */
+          AverageTemperature += Temperature*Area;
+          AveragePt += Tot_Pressure * Area;
+          AverageMach += Mach*Area;
+          /*--- Reference Areas ---*/
+          MassFlowRate += RhoUA; // RhoU is rho * vn * Area
+          TotalArea += Area;
         }
       }
     }
@@ -7934,41 +7939,56 @@ void COutput::OneDimensionalOutput(CSolver *solver_container, CGeometry *geometr
   su2double My_AverageMach         = AverageMach;        AverageMach = 0.0;
   su2double My_AverageTemperature  = AverageTemperature; AverageTemperature = 0.0;
   su2double My_MassFlowRate        = MassFlowRate;       MassFlowRate = 0.0;
-  su2double My_PressureRef         = PressureRef;        PressureRef = 0.0;
-  su2double My_VelocityRef         = VelocityRef;        VelocityRef = 0.0;
-  su2double My_EnthalpyRef         = EnthalpyRef;        EnthalpyRef = 0.0;
-  su2double My_DensityRef          = DensityRef;         DensityRef = 0.0;
+  su2double My_Pressure1D         = Pressure1D;        Pressure1D = 0.0;
+  su2double My_Velocity1D         = Velocity1D;        Velocity1D = 0.0;
+  su2double My_Enthalpy1D         = Enthalpy1D;        Enthalpy1D = 0.0;
+  su2double My_Density1D          = Density1D;         Density1D = 0.0;
   
   SU2_MPI::Allreduce(&My_Area, &TotalArea, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   SU2_MPI::Allreduce(&My_AveragePt, &AveragePt, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   SU2_MPI::Allreduce(&My_AverageMach, &AverageMach, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   SU2_MPI::Allreduce(&My_AverageTemperature, &AverageTemperature, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   SU2_MPI::Allreduce(&My_MassFlowRate, &MassFlowRate, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-  SU2_MPI::Allreduce(&My_PressureRef, &PressureRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-  SU2_MPI::Allreduce(&My_VelocityRef, &VelocityRef, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-  SU2_MPI::Allreduce(&My_EnthalpyRef , &EnthalpyRef , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
-  SU2_MPI::Allreduce(&My_DensityRef , &DensityRef , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  SU2_MPI::Allreduce(&My_Pressure1D, &Pressure1D, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  SU2_MPI::Allreduce(&My_Velocity1D, &Velocity1D, 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  SU2_MPI::Allreduce(&My_Enthalpy1D , &Enthalpy1D , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
+  SU2_MPI::Allreduce(&My_Density1D , &Density1D , 1, MPI_DOUBLE, MPI_SUM, MPI_COMM_WORLD);
   
 #endif
   
-  /*--- Set the 1D output ---*/
-  /*--- DensityRef depends on the final values of other flux avg variables ---*/
-  VelocityRef=sqrt(VelocityRef/MassFlowRate);
-  PressureRef=PressureRef/TotalArea;
-  EnthalpyRef=EnthalpyRef/MassFlowRate;
-  DensityRef =PressureRef*Gamma/(Gamma-1)/(EnthalpyRef-0.5*VelocityRef*VelocityRef);
-  
+  /*--- Scaling by Total Values ---*/
+  switch (OneD_Type) {
   /*Area averaged values*/
-  solver_container->SetOneD_TotalPress(AveragePt/TotalArea);
-  solver_container->SetOneD_Mach(AverageMach/TotalArea);
-  solver_container->SetOneD_Temp(AverageTemperature/TotalArea);
-  solver_container->SetOneD_MassFlowRate(MassFlowRate);
-  
+  case ONED_AREA:
+    Velocity1D=sqrt(Velocity1D/TotalArea);
+    Pressure1D/=TotalArea;
+    Enthalpy1D/=TotalArea;
+    Density1D/=TotalArea;
+    break;
   /*Flux averaged values*/
-  solver_container->SetOneD_FluxAvgPress(PressureRef);
-  solver_container->SetOneD_FluxAvgDensity(DensityRef);
-  solver_container->SetOneD_FluxAvgVelocity(VelocityRef);
-  solver_container->SetOneD_FluxAvgEntalpy(EnthalpyRef);
+  case ONED_MFLUX:
+    Velocity1D=sqrt(Velocity1D/MassFlowRate);
+    Pressure1D/=MassFlowRate;
+    Enthalpy1D/=MassFlowRate;
+    Density1D/=MassFlowRate;
+    break;
+  }
+
+  /*-- Always area-averaged ---*/
+  AveragePt/=TotalArea;
+  AverageMach/=TotalArea;
+  AverageTemperature/=TotalArea;
+  
+  /*--- Store Values ---*/
+  solver_container->SetOneD_TotalPress(AveragePt);
+  solver_container->SetOneD_Mach(AverageMach);
+  solver_container->SetOneD_Temp(AverageTemperature);
+  solver_container->SetOneD_MassFlowRate(MassFlowRate);
+  /*--- One-Dimensionalized Values ---*/
+  solver_container->SetOneD_AvgPress(Pressure1D);
+  solver_container->SetOneD_AvgDensity(Density1D);
+  solver_container->SetOneD_AvgVelocity(Velocity1D);
+  solver_container->SetOneD_AvgEnthalpy(Enthalpy1D);
   
 }
 
@@ -9115,6 +9135,7 @@ void COutput::WriteSurface_Analysis(CConfig *config, CGeometry *geometry, CSolve
   int rank, iProcessor, nProcessor;
   rank = MASTER_NODE;
   nProcessor = SINGLE_NODE;
+
 #ifdef HAVE_MPI
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &nProcessor);
@@ -10195,13 +10216,12 @@ void COutput::SetSensitivity_Files(CGeometry **geometry, CConfig **config, unsig
 
 }
 
-void COutput::WriteTutboPerfConvHistory(CConfig *config){
+void COutput::WriteTurboPerfConvHistory(CConfig *config){
 
   unsigned short iMarker_Monitoring;
   string inMarker_Tag, outMarker_Tag, inMarkerTag_Mix;
   unsigned short nZone       = config->GetnZone();
   bool turbulent = ((config->GetKind_Solver() == RANS) || (config->GetKind_Solver() == DISC_ADJ_RANS));
-  bool spalart_allmaras = (config->GetKind_Turb_Model() == SA);
   bool menter_sst       = (config->GetKind_Turb_Model() == SST);
 
   unsigned short nBladesRow, nStages;
@@ -10454,7 +10474,7 @@ void COutput::WriteSpanWiseValuesFiles(CGeometry ***geometry,
   string inMarker_Tag, outMarker_Tag, inMarkerTag_Mix;
   unsigned short nZone       = config[val_iZone]->GetnZone();
 
-  unsigned short iMarker_Monitoring, iDim, iSpan;
+  unsigned short iDim, iSpan;
 
   unsigned long iExtIter = config[val_iZone]->GetExtIter();
   su2double* SpanWiseValuesIn, *SpanWiseValuesOut;
@@ -10802,7 +10822,7 @@ void COutput::HarmonicBalanceOutput(CSolver ****solver_container, CConfig **conf
     if (current_iter == 0 && iZone == 1) {
       mean_HB_file.open("history_HB.plt", ios::trunc);
       mean_HB_file << "TITLE = \"SU2 HARMONIC BALANCE SIMULATION\"" << endl;
-      mean_HB_file <<  "VARIABLES = \"Iteration\",\"CLift\",\"CDrag\",\"CMx\",\"CMy\",\"CMz\",\"CT\",\"CQ\",\"CMerit\"" << endl;
+      mean_HB_file <<  "VARIABLES = \"Iteration\",\"CL\",\"CD\",\"CMx\",\"CMy\",\"CMz\",\"CT\",\"CQ\",\"CMerit\"" << endl;
       mean_HB_file << "ZONE T= \"Average Convergence History\"" << endl;
     }
     else
@@ -11446,46 +11466,51 @@ void COutput::LoadLocalData_Flow(CConfig *config, CGeometry *geometry, CSolver *
         iVar++;
       }
       
-      /*--- Load the conservative variable states for the mean flow variables.
-       If requested, load the limiters and residuals as well. ---*/
+      /*--- Load the conservative variable states for the mean flow variables. ---*/
       
       for (jVar = 0; jVar < nVar_First; jVar++) {
         Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetSolution(jVar);
         iVar++;
       }
       
-      if (!config->GetLow_MemoryOutput()) {
-        if (config->GetWrt_Limiters()) {
-          for (jVar = 0; jVar < nVar_First; jVar++) {
-            Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetLimiter_Primitive(jVar);
-            iVar++;
-          }
-        }
-        if (config->GetWrt_Residuals()) {
-          for (jVar = 0; jVar < nVar_First; jVar++) {
-            Local_Data[jPoint][iVar] = solver[FirstIndex]->LinSysRes.GetBlock(iPoint, jVar);
-            iVar++;
-          }
-        }
-      }
-      
       /*--- If this is RANS, i.e., the second solver container is not empty,
-       then load data for the conservative turbulence variables and the
-       limiters / residuals (if requested). ----*/
+       then load data for the conservative turbulence variables. ---*/
       
       if (SecondIndex != NONE) {
         for (jVar = 0; jVar < nVar_Second; jVar++) {
           Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetSolution(jVar);
           iVar++;
         }
-        if (!config->GetLow_MemoryOutput()) {
-          if (config->GetWrt_Limiters()) {
+      }
+
+      /*--- If limiters and/or residuals are requested. ---*/
+      if (!config->GetLow_MemoryOutput()) {
+        
+        /*--- Limiters ---*/
+        if (config->GetWrt_Limiters()) {
+          /*--- Mean Flow Limiters ---*/
+          for (jVar = 0; jVar < nVar_First; jVar++) {
+            Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetLimiter_Primitive(jVar);
+            iVar++;
+          }
+          /*--- RANS Limiters ---*/
+          if (SecondIndex != NONE) {
             for (jVar = 0; jVar < nVar_Second; jVar++) {
               Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetLimiter_Primitive(jVar);
               iVar++;
             }
           }
-          if (config->GetWrt_Residuals()) {
+        }
+        
+        /*--- Residuals ---*/
+        if (config->GetWrt_Residuals()) {
+          /*--- Mean Flow Residuals ---*/
+          for (jVar = 0; jVar < nVar_First; jVar++) {
+            Local_Data[jPoint][iVar] = solver[FirstIndex]->LinSysRes.GetBlock(iPoint, jVar);
+            iVar++;
+          }
+          /*--- RANS Residuals ---*/
+          if (SecondIndex != NONE) {
             for (jVar = 0; jVar < nVar_Second; jVar++) {
               Local_Data[jPoint][iVar] = solver[SecondIndex]->LinSysRes.GetBlock(iPoint, jVar);
               iVar++;
@@ -11558,12 +11583,13 @@ void COutput::LoadLocalData_Flow(CConfig *config, CGeometry *geometry, CSolver *
         /*--- New variables can be loaded to the Local_Data structure here,
          assuming they were registered above correctly. ---*/
         
-        /*--- Increment the point counter, as there may have been halos we
-         skipped over during the data loading. ---*/
-        
-        jPoint++;
-        
       }
+
+      /*--- Increment the point counter, as there may have been halos we
+       skipped over during the data loading. ---*/
+
+      jPoint++;
+
     }
   }
   
@@ -11608,9 +11634,9 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
   
   switch (config->GetKind_Solver()) {
     case ADJ_EULER : case ADJ_NAVIER_STOKES : FirstIndex = ADJFLOW_SOL; SecondIndex = NONE; break;
-    case ADJ_RANS : FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL; break;
+    case ADJ_RANS : FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc_Cont()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL; break;
     case DISC_ADJ_EULER: case DISC_ADJ_NAVIER_STOKES: FirstIndex = ADJFLOW_SOL; SecondIndex = NONE;  break;
-    case DISC_ADJ_RANS: FirstIndex = ADJFLOW_SOL; SecondIndex = ADJTURB_SOL;  break;
+    case DISC_ADJ_RANS: FirstIndex = ADJFLOW_SOL; if (config->GetFrozen_Visc_Disc()) SecondIndex = NONE; else SecondIndex = ADJTURB_SOL;  break;
   }
   
   nVar_First = solver[FirstIndex]->GetnVar();
@@ -11666,6 +11692,20 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
       /*--- S-A variants ---*/
       Variable_Names.push_back("Adjoint_Nu_Tilde");
     }
+  }
+
+
+  /*--- For the discrete adjoint, we have the full field of sensitivity
+   in each coordinate direction. ---*/
+
+  if ((Kind_Solver == DISC_ADJ_EULER)         ||
+      (Kind_Solver == DISC_ADJ_NAVIER_STOKES) ||
+      (Kind_Solver == DISC_ADJ_RANS)) {
+    nVar_Par += nDim;
+    Variable_Names.push_back("Sensitivity_x");
+    Variable_Names.push_back("Sensitivity_y");
+    if (geometry->GetnDim()== 3)
+      Variable_Names.push_back("Sensitivity_z");
   }
 
   /*--- If requested, register the limiter and residuals for all of the
@@ -11755,19 +11795,6 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
       } else {
         Variable_Names.push_back("Limiter_Adjoint_Density");
       }
-    }
-    
-    /*--- For the discrete adjoint, we have the full field of sensitivity
-     in each coordinate direction. ---*/
-    
-    if ((Kind_Solver == DISC_ADJ_EULER)         ||
-        (Kind_Solver == DISC_ADJ_NAVIER_STOKES) ||
-        (Kind_Solver == DISC_ADJ_RANS)) {
-      nVar_Par += nDim;
-      Variable_Names.push_back("Sensitivity_x");
-      Variable_Names.push_back("Sensitivity_y");
-      if (geometry->GetnDim()== 3)
-        Variable_Names.push_back("Sensitivity_z");
     }
     
     /*--- New variables get registered here before the end of the loop. ---*/
@@ -11870,25 +11897,6 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
         iVar++;
       }
       
-      if (!config->GetLow_MemoryOutput()) {
-        if (config->GetWrt_Limiters()) {
-          for (jVar = 0; jVar < nVar_First; jVar++) {
-            Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetLimiter(jVar);
-            iVar++;
-          }
-        }
-        if (config->GetWrt_Residuals()) {
-          for (jVar = 0; jVar < nVar_First; jVar++) {
-            if (!config->GetDiscrete_Adjoint()) {
-              Local_Data[jPoint][iVar] = solver[FirstIndex]->LinSysRes.GetBlock(iPoint, jVar);
-            } else {
-              Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetSolution(jVar) -
-              solver[FirstIndex]->node[iPoint]->GetSolution_Old(jVar);
-            }
-            iVar++;
-          }
-        }
-      }
       
       /*--- If this is Adj. RANS, i.e., the second solver container is not empty,
        then load data for the conservative turbulence variables and the
@@ -11899,28 +11907,60 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
           Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetSolution(jVar);
           iVar++;
         }
-        if (!config->GetLow_MemoryOutput()) {
-          if (config->GetWrt_Limiters()) {
-            for (jVar = 0; jVar < nVar_Second; jVar++) {
-              Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetLimiter(jVar);
-              iVar++;
-            }
-          }
-          if (config->GetWrt_Residuals()) {
-            for (jVar = 0; jVar < nVar_Second; jVar++) {
-              if (!config->GetDiscrete_Adjoint()) {
-                Local_Data[jPoint][iVar] = solver[SecondIndex]->LinSysRes.GetBlock(iPoint, jVar);
-              } else {
-                Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetSolution(jVar) -
-                solver[SecondIndex]->node[iPoint]->GetSolution_Old(jVar);
-              }
-              iVar++;
-            }
-          }
+      }
+
+      /*--- Load data for the discrete sensitivities. ---*/
+
+      if ((Kind_Solver == DISC_ADJ_EULER)         ||
+          (Kind_Solver == DISC_ADJ_NAVIER_STOKES) ||
+          (Kind_Solver == DISC_ADJ_RANS)) {
+        Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(0); iVar++;
+        Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(1); iVar++;
+        if (geometry->GetnDim()== 3) {
+          Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(2);
+          iVar++;
         }
       }
       
       if (!config->GetLow_MemoryOutput()) {
+
+          if (config->GetWrt_Limiters()) {
+            for (jVar = 0; jVar < nVar_First; jVar++) {
+              Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetLimiter(jVar);
+              iVar++;
+            }
+          }
+          if (config->GetWrt_Residuals()) {
+            for (jVar = 0; jVar < nVar_First; jVar++) {
+              if (!config->GetDiscrete_Adjoint()) {
+                Local_Data[jPoint][iVar] = solver[FirstIndex]->LinSysRes.GetBlock(iPoint, jVar);
+              } else {
+                Local_Data[jPoint][iVar] = solver[FirstIndex]->node[iPoint]->GetSolution(jVar) -
+                solver[FirstIndex]->node[iPoint]->GetSolution_Old(jVar);
+              }
+              iVar++;
+            }
+          }
+
+          if (SecondIndex != NONE) {
+            if (config->GetWrt_Limiters()) {
+              for (jVar = 0; jVar < nVar_Second; jVar++) {
+                Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetLimiter(jVar);
+                iVar++;
+              }
+            }
+            if (config->GetWrt_Residuals()) {
+              for (jVar = 0; jVar < nVar_Second; jVar++) {
+                if (!config->GetDiscrete_Adjoint()) {
+                  Local_Data[jPoint][iVar] = solver[SecondIndex]->LinSysRes.GetBlock(iPoint, jVar);
+                } else {
+                  Local_Data[jPoint][iVar] = solver[SecondIndex]->node[iPoint]->GetSolution(jVar) -
+                                             solver[SecondIndex]->node[iPoint]->GetSolution_Old(jVar);
+                }
+                iVar++;
+              }
+            }
+          }
         
         /*--- Load buffers with the three grid velocity components. ---*/
         
@@ -11950,28 +11990,15 @@ void COutput::LoadLocalData_AdjFlow(CConfig *config, CGeometry *geometry, CSolve
           }
         }
         
-        /*--- Load data for the discrete sensitivities. ---*/
-        
-        if ((Kind_Solver == DISC_ADJ_EULER)         ||
-            (Kind_Solver == DISC_ADJ_NAVIER_STOKES) ||
-            (Kind_Solver == DISC_ADJ_RANS)) {
-          Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(0); iVar++;
-          Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(1); iVar++;
-          if (geometry->GetnDim()== 3) {
-            Local_Data[jPoint][iVar] = solver[ADJFLOW_SOL]->node[iPoint]->GetSensitivity(2);
-            iVar++;
-          }
-        }
-        
         /*--- New variables can be loaded to the Local_Data structure here,
          assuming they were registered above correctly. ---*/
-       
-        /*--- Increment the point counter, as there may have been halos we
-         skipped over during the data loading. ---*/
-        
-        jPoint++;
         
       }
+
+      /*--- Increment the point counter, as there may have been halos we
+       skipped over during the data loading. ---*/
+
+      jPoint++;
     }
   }
   
@@ -12251,12 +12278,12 @@ void COutput::LoadLocalData_Elasticity(CConfig *config, CGeometry *geometry, CSo
         /*--- New variables can be loaded to the Local_Data structure here,
          assuming they were registered above correctly. ---*/
         
-        /*--- Increment the point counter, as there may have been halos we
-         skipped over during the data loading. ---*/
-        
-        jPoint++;
-        
       }
+
+      /*--- Increment the point counter, as there may have been halos we
+       skipped over during the data loading. ---*/
+
+      jPoint++;
     }
   }
   
@@ -15752,11 +15779,14 @@ void COutput::WriteRestart_Parallel_Binary(CConfig *config, CGeometry *geometry,
   }
   nPoint_Linear[size] = nTotalPoint;
 
-  /*--- Prepare the first four ints containing the counts. The last two values
-   are for metadata: one int for ExtIter and 5 su2doubles. ---*/
+  /*--- Prepare the first ints containing the counts. The first is a
+   magic number that we can use to check for binary files (it is the hex
+   representation for "SU2"). The second two values are number of variables
+   and number of points (DoFs). The last two values are for metadata: 
+   one int for ExtIter and 5 su2doubles. ---*/
 
-  int var_buf_size = 4;
-  int var_buf[4] = {nVar_Par, (int)nTotalPoint, 1, 5};
+  int var_buf_size = 5;
+  int var_buf[5] = {535532, nVar_Par, (int)nTotalPoint, 1, 5};
 
   /*--- Prepare the 1D data buffer on this rank. ---*/
 

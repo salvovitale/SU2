@@ -10551,6 +10551,7 @@ void CPhysicalGeometry::SetTurboVertex(CConfig *config, unsigned short val_iZone
                   if (allocate){
                     turbovertex[iMarker][iSpan][iInternalVertex] = new CTurboVertex(disordered[iSpan][iSpanVertex], nDim);
                   }
+                  coord = node[disordered[iSpan][jSpanVertex]]->GetCoord();
                   turbovertex[iMarker][iSpan][iInternalVertex]->SetArea(area[iSpan][iSpanVertex]);
                   turbovertex[iMarker][iSpan][iInternalVertex]->SetNormal(unitnormal[iSpan][iSpanVertex]);
                   turbovertex[iMarker][iSpan][iInternalVertex]->SetOldVertex(oldVertex3D[iSpan][iSpanVertex]);

@@ -10029,7 +10029,7 @@ void CPhysicalGeometry::ComputeNSpan(CConfig *config, unsigned short val_iZone, 
   int size = SINGLE_NODE;
   short SendRecv;
   bool isPeriodic;
-  unsigned short SpanWise_Kind = config->GetKind_SpanWise();
+  unsigned short SpanWise_Kind = config->GetKind_SpanWise(val_iZone);
 #ifdef HAVE_MPI
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
   MPI_Comm_size(MPI_COMM_WORLD, &size);

@@ -74,7 +74,7 @@ private:
   unsigned short Kind_AverageProcess; /*!< \brief Kind of mixing process.*/
   unsigned short Kind_PerformanceAverageProcess; /*!< \brief Kind of mixing process.*/
   unsigned short Kind_MixingPlaneInterface; /*!< \brief Kind of mixing process.*/
-  unsigned short Kind_SpanWise; /*!< \brief Kind of span-wise section computation.*/
+  unsigned short *Kind_SpanWise; /*!< \brief Kind of span-wise section computation.*/
   unsigned short *Kind_TurboMachinery;  /*!< \brief Kind of turbomachynery architecture.*/
   unsigned short iZone, nZone; /*!< \brief Number of zones in the mesh. */
   su2double Highlite_Area; /*!< \brief Highlite area. */
@@ -383,6 +383,7 @@ private:
   unsigned short nFFDBox;		/*!< \brief Number of ffd boxes. */
   unsigned short nGridMovement;		/*!< \brief Number of grid movement types specified. */
   unsigned short nTurboMachineryKind; 	/*!< \brief Number turbomachinery types specified. */
+  unsigned short nSpanWiseKind;         /*!< \brief Number spanwise division kinds specified. */
   unsigned short nParamDV;		/*!< \brief Number of parameters of the design variable. */
   su2double **ParamDV;				/*!< \brief Parameters of the design variable. */
   su2double **CoordFFDBox;				/*!< \brief Coordinates of the FFD boxes. */
@@ -3877,7 +3878,7 @@ public:
    * \brief Get the kind of turbomachinery architecture.
    * \return Kind of turbomachinery architecture.
    */
-  unsigned short GetKind_SpanWise(void);
+  unsigned short GetKind_SpanWise(unsigned short val_iZone);
   
   /*!
    * \brief Verify if there is mixing plane interface specified from config file.

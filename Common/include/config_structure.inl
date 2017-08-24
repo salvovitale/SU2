@@ -965,7 +965,7 @@ inline unsigned short CConfig::GetKind_MixingPlaneInterface(void) { return Kind_
 
 inline unsigned short CConfig::GetKind_TurboMachinery(unsigned short val_iZone) { return Kind_TurboMachinery[val_iZone]; }
 
-inline unsigned short CConfig::GetKind_SpanWise(void) { return Kind_SpanWise; }
+inline unsigned short CConfig::GetKind_SpanWise(unsigned short val_iZone) { return Kind_SpanWise[val_iZone]; }
 
 inline bool CConfig::GetBoolMixingPlaneInterface(void) { return (nMarker_MixingPlaneInterface !=0);}
 

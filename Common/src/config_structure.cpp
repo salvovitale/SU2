@@ -874,7 +874,7 @@ void CConfig::SetConfig_Options(unsigned short val_iZone, unsigned short val_nZo
   addUnsignedShortOption("NUM_SPANWISE_SECTIONS", nSpanWiseSections_User, 1);
   /*!\brief SPANWISE_KIND \n DESCRIPTION: type of algorithm to identify the span-wise sections at the turbo boundaries.
    \n OPTIONS: see \link SpanWise_Map \endlink \n Default: AUTOMATIC */
-  addEnumOption("SPANWISE_KIND", Kind_SpanWise, SpanWise_Map, AUTOMATIC);
+  addEnumListOption("SPANWISE_KIND", nSpanWiseKind, Kind_SpanWise, SpanWise_Map);
   /*!\brief TURBOMACHINERY_KIND \n DESCRIPTION: types of turbomachynery architecture.
       \n OPTIONS: see \link TurboMachinery_Map \endlink \n Default: AXIAL */
   addEnumListOption("TURBOMACHINERY_KIND",nTurboMachineryKind, Kind_TurboMachinery, TurboMachinery_Map);
@@ -2334,9 +2334,10 @@ void CConfig::SetPostprocessing(unsigned short val_software, unsigned short val_
   /*--- Force number of span-wise section to 1 if 2D case ---*/
   if(val_nDim ==2){
     nSpanWiseSections_User=1;
-    Kind_SpanWise= EQUISPACED;
+    for(iZone=0; iZone <nZone; iZone ++){
+      Kind_SpanWise[iZone]= EQUISPACED;
+    }
   }
-
   /*--- Set number of TurboPerformance markers ---*/
   if(nMarker_Turbomachinery > 0){
     if(nMarker_Turbomachinery > 1){

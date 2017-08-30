@@ -2314,6 +2314,268 @@ void CDriver::Iteration_Preprocessing() {
 
 }
 
+//void CDriver::Interface_Preprocessing() {
+//
+//  int rank = MASTER_NODE;
+//  unsigned short donorZone, targetZone;
+//  unsigned short nVar, nVarTransfer;
+//
+//  unsigned short nMarkerTarget, iMarkerTarget, nMarkerDonor, iMarkerDonor;
+//
+//  /*--- Initialize some useful booleans ---*/
+//  bool fluid_donor, structural_donor;
+//  bool fluid_target, structural_target;
+//
+//  int markDonor, markTarget, Donor_check, Target_check, iMarkerInt, nMarkerInt;
+//
+//#ifdef HAVE_MPI
+//  int *Buffer_Recv_mark = NULL, iRank, nProcessor = 1;;
+//
+//  MPI_Comm_rank(config_container[ZONE_0]->GetMPICommunicator(), &rank);
+//  MPI_Comm_size(config_container[ZONE_0]->GetMPICommunicator(), &nProcessor);
+//
+//  if (rank == MASTER_NODE)
+//  Buffer_Recv_mark = new int[nProcessor];
+//#endif
+//
+//  if (config_container[ZONE_0]->GetFSI_Simulation() && nZone != 2 && rank == MASTER_NODE) {
+//    cout << "Error, cannot run the FSI solver on more than 2 zones!" << endl;
+//    exit(EXIT_FAILURE);
+//  }
+//
+//  /*--- Coupling between zones ---*/
+//  // There's a limit here, the interface boundary must connect only 2 zones
+//
+//  /*--- Loops over all target and donor zones to find which ones are connected through an interface boundary (fsi or sliding mesh) ---*/
+//  for (targetZone = 0; targetZone < nZone; targetZone++) {
+//
+//    for (donorZone = 0; donorZone < nZone; donorZone++) {
+//
+//      if ( donorZone == targetZone ) // We're processing the same zone, so skip the following
+//        continue;
+//
+//      nMarkerInt = (int) ( config_container[donorZone]->GetMarker_n_ZoneInterface() / 2 );
+//
+//      /*--- Loops on Interface markers to find if the 2 zones are sharing the boundary and to determine donor and target marker tag ---*/
+//      for (iMarkerInt = 1; iMarkerInt <= nMarkerInt; iMarkerInt++) {
+//
+//        markDonor  = -1;
+//        markTarget = -1;
+//
+//        /*--- On the donor side ---*/
+//        nMarkerDonor = config_container[donorZone]->GetnMarker_All();
+//
+//        for (iMarkerDonor = 0; iMarkerDonor < nMarkerDonor; iMarkerDonor++) {
+//
+//          /*--- If the tag GetMarker_All_FSIinterface(iMarker) equals the index we are looping at ---*/
+//          if ( config_container[donorZone]->GetMarker_All_ZoneInterface(iMarkerDonor) == iMarkerInt ) {
+//            /*--- We have identified the identifier for the interface marker ---*/
+//            markDonor = iMarkerDonor;
+//
+//            break;
+//          }
+//        }
+//
+//        /*--- On the target side ---*/
+//        nMarkerTarget = config_container[targetZone]->GetnMarker_All();
+//
+//      for (iMarkerTarget = 0; iMarkerTarget < nMarkerTarget; iMarkerTarget++) {
+//
+//          /*--- If the tag GetMarker_All_FSIinterface(iMarker) equals the index we are looping at ---*/
+//        if ( config_container[targetZone]->GetMarker_All_ZoneInterface(iMarkerTarget) == iMarkerInt ) {
+//            /*--- We have identified the identifier for the interface marker ---*/
+//            markTarget = iMarkerTarget;
+//
+//            break;
+//        }
+//        }
+//
+//#ifdef HAVE_MPI
+//
+//      Donor_check  = -1;
+//      Target_check = -1;
+//
+//        /*--- We gather a vector in MASTER_NODE that determines if the boundary is not on the processor because of the partition or because the zone does not include it ---*/
+//
+//        SU2_MPI::Gather(&markDonor , 1, MPI_INT, Buffer_Recv_mark, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
+//
+//      if (rank == MASTER_NODE) {
+//        for (iRank = 0; iRank < nProcessor; iRank++) {
+//          if( Buffer_Recv_mark[iRank] != -1 ) {
+//              Donor_check = Buffer_Recv_mark[iRank];
+//
+//              break;
+//            }
+//          }
+//        }
+//
+//        SU2_MPI::Bcast(&Donor_check , 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
+//
+//        SU2_MPI::Gather(&markTarget, 1, MPI_INT, Buffer_Recv_mark, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
+//
+//      if (rank == MASTER_NODE){
+//        for (iRank = 0; iRank < nProcessor; iRank++){
+//          if( Buffer_Recv_mark[iRank] != -1 ){
+//              Target_check = Buffer_Recv_mark[iRank];
+//
+//              break;
+//            }
+//          }
+//        }
+//
+//        SU2_MPI::Bcast(&Target_check, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
+//
+//#else
+//      Donor_check  = markDonor;
+//      Target_check = markTarget;
+//#endif
+//
+//      /* --- Check ifzones are actually sharing the interface boundary, if not skip ---*/
+//      if(Target_check == -1 || Donor_check == -1)
+//          continue;
+//
+//        /*--- Set some boolean to properly allocate data structure later ---*/
+//      fluid_target      = false;
+//      structural_target = false;
+//
+//      fluid_donor       = false;
+//      structural_donor  = false;
+//
+//      switch ( config_container[targetZone]->GetKind_Solver() ) {
+//
+//        case EULER : case NAVIER_STOKES: case RANS:
+//          fluid_target  = true;
+//
+//          break;
+//
+//        case FEM_ELASTICITY:
+//          structural_target = true;
+//
+//          break;
+//        }
+//
+//
+//      switch ( config_container[donorZone]->GetKind_Solver() ) {
+//
+//      case EULER : case NAVIER_STOKES: case RANS:
+//        fluid_donor  = true;
+//
+//          break;
+//
+//      case FEM_ELASTICITY:
+//        structural_donor = true;
+//
+//          break;
+//        }
+//
+//        /*--- Begin the creation of the communication pattern among zones ---*/
+//
+//        /*--- Retrieve the number of conservative variables (for problems not involving structural analysis ---*/
+//        if (!structural_donor && !structural_target)
+//          nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnVar();
+//        else
+//          /*--- If at least one of the components is structural ---*/
+//          nVar = nDim;
+//
+//      if (rank == MASTER_NODE) cout << "From zone " << donorZone << " to zone " << targetZone << ": ";
+//
+//        /*--- Match Zones ---*/
+//      if (rank == MASTER_NODE) cout << "Setting coupling "<<endl;
+//
+//        /*--- If the mesh is matching: match points ---*/
+//      if ( config_container[donorZone]->GetMatchingMesh() ) {
+//        if (rank == MASTER_NODE)
+//            cout << "between matching meshes. " << endl;
+//        geometry_container[donorZone][MESH_0]->MatchZone(config_container[donorZone], geometry_container[targetZone][MESH_0], config_container[targetZone], donorZone, nZone);
+//        }
+//        /*--- Else: interpolate ---*/
+//        else {
+//        switch (config_container[donorZone]->GetKindInterpolation()) {
+//
+//          case NEAREST_NEIGHBOR:
+//            interpolator_container[donorZone][targetZone] = new CNearestNeighbor(geometry_container, config_container, donorZone, targetZone);
+//            if (rank == MASTER_NODE) cout << "using a nearest-neighbor approach." << endl;
+//
+//            break;
+//
+//          case ISOPARAMETRIC:
+//            interpolator_container[donorZone][targetZone] = new CIsoparametric(geometry_container, config_container, donorZone, targetZone);
+//            if (rank == MASTER_NODE) cout << "using an isoparametric approach." << endl;
+//
+//            break;
+//
+//          case WEIGHTED_AVERAGE:
+//            interpolator_container[donorZone][targetZone] = new CSlidingMesh(geometry_container, config_container, donorZone, targetZone);
+//            if (rank == MASTER_NODE) cout << "using an sliding mesh approach." << endl;
+//
+//            break;
+//
+//          case CONSISTCONSERVE:
+//            if ( targetZone > 0 && structural_target ) {
+//              interpolator_container[donorZone][targetZone] = new CMirror(geometry_container, config_container, donorZone, targetZone);
+//              if (rank == MASTER_NODE) cout << "using a mirror approach: matching coefficients from opposite mesh." << endl;
+//            }
+//            else{
+//              interpolator_container[donorZone][targetZone] = new CIsoparametric(geometry_container, config_container, donorZone, targetZone);
+//              if (rank == MASTER_NODE) cout << "using an isoparametric approach." << endl;
+//            }
+//            if ( targetZone == 0 && structural_target ) {
+//              if (rank == MASTER_NODE) cout << "Consistent and conservative interpolation assumes the structure model mesh is evaluated second. Somehow this has not happened. The isoparametric coefficients will be calculated for both meshes, and are not guaranteed to be consistent." << endl;
+//            }
+//
+//
+//            break;
+//
+//          }
+//        }
+//
+//        /*--- Initialize the appropriate transfer strategy ---*/
+//      if (rank == MASTER_NODE) cout << "Transferring ";
+//
+//        if (fluid_donor && structural_target) {
+//          nVarTransfer = 2;
+//        transfer_container[donorZone][targetZone] = new CTransfer_FlowTraction(nVar, nVarTransfer, config_container[donorZone]);
+//        if (rank == MASTER_NODE) cout << "flow tractions. "<< endl;
+//      }
+//      else if (structural_donor && fluid_target) {
+//          nVarTransfer = 0;
+//        transfer_container[donorZone][targetZone] = new CTransfer_StructuralDisplacements(nVar, nVarTransfer, config_container[donorZone]);
+//        if (rank == MASTER_NODE) cout << "structural displacements. "<< endl;
+//      }
+//      else if (!structural_donor && !structural_target) {
+//          nVarTransfer = 0;
+//          nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnPrimVar();
+//        transfer_container[donorZone][targetZone] = new CTransfer_SlidingInterface(nVar, nVarTransfer, config_container[donorZone]);
+//        if (rank == MASTER_NODE) cout << "sliding interface. " << endl;
+//      }
+//      else {
+//          nVarTransfer = 0;
+//        transfer_container[donorZone][targetZone] = new CTransfer_ConservativeVars(nVar, nVarTransfer, config_container[donorZone]);
+//        if (rank == MASTER_NODE) cout << "generic conservative variables. " << endl;
+//        }
+//
+//        break;
+//
+//      }
+//
+//      if (config_container[donorZone]->GetBoolMixingPlaneInterface()){
+//      	nVarTransfer = 0;
+//      	nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnVar();
+//      	transfer_container[donorZone][targetZone] = new CTransfer_MixingPlaneInterface(nVar, nVarTransfer, config_container[donorZone], config_container[targetZone]);
+//        if (rank == MASTER_NODE) cout << "Set mixing-plane interface from donor zone "<< donorZone << " to target zone " << targetZone <<"."<<endl;
+//      }
+//
+//    }
+//
+//  }
+//
+//#ifdef HAVE_MPI
+//  if (rank == MASTER_NODE)
+//  delete [] Buffer_Recv_mark;
+//#endif
+//
+//}
+
 void CDriver::Interface_Preprocessing() {
 
   int rank = MASTER_NODE;
@@ -2353,144 +2615,22 @@ void CDriver::Interface_Preprocessing() {
 
       if ( donorZone == targetZone ) // We're processing the same zone, so skip the following
         continue;
+      if ((donorZone == 1 && targetZone ==2) || (donorZone == 2 && targetZone ==1)){
 
-      nMarkerInt = (int) ( config_container[donorZone]->GetMarker_n_ZoneInterface() / 2 );
-
-      /*--- Loops on Interface markers to find if the 2 zones are sharing the boundary and to determine donor and target marker tag ---*/
-      for (iMarkerInt = 1; iMarkerInt <= nMarkerInt; iMarkerInt++) {
-
-        markDonor  = -1;
-        markTarget = -1;
-
-        /*--- On the donor side ---*/
-        nMarkerDonor = config_container[donorZone]->GetnMarker_All();
-
-        for (iMarkerDonor = 0; iMarkerDonor < nMarkerDonor; iMarkerDonor++) {
-
-          /*--- If the tag GetMarker_All_FSIinterface(iMarker) equals the index we are looping at ---*/
-          if ( config_container[donorZone]->GetMarker_All_ZoneInterface(iMarkerDonor) == iMarkerInt ) {
-            /*--- We have identified the identifier for the interface marker ---*/
-            markDonor = iMarkerDonor;
-
-            break;
-          }
-        }
-
-        /*--- On the target side ---*/
-        nMarkerTarget = config_container[targetZone]->GetnMarker_All();
-
-      for (iMarkerTarget = 0; iMarkerTarget < nMarkerTarget; iMarkerTarget++) {
-
-          /*--- If the tag GetMarker_All_FSIinterface(iMarker) equals the index we are looping at ---*/
-        if ( config_container[targetZone]->GetMarker_All_ZoneInterface(iMarkerTarget) == iMarkerInt ) {
-            /*--- We have identified the identifier for the interface marker ---*/
-            markTarget = iMarkerTarget;
-
-            break;
-        } 
-        }
-
-#ifdef HAVE_MPI
-
-      Donor_check  = -1;
-      Target_check = -1;
-
-        /*--- We gather a vector in MASTER_NODE that determines if the boundary is not on the processor because of the partition or because the zone does not include it ---*/
-
-        SU2_MPI::Gather(&markDonor , 1, MPI_INT, Buffer_Recv_mark, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
-
-      if (rank == MASTER_NODE) {
-        for (iRank = 0; iRank < nProcessor; iRank++) {
-          if( Buffer_Recv_mark[iRank] != -1 ) {
-              Donor_check = Buffer_Recv_mark[iRank];
-
-              break;
-            }
-          }
-        }
-
-        SU2_MPI::Bcast(&Donor_check , 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
-
-        SU2_MPI::Gather(&markTarget, 1, MPI_INT, Buffer_Recv_mark, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
-
-      if (rank == MASTER_NODE){
-        for (iRank = 0; iRank < nProcessor; iRank++){
-          if( Buffer_Recv_mark[iRank] != -1 ){
-              Target_check = Buffer_Recv_mark[iRank];
-
-              break;
-            }
-          }
-        }
-
-        SU2_MPI::Bcast(&Target_check, 1, MPI_INT, MASTER_NODE, MPI_COMM_WORLD);
-
-#else
-      Donor_check  = markDonor;
-      Target_check = markTarget;  
-#endif
-
-      /* --- Check ifzones are actually sharing the interface boundary, if not skip ---*/        
-      if(Target_check == -1 || Donor_check == -1)
-          continue;
-
-        /*--- Set some boolean to properly allocate data structure later ---*/
-      fluid_target      = false; 
-      structural_target = false;
-
-      fluid_donor       = false; 
-      structural_donor  = false;
-
-      switch ( config_container[targetZone]->GetKind_Solver() ) {
-
-        case EULER : case NAVIER_STOKES: case RANS: 
-          fluid_target  = true;   
-
-          break;
-
-        case FEM_ELASTICITY:            
-          structural_target = true;   
-
-          break;
-        }
-
-
-      switch ( config_container[donorZone]->GetKind_Solver() ) {
-
-      case EULER : case NAVIER_STOKES: case RANS: 
-        fluid_donor  = true;   
-
-          break;
-
-      case FEM_ELASTICITY:            
-        structural_donor = true;  
-
-          break;
-        }
-
-        /*--- Begin the creation of the communication pattern among zones ---*/
-
-        /*--- Retrieve the number of conservative variables (for problems not involving structural analysis ---*/
-        if (!structural_donor && !structural_target)
-          nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnVar();
-        else
-          /*--- If at least one of the components is structural ---*/
-          nVar = nDim;
-
-      if (rank == MASTER_NODE) cout << "From zone " << donorZone << " to zone " << targetZone << ": ";
+        if (rank == MASTER_NODE) cout << "From zone " << donorZone << " to zone " << targetZone << ": ";
 
         /*--- Match Zones ---*/
-      if (rank == MASTER_NODE) cout << "Setting coupling "<<endl;
+        if (rank == MASTER_NODE) cout << "Setting coupling "<<endl;
 
         /*--- If the mesh is matching: match points ---*/
-      if ( config_container[donorZone]->GetMatchingMesh() ) {
-        if (rank == MASTER_NODE) 
+        if ( config_container[donorZone]->GetMatchingMesh() ) {
+          if (rank == MASTER_NODE)
             cout << "between matching meshes. " << endl;
-        geometry_container[donorZone][MESH_0]->MatchZone(config_container[donorZone], geometry_container[targetZone][MESH_0], config_container[targetZone], donorZone, nZone);
+          geometry_container[donorZone][MESH_0]->MatchZone(config_container[donorZone], geometry_container[targetZone][MESH_0], config_container[targetZone], donorZone, nZone);
         }
         /*--- Else: interpolate ---*/
         else {
-        switch (config_container[donorZone]->GetKindInterpolation()) {
+          switch (config_container[donorZone]->GetKindInterpolation()) {
 
           case NEAREST_NEIGHBOR:
             interpolator_container[donorZone][targetZone] = new CNearestNeighbor(geometry_container, config_container, donorZone, targetZone);
@@ -2529,44 +2669,26 @@ void CDriver::Interface_Preprocessing() {
           }
         }
 
-        /*--- Initialize the appropriate transfer strategy ---*/
-      if (rank == MASTER_NODE) cout << "Transferring ";
 
-        if (fluid_donor && structural_target) {
-          nVarTransfer = 2;
-        transfer_container[donorZone][targetZone] = new CTransfer_FlowTraction(nVar, nVarTransfer, config_container[donorZone]);
-        if (rank == MASTER_NODE) cout << "flow tractions. "<< endl;
-      }
-      else if (structural_donor && fluid_target) {
-          nVarTransfer = 0;
-        transfer_container[donorZone][targetZone] = new CTransfer_StructuralDisplacements(nVar, nVarTransfer, config_container[donorZone]);
-        if (rank == MASTER_NODE) cout << "structural displacements. "<< endl;
-      }
-      else if (!structural_donor && !structural_target) {
-          nVarTransfer = 0;
-          nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnPrimVar();
+        /*--- Initialize the appropriate transfer strategy ---*/
+        if (rank == MASTER_NODE) cout << "Transferring ";
+        nVarTransfer = 0;
+        nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnPrimVar();
         transfer_container[donorZone][targetZone] = new CTransfer_SlidingInterface(nVar, nVarTransfer, config_container[donorZone]);
         if (rank == MASTER_NODE) cout << "sliding interface. " << endl;
-      }
-      else {
+
+
+
+      }else{
+
+        if (config_container[donorZone]->GetBoolMixingPlaneInterface()){
           nVarTransfer = 0;
-        transfer_container[donorZone][targetZone] = new CTransfer_ConservativeVars(nVar, nVarTransfer, config_container[donorZone]);
-        if (rank == MASTER_NODE) cout << "generic conservative variables. " << endl;  
+          nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnVar();
+          transfer_container[donorZone][targetZone] = new CTransfer_MixingPlaneInterface(nVar, nVarTransfer, config_container[donorZone], config_container[targetZone]);
+          if (rank == MASTER_NODE) cout << "Set mixing-plane interface from donor zone "<< donorZone << " to target zone " << targetZone <<"."<<endl;
         }
-
-        break;
-
       }
-
-      if (config_container[donorZone]->GetBoolMixingPlaneInterface()){
-      	nVarTransfer = 0;
-      	nVar = solver_container[donorZone][MESH_0][FLOW_SOL]->GetnVar();
-      	transfer_container[donorZone][targetZone] = new CTransfer_MixingPlaneInterface(nVar, nVarTransfer, config_container[donorZone], config_container[targetZone]);
-        if (rank == MASTER_NODE) cout << "Set mixing-plane interface from donor zone "<< donorZone << " to target zone " << targetZone <<"."<<endl;
-      }
-
     }
-
   }
 
 #ifdef HAVE_MPI
@@ -3885,7 +4007,7 @@ void CTurbomachineryDriver::Run() {
 
 
 //  unsigned long ExtIter = config_container[ZONE_0]->GetExtIter();
-
+  unsigned short jZone;
   int rank = MASTER_NODE;
 
 #ifdef HAVE_MPI
@@ -3901,6 +4023,24 @@ void CTurbomachineryDriver::Run() {
     iteration_container[iZone]->Preprocess(output, integration_container, geometry_container,
                                            solver_container, numerics_container, config_container,
                                            surface_movement, grid_movement, FFDBox, iZone);
+  }
+
+  if(ExtIter==0){
+    for (iZone = 0; iZone < nZone; iZone++) {
+      for (jZone = 0; jZone < nZone; jZone++){
+        if((jZone == 1 && iZone ==2) || (jZone == 2 && iZone ==1))
+          interpolator_container[iZone][jZone]->Set_TransferCoeff(config_container);
+      }
+    }
+
+
+
+    for (iZone = 0; iZone < nZone; iZone++) {
+      for (jZone = 0; jZone < nZone; jZone++){
+        if((jZone == 1 && iZone ==2) || (jZone == 2 && iZone ==1))
+          Transfer_Data(iZone, jZone);
+      }
+    }
   }
 
   /* --- Update the mixing-plane interface ---*/
@@ -3934,7 +4074,7 @@ void CTurbomachineryDriver::SetMixingPlane(unsigned short donorZone){
   /* --- transfer the average value from the donorZone to the targetZone*/
   for (iMarkerInt = 1; iMarkerInt <= nMarkerInt; iMarkerInt++){
     for (targetZone = 0; targetZone < nZone; targetZone++) {
-      if (targetZone != donorZone){
+      if (targetZone != donorZone && !(targetZone == 1 && donorZone ==2) && !(targetZone == 2 && donorZone ==1)){
         transfer_container[donorZone][targetZone]->Allgather_InterfaceAverage(solver_container[donorZone][MESH_0][FLOW_SOL],solver_container[targetZone][MESH_0][FLOW_SOL],
             geometry_container[donorZone][MESH_0],geometry_container[targetZone][MESH_0],
             config_container[donorZone], config_container[targetZone], iMarkerInt );

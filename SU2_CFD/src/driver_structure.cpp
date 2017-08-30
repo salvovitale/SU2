@@ -4032,14 +4032,12 @@ void CTurbomachineryDriver::Run() {
           interpolator_container[iZone][jZone]->Set_TransferCoeff(config_container);
       }
     }
+  }
 
-
-
-    for (iZone = 0; iZone < nZone; iZone++) {
-      for (jZone = 0; jZone < nZone; jZone++){
-        if((jZone == 1 && iZone ==2) || (jZone == 2 && iZone ==1))
-          Transfer_Data(iZone, jZone);
-      }
+  for (iZone = 0; iZone < nZone; iZone++) {
+    for (jZone = 0; jZone < nZone; jZone++){
+      if((jZone == 1 && iZone ==2) || (jZone == 2 && iZone ==1))
+        Transfer_Data(iZone, jZone);
     }
   }
 

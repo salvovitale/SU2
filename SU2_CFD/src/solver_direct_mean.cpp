@@ -12203,6 +12203,58 @@ void CEulerSolver::BC_Giles(CGeometry *geometry, CSolver **solver_container,
         }
       }
       break;
+    case MIXING_IN_HS:
+
+      alphaIn_BC = atan(ExtAverageTurboVelocity[val_marker][iSpan][1]/ExtAverageTurboVelocity[val_marker][iSpan][0]);
+
+      gammaIn_BC =0.0;
+      if (nDim == 3){
+        gammaIn_BC = atan(ExtAverageTurboVelocity[val_marker][iSpan][2]/ExtAverageTurboVelocity[val_marker][iSpan][0]); //atan(FlowDir[2]/FlowDir[0]);
+      }
+
+      /* --- Computes the total state --- */
+      FluidModel->SetTDState_Prho(ExtAveragePressure[val_marker][iSpan], ExtAverageDensity[val_marker][iSpan]);
+      /*--- Compute the internal state u_i ---*/
+      Velocity2_i = 0;
+      for (iDim = 0; iDim < nDim; iDim++)
+      {
+        Velocity2_i += ExtAverageTurboVelocity[val_marker][iSpan][iDim]*ExtAverageTurboVelocity[val_marker][iSpan][iDim];
+      }
+
+      Enthalpy_BC = FluidModel->GetStaticEnergy()+ FluidModel->GetPressure()/FluidModel->GetDensity() + 0.5*Velocity2_i;
+      Entropy_BC = FluidModel->GetEntropy();
+
+
+      /* --- Computes the inverse matrix R_c --- */
+      conv_numerics->ComputeResJacobianGiles(FluidModel, AveragePressure[val_marker][iSpan], AverageDensity[val_marker][iSpan], AverageTurboVelocity[val_marker][iSpan], alphaIn_BC, gammaIn_BC, R_c, R_c_inv);
+
+      FluidModel->SetTDState_Prho(AveragePressure[val_marker][iSpan], AverageDensity[val_marker][iSpan]);
+      AverageEnthalpy = FluidModel->GetStaticEnergy() + AveragePressure[val_marker][iSpan]/AverageDensity[val_marker][iSpan];
+      AverageEntropy  = FluidModel->GetEntropy();
+
+      avgVel2 = 0.0;
+      for (iDim = 0; iDim < nDim; iDim++) avgVel2 += AverageVelocity[val_marker][iSpan][iDim]*AverageVelocity[val_marker][iSpan][iDim];
+      if (nDim == 2){
+        R[0] = -(AverageEntropy - Entropy_BC);
+        R[1] = -(AverageTurboVelocity[val_marker][iSpan][1] - tan(alphaIn_BC)*AverageTurboVelocity[val_marker][iSpan][0]);
+        R[2] = -(AverageEnthalpy + 0.5*avgVel2 - Enthalpy_BC);
+      }
+
+      else{
+        R[0] = -(AverageEntropy - Entropy_BC);
+        R[1] = -(AverageTurboVelocity[val_marker][iSpan][1] - tan(alphaIn_BC)*AverageTurboVelocity[val_marker][iSpan][0]);
+        R[2] = -(AverageTurboVelocity[val_marker][iSpan][2] - tan(gammaIn_BC)*AverageTurboVelocity[val_marker][iSpan][0]);
+        R[3] = -(AverageEnthalpy + 0.5*avgVel2 - Enthalpy_BC);
+
+      }
+      /* --- Compute the avg component  c_avg = R_c^-1 * R --- */
+      for (iVar = 0; iVar < nVar-1; iVar++){
+        c_avg[iVar] = 0.0;
+        for (jVar = 0; jVar < nVar-1; jVar++){
+          c_avg[iVar] += R_c_inv[iVar][jVar]*R[jVar];
+        }
+      }
+      break;
 
     case MIXING_IN: case MIXING_OUT:
 
@@ -12259,6 +12311,18 @@ void CEulerSolver::BC_Giles(CGeometry *geometry, CSolver **solver_container,
       else
       {
         c_avg[4] = -2.0*(AveragePressure[val_marker][iSpan]-Pressure_e);
+      }
+      break;
+
+    case MIXING_OUT_P:
+
+      /* --- Compute avg characteristic jump  --- */
+      if (nDim == 2){
+        c_avg[3] = -2.0*(AveragePressure[val_marker][iSpan]-ExtAveragePressure[val_marker][iSpan]);
+      }
+      else
+      {
+        c_avg[4] = -2.0*(AveragePressure[val_marker][iSpan]-ExtAveragePressure[val_marker][iSpan]);
       }
       break;
 
@@ -12377,7 +12441,7 @@ void CEulerSolver::BC_Giles(CGeometry *geometry, CSolver **solver_container,
       //Done, generilize for 3D case
       //TODO(turbo), generilize for Inlet and Outlet in for backflow treatment
 
-      case TOTAL_CONDITIONS_PT: case MIXING_IN:case TOTAL_CONDITIONS_PT_1D: case MIXING_IN_1D:case SPANWISE_TOTAL_CONDITIONS_PT:
+      case TOTAL_CONDITIONS_PT: case MIXING_IN:case TOTAL_CONDITIONS_PT_1D: case MIXING_IN_1D:case SPANWISE_TOTAL_CONDITIONS_PT:case MIXING_IN_HS:
         if(config->GetSpatialFourier()){
           if (AvgMach <= 1.0){
             Beta_inf= I*complex<su2double>(sqrt(1.0 - AvgMach));
@@ -12467,7 +12531,7 @@ void CEulerSolver::BC_Giles(CGeometry *geometry, CSolver **solver_container,
         break;
 
 
-      case STATIC_PRESSURE:case STATIC_PRESSURE_1D:case SPANWISE_STATIC_PRESSURE:case MIXING_OUT:case RADIAL_EQUILIBRIUM:case MIXING_OUT_1D:
+      case STATIC_PRESSURE:case STATIC_PRESSURE_1D:case SPANWISE_STATIC_PRESSURE:case MIXING_OUT:case RADIAL_EQUILIBRIUM:case MIXING_OUT_1D:case MIXING_OUT_P:
 
         /* --- implementation of Giles BC---*/
         if(config->GetSpatialFourier()){

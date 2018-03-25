@@ -229,7 +229,7 @@ def get_headerMap(nZones = 1):
                  "D(CFz)"          : "D_FORCE_Z"               ,
                  "D(CL/CD)"        : "D_EFFICIENCY"            ,
                  "D(Custom_ObjFunc)" : "D_CUSTOM_OBJFUNC"      ,
-                 "TotalPressureLoss_1"     : "TOTAL_PRESSURE_LOSS"    ,
+                 "TotalPressureLoss_"   + str(getTurboPerfIndex(nZones)): "TOTAL_PRESSURE_LOSS"    ,
                  "KineticEnergyLoss_1"     : "KINETIC_ENERGY_LOSS"    ,
                  "EntropyGen_" + str(getTurboPerfIndex(nZones)) : "ENTROPY_GENERATION"     ,                   
                  "FlowAngleOut_1"          : "FLOW_ANGLE_OUT"         ,

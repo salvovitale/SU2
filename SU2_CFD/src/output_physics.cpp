@@ -298,9 +298,10 @@ void COutput::ComputeTurboPerformance(CSolver *solver_container, CGeometry *geom
     EntropyGen[nBladesRow + nStages][nSpanWiseSections]             = 0.0;
     TotalPressureLoss[nBladesRow + nStages][nSpanWiseSections]      = MassFlowIn[nBladesRow + nStages][nSpanWiseSections]*EulerianWork[1][1];
     KineticEnergyLoss[nBladesRow + nStages][nSpanWiseSections]      = 0.0;
+    FlowAngleOut[nBladesRow + nStages][nSpanWiseSections]           = FlowAngleOut[nBladesRow-1][config->GetnSpan_iZones(nBladesRow-1)];
     for(iBlade = 0; iBlade < nBladesRow; iBlade++ ){
       EntropyGen[nBladesRow + nStages][nSpanWiseSections]          += EntropyGen[iBlade][config->GetnSpan_iZones(iBlade)];
-      TotalPressureLoss[nBladesRow + nStages][nSpanWiseSections]   += TotalPressureLoss[iBlade][config->GetnSpan_iZones(iBlade)];
+//      TotalPressureLoss[nBladesRow + nStages][nSpanWiseSections]   += TotalPressureLoss[iBlade][config->GetnSpan_iZones(iBlade)];
       KineticEnergyLoss[nBladesRow + nStages][nSpanWiseSections]   += KineticEnergyLoss[iBlade][config->GetnSpan_iZones(iBlade)];
     }
   }

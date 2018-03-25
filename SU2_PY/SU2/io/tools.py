@@ -232,7 +232,7 @@ def get_headerMap(nZones = 1):
                  "TotalPressureLoss_"   + str(getTurboPerfIndex(nZones)): "TOTAL_PRESSURE_LOSS"    ,
                  "KineticEnergyLoss_1"     : "KINETIC_ENERGY_LOSS"    ,
                  "EntropyGen_" + str(getTurboPerfIndex(nZones)) : "ENTROPY_GENERATION"     ,                   
-                 "FlowAngleOut_1"          : "FLOW_ANGLE_OUT"         ,
+                 "FlowAngleOut_" + str(getTurboPerfIndex(nZones))          : "FLOW_ANGLE_OUT"         ,
                  "FlowAngleIn_1"           : "FLOW_ANGLE_IN"          ,
                  "MassFlowIn_1"            : "MASS_FLOW_IN"           ,
                  "MassFlowOut_1"           : "MASS_FLOW_OUT"          ,
